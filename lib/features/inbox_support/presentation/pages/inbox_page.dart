@@ -7,7 +7,6 @@ import '../bloc/inbox_support_state.dart';
 import '../../domain/entities/app_notification_entity.dart';
 import '../../domain/entities/chat_message_entity.dart';
 import 'help_support_page.dart';
-import 'refer_win_page.dart';
 
 class InboxPage extends StatelessWidget {
   const InboxPage({super.key});
@@ -31,16 +30,6 @@ class InboxPage extends StatelessWidget {
           ),
           centerTitle: false,
           actions: [
-            IconButton(
-              tooltip: 'Refer & Win',
-              icon: const Icon(Icons.card_giftcard_outlined, color: AppColors.secondary),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const ReferWinPage()),
-                );
-              },
-            ),
             IconButton(
               tooltip: 'Help & Support',
               icon: const Icon(Icons.headset_mic_outlined, color: AppColors.primary),

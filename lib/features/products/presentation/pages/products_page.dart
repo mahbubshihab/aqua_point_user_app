@@ -165,10 +165,14 @@ class _ProductsPageState extends State<ProductsPage> {
 
             return ListView.builder(
               padding: const EdgeInsets.all(16),
+              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+              cacheExtent: 800,
               itemCount: products.length,
               itemBuilder: (context, index) {
-                return ProductItemCard(
-                  product: products[index],
+                return RepaintBoundary(
+                  child: ProductItemCard(
+                    product: products[index],
+                  ),
                 );
               },
             );

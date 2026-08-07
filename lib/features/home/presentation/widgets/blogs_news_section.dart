@@ -83,29 +83,34 @@ class BlogsNewsSection extends StatelessWidget {
           height: 200,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            cacheExtent: 800,
             itemCount: blogs.length,
             itemBuilder: (context, index) {
               final blog = blogs[index];
-              return Container(
-                width: 250,
-                margin: const EdgeInsets.only(right: 14),
-                child: GlassCard(
-                  padding: EdgeInsets.zero,
-                  borderRadius: 16,
-                  onTap: () => onBlogTap?.call(blog),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Blog Image with Gradient Overlay Shadow
-                      Stack(
-                        children: [
-                          Container(
-                            height: 105,
-                            width: double.infinity,
-                            color: AppColors.inputFill,
-                            child: Image.network(
-                              blog.imageUrl,
-                              fit: BoxFit.cover,
+              return RepaintBoundary(
+                child: Container(
+                  width: 250,
+                  margin: const EdgeInsets.only(right: 14),
+                  child: GlassCard(
+                    padding: EdgeInsets.zero,
+                    borderRadius: 16,
+                    onTap: () => onBlogTap?.call(blog),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Blog Image with Gradient Overlay Shadow
+                        Stack(
+                          children: [
+                            Container(
+                              height: 105,
+                              width: double.infinity,
+                              color: AppColors.inputFill,
+                              child: Image.network(
+                                blog.imageUrl,
+                                fit: BoxFit.cover,
+                                cacheWidth: 600,
+                                cacheHeight: 600,
                               errorBuilder: (context, error, stackTrace) {
                                 return Container(
                                   decoration: const BoxDecoration(
@@ -204,8 +209,9 @@ class BlogsNewsSection extends StatelessWidget {
                     ],
                   ),
                 ),
-              );
-            },
+              ),
+            );
+          },
           ),
         ),
       ],

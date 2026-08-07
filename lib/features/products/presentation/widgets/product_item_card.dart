@@ -133,6 +133,8 @@ class ProductItemCard extends StatelessWidget {
         return Image.network(
           product.photoUrl!,
           fit: BoxFit.cover,
+          cacheWidth: 600,
+          cacheHeight: 600,
           errorBuilder: (context, error, stackTrace) => _buildFallbackIcon(),
         );
       }

@@ -71,7 +71,7 @@ class QuickActionGrid extends StatelessWidget {
       mainAxisSpacing: 10,
       childAspectRatio: 0.85,
       children: actionItems.map((item) {
-        return QuickActionTile(item: item);
+        return RepaintBoundary(child: QuickActionTile(item: item));
       }).toList(),
     );
   }

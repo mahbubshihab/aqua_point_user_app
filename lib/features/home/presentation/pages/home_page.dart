@@ -59,6 +59,7 @@ class HomePage extends StatelessWidget {
 
             if (state is HomeLoaded) {
               return SingleChildScrollView(
+                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
