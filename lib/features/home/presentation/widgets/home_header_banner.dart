@@ -44,6 +44,16 @@ class HomeHeaderBanner extends StatelessWidget {
               child: Image.asset(
                 'assets/images/header_banner.jpg',
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  color: const Color(0xFF0F172A),
+                  child: const Center(
+                    child: Icon(
+                      Icons.water_drop_rounded,
+                      size: 48,
+                      color: Color(0xFF38BDF8),
+                    ),
+                  ),
+                ),
               ),
             ),
             // Dark Gradient Overlay fading seamlessly into the dark theme (#0F111A)
@@ -230,6 +240,15 @@ class HomeHeaderBanner extends StatelessWidget {
                           child: Image.asset(
                             'assets/images/app_logo.png',
                             fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Image.asset(
+                              'assets/images/app_logo.jpg',
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => const Icon(
+                                Icons.water_drop_rounded,
+                                size: 28,
+                                color: Color(0xFF38BDF8),
+                              ),
+                            ),
                           ),
                         ),
                       ),
