@@ -7,6 +7,11 @@ import 'features/home/data/repositories/home_repository_impl.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
 import 'features/home/presentation/bloc/home_event.dart';
 import 'features/home/presentation/pages/main_shell_page.dart';
+import 'features/inbox_support/data/datasources/inbox_support_mock_datasource.dart';
+import 'features/inbox_support/data/repositories/inbox_support_repository_impl.dart';
+import 'features/inbox_support/domain/repositories/inbox_support_repository.dart';
+import 'features/inbox_support/presentation/bloc/inbox_support_bloc.dart';
+import 'features/inbox_support/presentation/bloc/inbox_support_event.dart';
 import 'features/products/data/datasources/products_mock_datasource.dart';
 import 'features/products/data/repositories/products_repository_impl.dart';
 import 'features/products/domain/repositories/products_repository.dart';
@@ -36,6 +41,9 @@ class MyApp extends StatelessWidget {
     final productsRepository = ProductsRepositoryImpl(
       datasource: ProductsMockDatasource(),
     );
+    final inboxSupportRepository = InboxSupportRepositoryImpl(
+      datasource: InboxSupportMockDatasource(),
+    );
 
     return MultiRepositoryProvider(
       providers: [
@@ -44,6 +52,9 @@ class MyApp extends StatelessWidget {
         ),
         RepositoryProvider<ProductsRepository>.value(
           value: productsRepository,
+        ),
+        RepositoryProvider<InboxSupportRepository>.value(
+          value: inboxSupportRepository,
         ),
       ],
       child: MultiBlocProvider(
@@ -59,6 +70,10 @@ class MyApp extends StatelessWidget {
           BlocProvider<ProductsBloc>(
             create: (context) => ProductsBloc(repository: productsRepository)
               ..add(const LoadProducts()),
+          ),
+          BlocProvider<InboxSupportBloc>(
+            create: (context) => InboxSupportBloc(repository: inboxSupportRepository)
+              ..add(const LoadInboxData()),
           ),
         ],
         child: MaterialApp(

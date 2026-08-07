@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../inbox_support/presentation/pages/help_support_page.dart';
+import '../../../inbox_support/presentation/pages/refer_win_page.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
@@ -58,11 +60,56 @@ class HomePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Header Banner
-                    const HomeHeaderBanner(),
+                    HomeHeaderBanner(
+                      onPointsTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const ReferWinPage()),
+                        );
+                      },
+                    ),
                     const SizedBox(height: 20),
 
                     // Quick Action Buttons (4 round square buttons)
-                    const QuickActionGrid(),
+                    QuickActionGrid(
+                      items: [
+                        QuickActionItem(
+                          label: 'Request\nService',
+                          icon: Icons.build_circle_outlined,
+                          iconColor: const Color(0xFF3B82F6),
+                          onTap: () {
+                            context.read<HomeBloc>().add(const SelectTab(1));
+                          },
+                        ),
+                        QuickActionItem(
+                          label: 'Buy\nParts',
+                          icon: Icons.shopping_bag_outlined,
+                          iconColor: const Color(0xFF10B981),
+                          onTap: () {
+                            context.read<HomeBloc>().add(const SelectTab(2));
+                          },
+                        ),
+                        QuickActionItem(
+                          label: 'Invoices',
+                          icon: Icons.receipt_long_outlined,
+                          iconColor: const Color(0xFFF59E0B),
+                          onTap: () {
+                            context.read<HomeBloc>().add(const SelectTab(1));
+                          },
+                        ),
+                        QuickActionItem(
+                          label: 'Support',
+                          icon: Icons.headset_mic_outlined,
+                          iconColor: const Color(0xFFEC4899),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const HelpSupportPage()),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 24),
 
                     // My Products Section

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../inbox_support/presentation/pages/inbox_page.dart';
 import '../../../products/presentation/pages/products_page.dart';
 import '../../../services/presentation/pages/services_history_page.dart';
 import '../bloc/home_bloc.dart';
@@ -24,7 +25,7 @@ class MainShellPage extends StatelessWidget {
               HomePage(),
               ServicesHistoryPage(),
               ProductsPage(),
-              _PlaceholderTab(title: 'Inbox'),
+              InboxPage(),
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(
@@ -66,28 +67,3 @@ class MainShellPage extends StatelessWidget {
   }
 }
 
-class _PlaceholderTab extends StatelessWidget {
-  final String title;
-
-  const _PlaceholderTab({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: Center(
-        child: Text(
-          '$title Page',
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textSecondary,
-          ),
-        ),
-      ),
-    );
-  }
-}
