@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../inbox_support/presentation/pages/help_support_page.dart';
-import '../../../inbox_support/presentation/pages/refer_win_page.dart';
+import '../../../profile_rewards/presentation/pages/profile_page.dart';
+import '../../../profile_rewards/presentation/pages/reward_points_page.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
@@ -61,10 +62,16 @@ class HomePage extends StatelessWidget {
                   children: [
                     // Header Banner
                     HomeHeaderBanner(
+                      onProfileTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const ProfilePage()),
+                        );
+                      },
                       onPointsTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const ReferWinPage()),
+                          MaterialPageRoute(builder: (_) => const RewardPointsPage()),
                         );
                       },
                     ),

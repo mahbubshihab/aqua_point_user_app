@@ -23,6 +23,12 @@ import 'features/services/domain/repositories/services_repository.dart';
 import 'features/services/presentation/bloc/services_bloc.dart';
 import 'features/services/presentation/bloc/services_event.dart';
 
+import 'features/profile_rewards/data/datasources/profile_rewards_mock_datasource.dart';
+import 'features/profile_rewards/data/repositories/profile_rewards_repository_impl.dart';
+import 'features/profile_rewards/domain/repositories/profile_rewards_repository.dart';
+import 'features/profile_rewards/presentation/bloc/profile_rewards_bloc.dart';
+import 'features/profile_rewards/presentation/bloc/profile_rewards_event.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -44,6 +50,9 @@ class MyApp extends StatelessWidget {
     final inboxSupportRepository = InboxSupportRepositoryImpl(
       datasource: InboxSupportMockDatasource(),
     );
+    final profileRewardsRepository = ProfileRewardsRepositoryImpl(
+      datasource: ProfileRewardsMockDatasource(),
+    );
 
     return MultiRepositoryProvider(
       providers: [
@@ -55,6 +64,9 @@ class MyApp extends StatelessWidget {
         ),
         RepositoryProvider<InboxSupportRepository>.value(
           value: inboxSupportRepository,
+        ),
+        RepositoryProvider<ProfileRewardsRepository>.value(
+          value: profileRewardsRepository,
         ),
       ],
       child: MultiBlocProvider(
@@ -74,6 +86,10 @@ class MyApp extends StatelessWidget {
           BlocProvider<InboxSupportBloc>(
             create: (context) => InboxSupportBloc(repository: inboxSupportRepository)
               ..add(const LoadInboxData()),
+          ),
+          BlocProvider<ProfileRewardsBloc>(
+            create: (context) => ProfileRewardsBloc(repository: profileRewardsRepository)
+              ..add(const LoadProfileData()),
           ),
         ],
         child: MaterialApp(
