@@ -59,7 +59,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (response.isSuccess) {
       apiMsg = 'SMS sent successfully!';
     } else if (response.errorMessage.isNotEmpty) {
-      apiMsg = response.errorMessage;
+      apiMsg = '${response.errorMessage} (Test OTP: $otpCode)';
+    } else {
+      apiMsg = 'SMS delivery pending. (Test OTP: $otpCode)';
     }
 
     emit(OtpSentState(

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../config/api_config.dart';
 
@@ -37,7 +38,7 @@ class BulkSmsResponse {
 String sanitizePhone(String rawInput) {
   String clean = rawInput.replaceAll(RegExp(r'\D'), '');
   if (clean.startsWith('880')) {
-    clean = clean.substring(2);
+    clean = clean.substring(3);
   }
   if (clean.startsWith('1') && clean.length == 10) {
     clean = '0$clean'; // prepend leading 0
@@ -55,7 +56,14 @@ class BulkSmsService {
     return clean;
   }
 
-  /// Sends Non-Masking OTP SMS via BulkSMSBD API over HTTPS
+  /// List of candidate sender IDs to attempt if primary sender ID fails
+  static const List<String> senderIdCandidates = [
+    '8809617885841',
+    '09617',
+    'aquapoint45',
+  ];
+
+  /// Sends Non-Masking OTP SMS via BulkSMSBD API over HTTPS/HTTP with fallbacks
   Future<BulkSmsResponse> sendOtp({
     required String phoneNumber,
     required String otpCode,
@@ -63,37 +71,72 @@ class BulkSmsService {
     final targetNumber = sanitizePhoneNumber(phoneNumber);
     final message = 'Your AQUA POINT OTP is $otpCode';
 
-    final uri = Uri.parse(ApiConfig.bulkSmsEndpoint).replace(queryParameters: {
-      'api_key': ApiConfig.bulkSmsApiKey,
-      'type': 'text',
-      'number': targetNumber,
-      'senderid': ApiConfig.bulkSmsSenderId,
-      'message': message,
-    });
+    final baseEndpoints = [
+      'https://bulksmsbd.net/api/smsapi',
+      'http://bulksmsbd.net/api/smsapi',
+    ];
 
-    log('BulkSMSBD Request URI: $uri');
+    final senderIdsToTry = <String>{
+      ApiConfig.bulkSmsSenderId,
+      ...senderIdCandidates,
+    }.toList();
 
-    try {
-      final response = await http.get(uri);
-      log('BulkSMSBD HTTP Status: ${response.statusCode}, Body: ${response.body}');
+    BulkSmsResponse? lastResponse;
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-        return BulkSmsResponse.fromJson(data);
-      } else {
-        return BulkSmsResponse(
-          responseCode: response.statusCode,
-          successMessage: '',
-          errorMessage: 'Server HTTP Error ${response.statusCode}',
-        );
+    for (final endpoint in baseEndpoints) {
+      for (final senderId in senderIdsToTry) {
+        final uri = Uri.parse(endpoint).replace(queryParameters: {
+          'api_key': ApiConfig.bulkSmsApiKey,
+          'type': 'text',
+          'number': targetNumber,
+          'senderid': senderId,
+          'message': message,
+        });
+
+        log('BulkSMSBD Sending SMS Attempt -> URI: $uri');
+        debugPrint('[BulkSMSBD] Request: Endpoint=$endpoint, SenderID=$senderId, Number=$targetNumber');
+
+        try {
+          final response = await http.get(uri).timeout(const Duration(seconds: 10));
+          log('BulkSMSBD HTTP Status: ${response.statusCode}, Body: ${response.body}');
+          debugPrint('[BulkSMSBD] HTTP ${response.statusCode}: ${response.body}');
+
+          if (response.statusCode == 200) {
+            final Map<String, dynamic> data = jsonDecode(response.body);
+            final parsedResponse = BulkSmsResponse.fromJson(data);
+
+            if (parsedResponse.isSuccess) {
+              log('BulkSMSBD SMS delivered successfully! MsgID: ${parsedResponse.messageId}');
+              return parsedResponse;
+            } else {
+              log('BulkSMSBD API Error (${parsedResponse.responseCode}): ${parsedResponse.errorMessage}');
+              lastResponse = parsedResponse;
+            }
+          } else {
+            lastResponse = BulkSmsResponse(
+              responseCode: response.statusCode,
+              successMessage: '',
+              errorMessage: 'HTTP Server Error ${response.statusCode}',
+            );
+          }
+        } catch (e) {
+          log('BulkSMSBD Connection Exception for $endpoint: $e');
+          debugPrint('[BulkSMSBD] Exception: $e');
+          lastResponse = BulkSmsResponse(
+            responseCode: 500,
+            successMessage: '',
+            errorMessage: 'Network exception: $e',
+          );
+        }
       }
-    } catch (e) {
-      log('BulkSMSBD Exception: $e');
-      return BulkSmsResponse(
-        responseCode: 500,
-        successMessage: '',
-        errorMessage: 'Network exception: $e',
-      );
     }
+
+    return lastResponse ??
+        BulkSmsResponse(
+          responseCode: 500,
+          successMessage: '',
+          errorMessage: 'Unable to deliver SMS via BulkSMSBD',
+        );
   }
 }
+
