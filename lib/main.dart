@@ -27,9 +27,15 @@ import 'features/profile_rewards/data/datasources/profile_rewards_mock_datasourc
 import 'features/profile_rewards/data/repositories/profile_rewards_repository_impl.dart';
 import 'features/profile_rewards/domain/repositories/profile_rewards_repository.dart';
 import 'features/profile_rewards/presentation/bloc/profile_rewards_bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'features/profile_rewards/presentation/bloc/profile_rewards_event.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 

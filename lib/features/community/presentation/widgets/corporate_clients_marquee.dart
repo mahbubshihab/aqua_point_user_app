@@ -80,7 +80,7 @@ class CorporateClientsMarquee extends StatelessWidget {
                               height: 32,
                               width: 32,
                               fit: BoxFit.contain,
-                              errorBuilder: (_, __, ___) => const Icon(
+                              errorBuilder: (_, _, _) => const Icon(
                                 Icons.apartment_rounded,
                                 color: AppColors.primary,
                                 size: 28,
