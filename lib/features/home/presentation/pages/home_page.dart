@@ -23,6 +23,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
+        top: false,
         child: BlocBuilder<HomeBloc, HomeState>(
           builder: (context, state) {
             if (state is HomeLoading || state is HomeInitial) {
@@ -56,7 +57,6 @@ class HomePage extends StatelessWidget {
 
             if (state is HomeLoaded) {
               return SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -77,89 +77,98 @@ class HomePage extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
 
-                    // Quick Action Buttons (4 round square buttons)
-                    QuickActionGrid(
-                      items: [
-                        QuickActionItem(
-                          label: 'Request\nService',
-                          icon: Icons.build_circle_outlined,
-                          iconColor: const Color(0xFF3B82F6),
-                          onTap: () {
-                            context.read<HomeBloc>().add(const SelectTab(1));
-                          },
-                        ),
-                        QuickActionItem(
-                          label: 'Buy\nParts',
-                          icon: Icons.shopping_bag_outlined,
-                          iconColor: const Color(0xFF10B981),
-                          onTap: () {
-                            context.read<HomeBloc>().add(const SelectTab(2));
-                          },
-                        ),
-                        QuickActionItem(
-                          label: 'Invoices',
-                          icon: Icons.receipt_long_outlined,
-                          iconColor: const Color(0xFFF59E0B),
-                          onTap: () {
-                            context.read<HomeBloc>().add(const SelectTab(1));
-                          },
-                        ),
-                        QuickActionItem(
-                          label: 'Support',
-                          icon: Icons.headset_mic_outlined,
-                          iconColor: const Color(0xFFEC4899),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => const HelpSupportPage()),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
+                    // Content below header banner with horizontal padding
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Quick Action Buttons (4 round square buttons)
+                          QuickActionGrid(
+                            items: [
+                              QuickActionItem(
+                                label: 'Request\nService',
+                                icon: Icons.build_circle_outlined,
+                                iconColor: const Color(0xFF3B82F6),
+                                onTap: () {
+                                  context.read<HomeBloc>().add(const SelectTab(1));
+                                },
+                              ),
+                              QuickActionItem(
+                                label: 'Buy\nParts',
+                                icon: Icons.shopping_bag_outlined,
+                                iconColor: const Color(0xFF10B981),
+                                onTap: () {
+                                  context.read<HomeBloc>().add(const SelectTab(2));
+                                },
+                              ),
+                              QuickActionItem(
+                                label: 'Invoices',
+                                icon: Icons.receipt_long_outlined,
+                                iconColor: const Color(0xFFF59E0B),
+                                onTap: () {
+                                  context.read<HomeBloc>().add(const SelectTab(1));
+                                },
+                              ),
+                              QuickActionItem(
+                                label: 'Support',
+                                icon: Icons.headset_mic_outlined,
+                                iconColor: const Color(0xFFEC4899),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (_) => const HelpSupportPage()),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
 
-                    // My Products Section
-                    const MyProductsSection(),
-                    const SizedBox(height: 24),
+                          // My Products Section
+                          const MyProductsSection(),
+                          const SizedBox(height: 24),
 
-                    // Hydration Tracker Widget
-                    HydrationTrackerWidget(
-                      hydration: state.hydration,
-                      onIncrement: () {
-                        context.read<HomeBloc>().add(const IncrementHydration());
-                      },
-                      onDecrement: () {
-                        context.read<HomeBloc>().add(const DecrementHydration());
-                      },
-                    ),
-                    const SizedBox(height: 24),
+                          // Hydration Tracker Widget
+                          HydrationTrackerWidget(
+                            hydration: state.hydration,
+                            onIncrement: () {
+                              context.read<HomeBloc>().add(const IncrementHydration());
+                            },
+                            onDecrement: () {
+                              context.read<HomeBloc>().add(const DecrementHydration());
+                            },
+                          ),
+                          const SizedBox(height: 24),
 
-                    // Water Quality Card
-                    WaterQualityCard(waterQuality: state.waterQuality),
-                    const SizedBox(height: 24),
+                          // Water Quality Card
+                          WaterQualityCard(waterQuality: state.waterQuality),
+                          const SizedBox(height: 24),
 
-                    // Services Grid
-                    const ServicesGrid(),
-                    const SizedBox(height: 24),
+                          // Services Grid
+                          const ServicesGrid(),
+                          const SizedBox(height: 24),
 
-                    // Blogs & News Section
-                    BlogsNewsSection(blogs: state.blogs),
-                    const SizedBox(height: 32),
+                          // Blogs & News Section
+                          BlogsNewsSection(blogs: state.blogs),
+                          const SizedBox(height: 32),
 
-                    // Footer
-                    const Center(
-                      child: Text(
-                        'Crafted With ❤️ by AQUA POINT',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.textSecondary,
-                          letterSpacing: 0.5,
-                        ),
+                          // Footer
+                          const Center(
+                            child: Text(
+                              'Crafted With ❤️ by AQUA POINT',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.textSecondary,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 16),
                   ],
                 ),
               );

@@ -19,14 +19,12 @@ class HomeHeaderBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topPadding = MediaQuery.of(context).padding.top + 16.0;
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: const Color(0xFF38BDF8).withValues(alpha: 0.25),
-          width: 1,
-        ),
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
         boxShadow: [
           BoxShadow(
             color: const Color(0xFF0F172A).withValues(alpha: 0.6),
@@ -36,7 +34,7 @@ class HomeHeaderBanner extends StatelessWidget {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
         child: Stack(
           children: [
             // Custom Cityscape Background Banner Image
@@ -44,6 +42,7 @@ class HomeHeaderBanner extends StatelessWidget {
               child: Image.asset(
                 'assets/images/header_banner.jpg',
                 fit: BoxFit.cover,
+                width: double.infinity,
                 errorBuilder: (context, error, stackTrace) => Container(
                   color: const Color(0xFF0F172A),
                   child: const Center(
@@ -74,7 +73,12 @@ class HomeHeaderBanner extends StatelessWidget {
             ),
             // Floating Content
             Padding(
-              padding: const EdgeInsets.all(18),
+              padding: EdgeInsets.only(
+                left: 16.0,
+                right: 16.0,
+                top: topPadding,
+                bottom: 20.0,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
