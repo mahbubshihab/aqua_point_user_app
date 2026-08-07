@@ -6,6 +6,7 @@ import '../../domain/entities/product_entity.dart';
 abstract class ProductsRemoteDatasource {
   Future<List<ProductEntity>> fetchProducts({String? targetCategory});
   Future<List<ProductEntity>> fetchCustomProducts({String? userId});
+  Future<List<ProductEntity>> fetchPurchasedProducts({String? userId});
   Future<List<CategoryEntity>> fetchCategories();
   Future<void> addCustomProduct(ProductEntity product, {String? userId});
 }
@@ -99,6 +100,81 @@ class ProductsRemoteDatasourceImpl implements ProductsRemoteDatasource {
         inStock: true,
       );
     }).toList();
+  }
+
+  @override
+  Future<List<ProductEntity>> fetchPurchasedProducts({String? userId}) async {
+    final uid = _getUserId(userId);
+    final List<ProductEntity> purchasedProducts = [];
+    QuerySnapshot<Map<String, dynamic>> snapshot;
+    try {
+      snapshot = await firestore
+          .collection('orders')
+          .where('userId', isEqualTo: uid)
+          .get();
+    } catch (_) {
+      try {
+        snapshot = await firestore.collection('orders').get();
+      } catch (_) {
+        return [];
+      }
+    }
+
+    for (final docSnap in snapshot.docs) {
+      final data = docSnap.data();
+      final orderUserId = data['userId'] ?? 'guest_user';
+      if (orderUserId != uid && uid != 'guest_user') continue;
+
+      final status = (data['status'] ?? '').toString().toLowerCase();
+      if (status == 'confirmed' || status == 'delivered') {
+        final items = data['items'] as List<dynamic>? ?? [];
+        final orderDate = data['date'] ??
+            (data['createdAt'] != null ? data['createdAt'].toString() : 'Purchased');
+
+        if (items.isNotEmpty) {
+          for (final item in items) {
+            if (item is Map<String, dynamic>) {
+              final rawPrice = item['price'];
+              purchasedProducts.add(
+                ProductEntity(
+                  id: item['id'] ?? item['productId'] ?? 'PUR-${docSnap.id}',
+                  name: item['name'] ?? 'Purchased Product',
+                  photoUrl: item['imageUrl'] ?? item['photoUrl'],
+                  warrantyDetails: item['warranty'] ?? item['warrantyDetails'] ?? '1 Year Warranty',
+                  purchaseDate: orderDate,
+                  isCustom: false,
+                  price: rawPrice != null ? (rawPrice as num).toDouble() : 0.0,
+                  category: item['category'] ?? 'Water Purifiers',
+                  rating: 5.0,
+                  reviewsCount: 0,
+                  description: item['description'] ?? 'Purchased from Aqua Point',
+                  inStock: true,
+                ),
+              );
+            }
+          }
+        } else if (data['title'] != null || data['name'] != null) {
+          final rawPrice = data['totalAmount'] ?? data['amount'] ?? data['price'];
+          purchasedProducts.add(
+            ProductEntity(
+              id: docSnap.id,
+              name: data['title'] ?? data['name'] ?? 'Purchased Purifier',
+              photoUrl: data['imageUrl'] ?? data['photoUrl'],
+              warrantyDetails: data['warranty'] ?? '1 Year Warranty',
+              purchaseDate: orderDate,
+              isCustom: false,
+              price: rawPrice != null ? (rawPrice as num).toDouble() : 0.0,
+              category: data['category'] ?? 'Water Purifiers',
+              rating: 5.0,
+              reviewsCount: 0,
+              description: data['description'] ?? 'Purchased from Aqua Point',
+              inStock: true,
+            ),
+          );
+        }
+      }
+    }
+    return purchasedProducts;
   }
 
   @override

@@ -20,20 +20,24 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     try {
       final shopProducts = await repository.getProducts();
       final customProducts = await repository.getCustomProducts();
+      final purchasedProducts = await repository.getPurchasedProducts();
       final categories = await repository.getCategories();
 
-      // De-duplicate products by ID if custom and shop overlap
-      final Set<String> seenIds = {};
-      final List<ProductEntity> allProducts = [];
+      final Set<String> seenMyIds = {};
+      final List<ProductEntity> myProducts = [];
 
-      for (final p in [...shopProducts, ...customProducts]) {
-        if (!seenIds.contains(p.id)) {
-          seenIds.add(p.id);
-          allProducts.add(p);
+      for (final p in [...purchasedProducts, ...customProducts]) {
+        if (!seenMyIds.contains(p.id)) {
+          seenMyIds.add(p.id);
+          myProducts.add(p);
         }
       }
 
-      emit(ProductsLoaded(allProducts, categories: categories));
+      emit(ProductsLoaded(
+        shopProducts,
+        myProducts: myProducts,
+        categories: categories,
+      ));
     } catch (e) {
       emit(ProductsError(e.toString()));
     }
@@ -78,16 +82,23 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
       final shopProducts = await repository.getProducts();
       final updatedCustom = await repository.getCustomProducts();
+      final purchasedProducts = await repository.getPurchasedProducts();
       final categories = await repository.getCategories();
-      final Set<String> seenIds = {};
-      final List<ProductEntity> allProducts = [];
-      for (final p in [...shopProducts, ...updatedCustom]) {
-        if (!seenIds.contains(p.id)) {
-          seenIds.add(p.id);
-          allProducts.add(p);
+
+      final Set<String> seenMyIds = {};
+      final List<ProductEntity> myProducts = [];
+      for (final p in [...purchasedProducts, ...updatedCustom]) {
+        if (!seenMyIds.contains(p.id)) {
+          seenMyIds.add(p.id);
+          myProducts.add(p);
         }
       }
-      emit(ProductsLoaded(allProducts, categories: categories));
+
+      emit(ProductsLoaded(
+        shopProducts,
+        myProducts: myProducts,
+        categories: categories,
+      ));
     } catch (e) {
       emit(ProductsError(e.toString()));
     }

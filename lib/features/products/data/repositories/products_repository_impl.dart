@@ -33,6 +33,16 @@ class ProductsRepositoryImpl implements ProductsRepository {
   }
 
   @override
+  Future<List<ProductEntity>> getPurchasedProducts({String? userId}) async {
+    try {
+      final purchasedProducts = await remoteDatasource.fetchPurchasedProducts(userId: userId);
+      return purchasedProducts;
+    } catch (_) {
+      return [];
+    }
+  }
+
+  @override
   Future<List<CategoryEntity>> getCategories() async {
     try {
       final categories = await remoteDatasource.fetchCategories();

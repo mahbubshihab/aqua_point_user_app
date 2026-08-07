@@ -10,6 +10,8 @@ import '../bloc/products_state.dart';
 import '../widgets/add_product_modal.dart';
 import '../widgets/product_item_card.dart';
 
+import 'shop_page.dart';
+
 class ProductsPage extends StatefulWidget {
   const ProductsPage({super.key});
 
@@ -163,9 +165,9 @@ class _ProductsPageState extends State<ProductsPage> {
           }
 
           if (state is ProductsLoaded) {
-            final products = state.products;
+            final myProducts = state.myProducts;
 
-            if (products.isEmpty) {
+            if (myProducts.isEmpty) {
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.all(32.0),
@@ -187,21 +189,73 @@ class _ProductsPageState extends State<ProductsPage> {
                       ),
                       const Gap(20),
                       const Text(
-                        'No products found',
+                        'No Products Connected Yet',
                         style: TextStyle(
                           color: AppColors.textPrimary,
-                          fontSize: 14,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const Gap(6),
+                      const Gap(8),
                       const Text(
-                        'Check History for your orders',
+                        'Purchase a water purifier from our store or add your existing device to get started.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: AppColors.textSecondary,
-                          fontSize: 11.5,
+                          fontSize: 12.5,
                         ),
+                      ),
+                      const Gap(24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => const ShopPage()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            icon: const Icon(Icons.shopping_bag_outlined, color: Colors.black, size: 18),
+                            label: const Text(
+                              'Shop Now',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                          const Gap(12),
+                          OutlinedButton.icon(
+                            onPressed: () {
+                              AddProductModal.show(context);
+                            },
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: AppColors.primary),
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            icon: const Icon(Icons.add_rounded, color: AppColors.primary, size: 18),
+                            label: const Text(
+                              '+ Add Custom Product',
+                              style: TextStyle(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -213,11 +267,11 @@ class _ProductsPageState extends State<ProductsPage> {
               padding: const EdgeInsets.fromLTRB(12, 16, 12, 80),
               physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
               cacheExtent: 800,
-              itemCount: products.length,
+              itemCount: myProducts.length,
               itemBuilder: (context, index) {
                 return RepaintBoundary(
                   child: ProductItemCard(
-                    product: products[index],
+                    product: myProducts[index],
                   ),
                 );
               },

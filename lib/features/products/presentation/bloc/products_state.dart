@@ -19,15 +19,17 @@ class ProductsLoading extends ProductsState {
 
 class ProductsLoaded extends ProductsState {
   final List<ProductEntity> products;
+  final List<ProductEntity> myProducts;
   final List<CategoryEntity> categories;
 
   const ProductsLoaded(
     this.products, {
+    this.myProducts = const [],
     this.categories = const [],
   });
 
   @override
-  List<Object?> get props => [products, categories];
+  List<Object?> get props => [products, myProducts, categories];
 }
 
 class ProductAdding extends ProductsState {
