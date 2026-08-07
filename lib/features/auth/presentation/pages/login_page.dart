@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../core/services/bulk_sms_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../bloc/auth_bloc.dart';
@@ -29,9 +30,6 @@ class _LoginPageState extends State<LoginPage> {
 
   void _onSendOtpPressed() {
     final rawPhone = _phoneController.text.trim();
-    // Validate 11-digit Bangladeshi phone number format starting with 01
-    final phoneRegex = RegExp(r'^01[3-9]\d{8}$');
-    
     if (rawPhone.isEmpty) {
       setState(() {
         _phoneError = 'Please enter phone number';
@@ -39,9 +37,11 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    if (!phoneRegex.hasMatch(rawPhone)) {
+    final clean = sanitizePhone(rawPhone);
+
+    if (clean.length != 11 || !clean.startsWith('01')) {
       setState(() {
-        _phoneError = 'Enter valid 11-digit number (e.g. 01780885841)';
+        _phoneError = 'Enter valid 11-digit or 10-digit number (e.g. 01780885841 or 1780885841)';
       });
       return;
     }
@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
       _phoneError = null;
     });
 
-    context.read<AuthBloc>().add(SendOtpEvent(phoneNumber: rawPhone));
+    context.read<AuthBloc>().add(SendOtpEvent(phoneNumber: clean));
   }
 
   @override

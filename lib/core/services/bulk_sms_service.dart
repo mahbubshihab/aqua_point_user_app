@@ -30,16 +30,27 @@ class BulkSmsResponse {
   }
 }
 
+/// Sanitizes raw Bangladeshi phone number input:
+/// - Strips non-digits
+/// - Removes leading country code '880' -> '0...'
+/// - Normalizes 10-digit '1XXXXXXXXX' by prepending '0' -> '01XXXXXXXXX'
+String sanitizePhone(String rawInput) {
+  String clean = rawInput.replaceAll(RegExp(r'\D'), '');
+  if (clean.startsWith('880')) {
+    clean = clean.substring(2);
+  }
+  if (clean.startsWith('1') && clean.length == 10) {
+    clean = '0$clean'; // prepend leading 0
+  }
+  return clean;
+}
+
 class BulkSmsService {
   /// Sanitize Bangladeshi phone numbers to format: 8801XXXXXXXXX or 01XXXXXXXXX
   static String sanitizePhoneNumber(String rawNumber) {
-    String clean = rawNumber.replaceAll(RegExp(r'\D'), '');
-    if (clean.startsWith('880')) {
-      return clean;
-    } else if (clean.startsWith('0')) {
+    String clean = sanitizePhone(rawNumber);
+    if (clean.startsWith('0')) {
       return '88$clean';
-    } else if (clean.length == 10 && clean.startsWith('1')) {
-      return '880$clean';
     }
     return clean;
   }
