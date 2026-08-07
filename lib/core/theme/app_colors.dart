@@ -1,38 +1,45 @@
 import 'package:flutter/material.dart';
 
 abstract class AppColors {
-  /// Dark rich background color (`0xFF0F111A`)
-  static const Color background = Color(0xFF0F111A);
+  /// Rich Obsidian Dark (`0xFF0A0D16`)
+  static const Color background = Color(0xFF0A0D16);
 
-  /// Dark surface color (`0xFF1E2230`)
-  static const Color cardBackground = Color(0xFF1E2230);
+  /// Deep Glass Navy (`0xFF131826`)
+  static const Color cardBackground = Color(0xFF131826);
 
-  /// Vibrant Blue primary accent (`0xFF3B82F6`)
-  static const Color primary = Color(0xFF3B82F6);
+  /// Electric Aqua Cyan (`0xFF00E5FF`)
+  static const Color primary = Color(0xFF00E5FF);
 
-  /// Light Blue secondary accent (`0xFF60A5FA`)
-  static const Color secondary = Color(0xFF60A5FA);
+  /// Vibrant Royal Blue (`0xFF3B82F6`)
+  static const Color secondary = Color(0xFF3B82F6);
 
-  /// Green accent used for EXCELLENT water quality badge (`0xFF10B981`)
+  /// Accent Cyan (`0xFF06B6D4`)
+  static const Color accentCyan = Color(0xFF06B6D4);
+
+  /// Emerald Glow (`0xFF10B981`)
   static const Color accentGreen = Color(0xFF10B981);
 
-  /// Yellow accent used for Reward points star badge (`0xFFF59E0B`)
+  /// Warm Gold (`0xFFF59E0B`)
+  static const Color accentGold = Color(0xFFF59E0B);
+
+  /// Yellow accent alias for backward compatibility
   static const Color accentYellow = Color(0xFFF59E0B);
 
-  /// Primary text color (`0xFFFFFFFF`)
+  /// Crisp White (`0xFFFFFFFF`)
   static const Color textPrimary = Color(0xFFFFFFFF);
 
-  /// Secondary text color (`0xFF9CA3AF`)
-  static const Color textSecondary = Color(0xFF9CA3AF);
+  /// Slate Grey (`0xFF94A3B8`)
+  static const Color textSecondary = Color(0xFF94A3B8);
 
-  /// Input background fill color (`0xFF181C28`)
-  static const Color inputFill = Color(0xFF181C28);
+  /// Input background fill color (`0xFF131826`)
+  static const Color inputFill = Color(0xFF131826);
 
-  /// Border and divider color (`0xFF2D3446`)
-  static const Color divider = Color(0xFF2D3446);
+  /// Glass Border (`0xFF1E2638`)
+  static const Color divider = Color(0xFF1E2638);
 
-  /// Additional helper colors
-  static const Color cardBorder = Color(0xFF2D3446);
+  /// Helper colors
+  static const Color cardBorder = Color(0xFF1E2638);
   static const Color accentRed = Color(0xFFEF4444);
   static const Color surfaceOverlay = Color(0x1FFFFFFF);
 }
+

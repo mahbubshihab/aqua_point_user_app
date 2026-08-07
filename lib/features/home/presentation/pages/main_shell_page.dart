@@ -28,42 +28,128 @@ class MainShellPage extends StatelessWidget {
               InboxPage(),
             ],
           ),
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: currentIndex,
-            onTap: (index) {
-              context.read<HomeBloc>().add(SelectTab(index));
-            },
-            backgroundColor: AppColors.cardBackground,
-            selectedItemColor: AppColors.primary,
-            unselectedItemColor: AppColors.textSecondary,
-            type: BottomNavigationBarType.fixed,
-            elevation: 12,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home_outlined),
-                activeIcon: Icon(Icons.home_rounded),
-                label: 'Home',
+          bottomNavigationBar: Container(
+            decoration: const BoxDecoration(
+              color: Color(0xFF0E121E),
+              border: Border(
+                top: BorderSide(
+                  color: AppColors.divider,
+                  width: 1,
+                ),
               ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.history_outlined),
-                activeIcon: Icon(Icons.history_rounded),
-                label: 'History',
+            ),
+            child: SafeArea(
+              top: false,
+              child: SizedBox(
+                height: 60,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _NavBarItem(
+                      index: 0,
+                      currentIndex: currentIndex,
+                      icon: Icons.home_outlined,
+                      activeIcon: Icons.home_rounded,
+                      label: 'Home',
+                    ),
+                    _NavBarItem(
+                      index: 1,
+                      currentIndex: currentIndex,
+                      icon: Icons.history_outlined,
+                      activeIcon: Icons.history_rounded,
+                      label: 'History',
+                    ),
+                    _NavBarItem(
+                      index: 2,
+                      currentIndex: currentIndex,
+                      icon: Icons.water_drop_outlined,
+                      activeIcon: Icons.water_drop_rounded,
+                      label: 'Products',
+                    ),
+                    _NavBarItem(
+                      index: 3,
+                      currentIndex: currentIndex,
+                      icon: Icons.inbox_outlined,
+                      activeIcon: Icons.inbox_rounded,
+                      label: 'Inbox',
+                    ),
+                  ],
+                ),
               ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.water_drop_outlined),
-                activeIcon: Icon(Icons.water_drop_rounded),
-                label: 'Products',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.inbox_outlined),
-                activeIcon: Icon(Icons.inbox_rounded),
-                label: 'Inbox',
-              ),
-            ],
+            ),
           ),
         );
       },
     );
   }
 }
+
+class _NavBarItem extends StatelessWidget {
+  final int index;
+  final int currentIndex;
+  final IconData icon;
+  final IconData activeIcon;
+  final String label;
+
+  const _NavBarItem({
+    required this.index,
+    required this.currentIndex,
+    required this.icon,
+    required this.activeIcon,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isActive = index == currentIndex;
+
+    return Expanded(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            context.read<HomeBloc>().add(SelectTab(index));
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                isActive ? activeIcon : icon,
+                color: isActive ? AppColors.primary : AppColors.textSecondary,
+                size: 22,
+              ),
+              const SizedBox(height: 3),
+              if (isActive)
+                Container(
+                  width: 4,
+                  height: 4,
+                  decoration: const BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary,
+                        blurRadius: 4,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                )
+              else
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 

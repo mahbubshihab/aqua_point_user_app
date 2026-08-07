@@ -5,12 +5,14 @@ class QuickActionItem {
   final String label;
   final IconData icon;
   final Color iconColor;
+  final Color? secondaryColor;
   final VoidCallback? onTap;
 
   const QuickActionItem({
     required this.label,
     required this.icon,
     required this.iconColor,
+    this.secondaryColor,
     this.onTap,
   });
 }
@@ -28,30 +30,36 @@ class QuickActionGrid extends StatelessWidget {
     final actionItems = items ??
         [
           const QuickActionItem(
-            label: 'Request\nService',
+            label: 'Request Service',
             icon: Icons.build_circle_outlined,
-            iconColor: Color(0xFF3B82F6),
+            iconColor: AppColors.primary,
+            secondaryColor: AppColors.secondary,
           ),
           const QuickActionItem(
-            label: 'Buy\nParts',
+            label: 'Buy Parts',
             icon: Icons.shopping_bag_outlined,
-            iconColor: Color(0xFF10B981),
+            iconColor: AppColors.accentGreen,
+            secondaryColor: AppColors.accentCyan,
           ),
           const QuickActionItem(
             label: 'Invoices',
             icon: Icons.receipt_long_outlined,
-            iconColor: Color(0xFFF59E0B),
+            iconColor: AppColors.accentGold,
+            secondaryColor: Color(0xFFF97316),
           ),
           const QuickActionItem(
             label: 'Support',
             icon: Icons.headset_mic_outlined,
             iconColor: Color(0xFFEC4899),
+            secondaryColor: AppColors.secondary,
           ),
         ];
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: actionItems.map((item) {
+        final secColor = item.secondaryColor ?? item.iconColor.withValues(alpha: 0.6);
+
         return Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -66,35 +74,42 @@ class QuickActionGrid extends StatelessWidget {
                     color: AppColors.cardBackground,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.cardBorder,
+                      color: AppColors.divider,
                       width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.15),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
+                        color: Colors.black.withValues(alpha: 0.2),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Dual-tone Icon Background Badge
+                      // Dual-tone Gradient Glowing Icon Circle
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: item.iconColor.withValues(alpha: 0.12),
+                          gradient: LinearGradient(
+                            colors: [
+                              item.iconColor.withValues(alpha: 0.25),
+                              secColor.withValues(alpha: 0.1),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
                           border: Border.all(
-                            color: item.iconColor.withValues(alpha: 0.25),
+                            color: item.iconColor.withValues(alpha: 0.4),
                             width: 1.5,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: item.iconColor.withValues(alpha: 0.1),
-                              blurRadius: 6,
-                              spreadRadius: 0,
+                              color: item.iconColor.withValues(alpha: 0.2),
+                              blurRadius: 10,
+                              spreadRadius: 1,
                             ),
                           ],
                         ),
@@ -108,11 +123,13 @@ class QuickActionGrid extends StatelessWidget {
                       Text(
                         item.label,
                         textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPrimary,
-                          height: 1.25,
+                          height: 1.2,
                           letterSpacing: 0.1,
                         ),
                       ),
@@ -127,4 +144,5 @@ class QuickActionGrid extends StatelessWidget {
     );
   }
 }
+
 

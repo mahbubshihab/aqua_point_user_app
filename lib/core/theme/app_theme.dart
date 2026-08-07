@@ -65,7 +65,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.textPrimary,
+          foregroundColor: const Color(0xFF0A0D16),
           elevation: 0,
           minimumSize: const Size.fromHeight(50),
           shape: RoundedRectangleBorder(
@@ -73,7 +73,7 @@ class AppTheme {
           ),
           textStyle: GoogleFonts.inter(
             fontSize: 16,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -101,7 +101,7 @@ class AppTheme {
         ),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.cardBackground,
+        backgroundColor: Color(0xFF0E121E),
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.textSecondary,
         type: BottomNavigationBarType.fixed,
