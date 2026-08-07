@@ -164,46 +164,104 @@ class HomeHeaderBanner extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          // Bengali Brand Tagline with High-Contrast Typography & Badge
+          // Brand Logo & Tagline Row with Circular Glass Container
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // Circular Glass Container holding the Aqua Point Logo
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                width: 52,
+                height: 52,
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF0EA5E9), Color(0xFF2563EB)],
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      const Color(0xFF38BDF8).withValues(alpha: 0.25),
+                      const Color(0xFF10B981).withValues(alpha: 0.15),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(
+                    color: const Color(0xFF38BDF8).withValues(alpha: 0.5),
+                    width: 1.5,
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF0EA5E9).withValues(alpha: 0.3),
-                      blurRadius: 6,
+                      color: const Color(0xFF0EA5E9).withValues(alpha: 0.25),
+                      blurRadius: 12,
+                      spreadRadius: 1,
                     ),
                   ],
                 ),
-                child: const Text(
-                  '১ম',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white,
+                padding: const EdgeInsets.all(2.5),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/images/app_logo.jpg',
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 14),
+              // Brand Title & Tagline Details
               Expanded(
-                child: Text(
-                  subtitle.startsWith('১ম - ')
-                      ? subtitle.replaceFirst('১ম - ', '')
-                      : subtitle,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                    letterSpacing: 0.3,
-                    height: 1.2,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Text(
+                          'AQUA POINT',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF38BDF8),
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF0EA5E9), Color(0xFF2563EB)],
+                            ),
+                            borderRadius: BorderRadius.circular(6),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF0EA5E9).withValues(alpha: 0.3),
+                                blurRadius: 6,
+                              ),
+                            ],
+                          ),
+                          child: const Text(
+                            '১ম',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle.startsWith('১ম - ')
+                          ? subtitle.replaceFirst('১ম - ', '')
+                          : subtitle,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                        letterSpacing: 0.2,
+                        height: 1.2,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
