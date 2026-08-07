@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/widgets/glass_card.dart';
+import '../../../products/presentation/pages/shop_page.dart';
 import '../../../services/presentation/bloc/services_bloc.dart';
 import '../../../services/presentation/pages/create_service_request_page.dart';
 
@@ -44,7 +45,7 @@ class QuickActionGrid extends StatelessWidget {
             glowColor: Color(0x5500E5FF),
           ),
           const QuickActionItem(
-            label: 'Buy Parts',
+            label: 'Shop',
             icon: Icons.shopping_bag_rounded,
             iconColor: Color(0xFF10B981),
             gradientColors: [Color(0xFF047857), Color(0xFF10B981)],
@@ -123,6 +124,13 @@ class _QuickActionTileState extends State<QuickActionTile> {
                   value: context.read<ServicesBloc>(),
                   child: const CreateServiceRequestPage(),
                 ),
+              ),
+            );
+          } else if (item.label == 'Shop' || item.label == 'Buy Parts') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const ShopPage(),
               ),
             );
           }

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/product_entity.dart';
 
 abstract class ProductsState extends Equatable {
@@ -18,11 +19,15 @@ class ProductsLoading extends ProductsState {
 
 class ProductsLoaded extends ProductsState {
   final List<ProductEntity> products;
+  final List<CategoryEntity> categories;
 
-  const ProductsLoaded(this.products);
+  const ProductsLoaded(
+    this.products, {
+    this.categories = const [],
+  });
 
   @override
-  List<Object?> get props => [products];
+  List<Object?> get props => [products, categories];
 }
 
 class ProductAdding extends ProductsState {

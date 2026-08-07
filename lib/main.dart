@@ -29,6 +29,7 @@ import 'features/profile_rewards/domain/repositories/profile_rewards_repository.
 import 'features/profile_rewards/presentation/bloc/profile_rewards_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'features/orders/presentation/bloc/cart_bloc.dart';
 import 'features/profile_rewards/presentation/bloc/profile_rewards_event.dart';
 
 void main() async {
@@ -77,6 +78,9 @@ class MyApp extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
+          BlocProvider<CartBloc>(
+            create: (context) => CartBloc(),
+          ),
           BlocProvider<HomeBloc>(
             create: (context) => HomeBloc(repository: homeRepository)
               ..add(const LoadHomeData()),

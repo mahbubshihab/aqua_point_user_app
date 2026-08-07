@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../inbox_support/presentation/pages/help_support_page.dart';
+import '../../../products/presentation/pages/shop_page.dart';
 import '../../../profile_rewards/presentation/pages/profile_page.dart';
 import '../../../profile_rewards/presentation/pages/reward_points_page.dart';
 import '../../../services/presentation/bloc/services_bloc.dart';
@@ -116,13 +117,18 @@ class HomePage extends StatelessWidget {
                                 },
                               ),
                               QuickActionItem(
-                                label: 'Buy Parts',
+                                label: 'Shop',
                                 icon: Icons.shopping_bag_rounded,
                                 iconColor: const Color(0xFF10B981),
                                 gradientColors: const [Color(0xFF047857), Color(0xFF10B981)],
                                 glowColor: const Color(0x5510B981),
                                 onTap: () {
-                                  context.read<HomeBloc>().add(const SelectTab(2));
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const ShopPage(),
+                                    ),
+                                  );
                                 },
                               ),
                               QuickActionItem(
@@ -159,7 +165,11 @@ class HomePage extends StatelessWidget {
                             ],
                           ),
                           const Gap(14),
-                          const MyProductsSection(),
+                          MyProductsSection(
+                            onViewAllTap: () {
+                              context.read<HomeBloc>().add(const SelectTab(2));
+                            },
+                          ),
                           const Gap(14),
                           HydrationTrackerWidget(
                             hydration: state.hydration,
