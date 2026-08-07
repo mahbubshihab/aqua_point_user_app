@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import 'glass_card.dart';
 
-/// Styled container with rounded corners (16-20px), dark background, custom border and shadows.
+/// Styled Glassmorphic Card Container.
+/// Delegates to GlassCard for true glassmorphism styling across the application.
 class AppCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
@@ -30,49 +31,17 @@ class AppCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveBackgroundColor = backgroundColor ?? AppColors.cardBackground;
-    final effectiveBorderColor = borderColor ?? AppColors.divider;
-
-    Widget cardContent = Container(
+    return GlassCard(
+      padding: padding,
+      margin: margin,
+      borderRadius: borderRadius,
+      fillColor: backgroundColor ?? const Color(0x1F1A2236),
+      borderColor: borderColor ?? const Color(0x2B00E5FF),
+      boxShadow: boxShadow,
+      onTap: onTap,
       width: width,
       height: height,
-      padding: padding,
-      decoration: BoxDecoration(
-        color: effectiveBackgroundColor,
-        borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(color: effectiveBorderColor, width: 1),
-        boxShadow: boxShadow ??
-            [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-      ),
       child: child,
     );
-
-    if (onTap != null) {
-      cardContent = Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(borderRadius),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(borderRadius),
-          child: cardContent,
-        ),
-      );
-    }
-
-    if (margin != null) {
-      cardContent = Padding(
-        padding: margin!,
-        child: cardContent,
-      );
-    }
-
-    return cardContent;
   }
 }

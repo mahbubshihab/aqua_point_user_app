@@ -1,7 +1,7 @@
 abstract class AppConstants {
   static const String appTitle = 'Aqua Point';
-  static const String appSubTitle = 'Meem Water';
-  static const String appFullName = 'Aqua Point / Meem Water';
+  static const String appSubTitle = 'AQUA POINT';
+  static const String appFullName = 'AQUA POINT';
 
   // Sample User Details
   static const String sampleUserName = 'Mahbub Shihab';

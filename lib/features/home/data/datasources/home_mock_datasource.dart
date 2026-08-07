@@ -24,21 +24,27 @@ class HomeMockDatasource {
     return const [
       BlogEntity(
         id: '1',
-        title: 'ওয়াটার ট্রিটমেন্ট ও নিরাপদ পানির গুরুত্ব - পর্ব ২৪',
+        title: 'Importance of Pure Water & Treatment - Part 24',
         date: 'Jan 30, 2026',
         imageUrl: 'https://images.unsplash.com/photo-1548839140-29a749e1bc4e',
       ),
       BlogEntity(
         id: '2',
-        title: 'বাসায় পানির TDS লেভেল কীভাবে পরীক্ষা করবেন',
+        title: 'How to Check TDS Levels of Drinking Water at Home',
         date: 'Jan 25, 2026',
         imageUrl: 'https://images.unsplash.com/photo-1527613426441-4da17471b66d',
       ),
       BlogEntity(
         id: '3',
-        title: 'বিশুদ্ধ খাবার পানির স্বাস্থ্য উপকারিতা',
+        title: 'Health Benefits of Drinking Pure Filtered Water',
         date: 'Jan 20, 2026',
         imageUrl: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2',
+      ),
+      BlogEntity(
+        id: '4',
+        title: 'Advanced Filtration Technology - Part 60',
+        date: 'Jan 15, 2026',
+        imageUrl: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b',
       ),
     ];
   }

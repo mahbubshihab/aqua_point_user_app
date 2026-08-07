@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/glass_card.dart';
 import '../../../inbox_support/presentation/pages/refer_win_page.dart';
 import '../bloc/profile_rewards_bloc.dart';
 import '../bloc/profile_rewards_event.dart';
@@ -195,14 +196,9 @@ class RewardPointsPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Container(
-                  width: double.infinity,
+                GlassCard(
                   padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.cardBorder),
-                  ),
+                  borderRadius: 16,
                   child: const Column(
                     children: [
                       Icon(
@@ -224,9 +220,9 @@ class RewardPointsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
 
-                // FAQ section in Bengali
+                // FAQ section in English
                 const Text(
-                  'সচরাচর জিজ্ঞাসিত প্রশ্ন (FAQ)',
+                  'Frequently Asked Questions (FAQ)',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -236,20 +232,20 @@ class RewardPointsPage extends StatelessWidget {
                 const SizedBox(height: 12),
                 if (faqs.isEmpty) ...[
                   _buildFaqAccordion(
-                    question: 'মীম ওয়াটার পয়েন্ট কি?',
-                    answer: 'মীম ওয়াটার পয়েন্ট হলো AQUA POINT অ্যাপের একটি রিওয়ার্ড প্রোগ্রাম, যার মাধ্যমে আপনি অ্যাপ ব্যবহার, সেবা গ্রহণ ও রেফারেলের মাধ্যমে পয়েন্ট অর্জন করতে পারবেন।',
+                    question: 'What are Aqua Point Points?',
+                    answer: 'Aqua Point Points is a reward program in the AQUA POINT app where you can earn points through app usage, receiving services, and referring friends.',
                   ),
                   _buildFaqAccordion(
-                    question: 'কিভাবে মীম ওয়াটার পয়েন্ট পাওয়ার জন্য বিবেচিত হবো?',
-                    answer: 'AQUA POINT অ্যাপে অ্যাকাউন্ট খোলার পর প্রতিটি সেবা গ্রহণ ও ক্রয়ের সাথে সাথে আপনি পয়েন্ট অর্জনের জন্য বিবেচিত হবেন।',
+                    question: 'How do I qualify for Aqua Point Points?',
+                    answer: 'After creating an account on the AQUA POINT app, you qualify to earn reward points with every service request and purchase.',
                   ),
                   _buildFaqAccordion(
-                    question: 'মীম ওয়াটার পয়েন্ট অর্জন করবো কিভাবে?',
-                    answer: 'অ্যাপ ব্যবহার, পণ্য ও সেবা ক্রয়, সার্ভিস সম্পূর্ণকরণ এবং বন্ধুদের রেফার করার মাধ্যমে পয়েন্ট অর্জন করতে পারবেন।',
+                    question: 'How can I earn points?',
+                    answer: 'You can earn points by using the app, purchasing products & services, completing service requests, and referring friends.',
                   ),
                   _buildFaqAccordion(
-                    question: 'শর্ত সমুহ',
-                    answer: 'রিওয়ার্ড পয়েন্টসমূহ অন্য কোন অ্যাকাউন্টে হস্তান্তর করা যাবে না এবং নির্দিষ্ট সময়সীমার মধ্যে ব্যবহার করতে হবে।',
+                    question: 'Terms & Conditions',
+                    answer: 'Reward points cannot be transferred to another account and must be redeemed within the valid period.',
                   ),
                 ] else ...[
                   ...faqs.map((faq) => _buildFaqAccordion(
@@ -286,13 +282,9 @@ class RewardPointsPage extends StatelessWidget {
     required String description,
     required IconData icon,
   }) {
-    return Container(
+    return GlassCard(
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.cardBorder),
-      ),
+      borderRadius: 14,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -338,13 +330,10 @@ class RewardPointsPage extends StatelessWidget {
     required String question,
     required String answer,
   }) {
-    return Container(
+    return GlassCard(
       margin: const EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.cardBorder),
-      ),
+      padding: EdgeInsets.zero,
+      borderRadius: 14,
       child: Theme(
         data: ThemeData.dark().copyWith(
           dividerColor: Colors.transparent,

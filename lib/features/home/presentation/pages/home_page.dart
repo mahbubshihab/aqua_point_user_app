@@ -87,7 +87,7 @@ class HomePage extends StatelessWidget {
                           QuickActionGrid(
                             items: [
                               QuickActionItem(
-                                label: 'Request\nService',
+                                label: 'Request Service',
                                 icon: Icons.build_circle_outlined,
                                 iconColor: const Color(0xFF3B82F6),
                                 onTap: () {
@@ -95,7 +95,7 @@ class HomePage extends StatelessWidget {
                                 },
                               ),
                               QuickActionItem(
-                                label: 'Buy\nParts',
+                                label: 'Buy Parts',
                                 icon: Icons.shopping_bag_outlined,
                                 iconColor: const Color(0xFF10B981),
                                 onTap: () {

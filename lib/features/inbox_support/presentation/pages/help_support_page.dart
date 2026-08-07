@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/glass_card.dart';
 import '../bloc/inbox_support_bloc.dart';
 import '../bloc/inbox_support_event.dart';
 import '../bloc/inbox_support_state.dart';
@@ -258,12 +259,9 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
     required String subtitle,
     required VoidCallback onTap,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.cardBorder),
-      ),
+    return GlassCard(
+      padding: EdgeInsets.zero,
+      borderRadius: 16,
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         leading: Container(

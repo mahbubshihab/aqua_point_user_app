@@ -93,187 +93,193 @@ class _AddProductModalState extends State<AddProductModal> {
           );
         }
       },
-      child: Container(
-        padding: EdgeInsets.only(
-          left: 20,
-          right: 20,
-          top: 20,
-          bottom: bottomPadding + 24,
-        ),
-        decoration: const BoxDecoration(
-          color: AppColors.cardBackground,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          border: Border(
-            top: BorderSide(color: AppColors.divider, width: 1),
-            left: BorderSide(color: AppColors.divider, width: 1),
-            right: BorderSide(color: AppColors.divider, width: 1),
-          ),
-        ),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Modal Handle Bar
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: AppColors.divider,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-                const Gap(16),
-
-                // Header Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+          child: Container(
+            padding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: 20,
+              bottom: bottomPadding + 24,
+            ),
+            decoration: const BoxDecoration(
+              color: Color(0x1F1A2236),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              border: Border(
+                top: BorderSide(color: Color(0x2B00E5FF), width: 1.5),
+                left: BorderSide(color: Color(0x2B00E5FF), width: 1),
+                right: BorderSide(color: Color(0x2B00E5FF), width: 1),
+              ),
+            ),
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Add Custom Product',
-                      style: TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                    // Modal Handle Bar
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: AppColors.divider,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
                       ),
                     ),
-                    IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      icon: const Icon(
-                        Icons.close_rounded,
+                    const Gap(16),
+
+                    // Header Row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Add Custom Product',
+                          style: TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: const Icon(
+                            Icons.close_rounded,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Gap(20),
+
+                    // Field 1: Product Name
+                    AppTextField(
+                      label: 'Product Name',
+                      hintText: 'Enter your product name',
+                      controller: _nameController,
+                      prefixIcon: const Icon(
+                        Icons.inventory_2_outlined,
                         color: AppColors.textSecondary,
+                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Please enter product name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const Gap(20),
+
+                    // Field 2: Warranty Card / Product Photo
+                    const Text(
+                      'Warranty Card / Product Photo',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    const Gap(8),
+                    InkWell(
+                      onTap: _mockImagePicker,
+                      borderRadius: BorderRadius.circular(12),
+                      child: CustomPaint(
+                        painter: _DashedBorderPainter(
+                          color: _selectedImagePath != null
+                              ? AppColors.primary
+                              : AppColors.divider,
+                        ),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 24),
+                          decoration: BoxDecoration(
+                            color: AppColors.inputFill,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                _selectedImagePath != null
+                                    ? Icons.check_circle_rounded
+                                    : Icons.camera_alt_outlined,
+                                size: 36,
+                                color: _selectedImagePath != null
+                                    ? AppColors.accentGreen
+                                    : AppColors.secondary,
+                              ),
+                              const Gap(8),
+                              Text(
+                                _selectedImagePath != null
+                                    ? 'Image Selected (Tap to change)'
+                                    : 'Tap to select image',
+                                style: TextStyle(
+                                  color: _selectedImagePath != null
+                                      ? AppColors.textPrimary
+                                      : AppColors.textSecondary,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Gap(28),
+
+                    // Save Product Button
+                    Container(
+                      width: double.infinity,
+                      height: 52,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF60A5FA), Color(0xFF8B5CF6)],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF8B5CF6).withValues(alpha: 0.3),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: _isSubmitting ? null : _onSaveProduct,
+                          borderRadius: BorderRadius.circular(16),
+                          child: Center(
+                            child: _isSubmitting
+                                ? const SizedBox(
+                                    width: 22,
+                                    height: 22,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.5,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text(
+                                    'SAVE PRODUCT',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
-                const Gap(20),
-
-                // Field 1: Product Name
-                AppTextField(
-                  label: 'Product Name',
-                  hintText: 'Enter your product name',
-                  controller: _nameController,
-                  prefixIcon: const Icon(
-                    Icons.inventory_2_outlined,
-                    color: AppColors.textSecondary,
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Please enter product name';
-                    }
-                    return null;
-                  },
-                ),
-                const Gap(20),
-
-                // Field 2: Warranty Card / Product Photo
-                const Text(
-                  'Warranty Card / Product Photo',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                const Gap(8),
-                InkWell(
-                  onTap: _mockImagePicker,
-                  borderRadius: BorderRadius.circular(12),
-                  child: CustomPaint(
-                    painter: _DashedBorderPainter(
-                      color: _selectedImagePath != null
-                          ? AppColors.primary
-                          : AppColors.divider,
-                    ),
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 24),
-                      decoration: BoxDecoration(
-                        color: AppColors.inputFill,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            _selectedImagePath != null
-                                ? Icons.check_circle_rounded
-                                : Icons.camera_alt_outlined,
-                            size: 36,
-                            color: _selectedImagePath != null
-                                ? AppColors.accentGreen
-                                : AppColors.secondary,
-                          ),
-                          const Gap(8),
-                          Text(
-                            _selectedImagePath != null
-                                ? 'Image Selected (Tap to change)'
-                                : 'Tap to select image',
-                            style: TextStyle(
-                              color: _selectedImagePath != null
-                                  ? AppColors.textPrimary
-                                  : AppColors.textSecondary,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const Gap(28),
-
-                // Save Product Button
-                Container(
-                  width: double.infinity,
-                  height: 52,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF60A5FA), Color(0xFF8B5CF6)],
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF8B5CF6).withValues(alpha: 0.3),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: _isSubmitting ? null : _onSaveProduct,
-                      borderRadius: BorderRadius.circular(16),
-                      child: Center(
-                        child: _isSubmitting
-                            ? const SizedBox(
-                                width: 22,
-                                height: 22,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.5,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : const Text(
-                                'SAVE PRODUCT',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/glass_card.dart';
 import '../bloc/inbox_support_bloc.dart';
 import '../bloc/inbox_support_event.dart';
 import '../bloc/inbox_support_state.dart';
@@ -76,7 +77,7 @@ class ReferWinPage extends StatelessWidget {
 
                 // Subtitle
                 const Text(
-                  'Share your referral link with friends and get 50 reward points when they join Meem Water.',
+                  'Share your referral link with friends and get 50 reward points when they join AQUA POINT.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
@@ -86,15 +87,10 @@ class ReferWinPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 28),
 
-                // Referral Code Box
-                Container(
-                  width: double.infinity,
+                // Referral Code Glass Box
+                GlassCard(
                   padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.cardBorder),
-                  ),
+                  borderRadius: 20,
                   child: Column(
                     children: [
                       const Text(
@@ -168,7 +164,7 @@ class ReferWinPage extends StatelessWidget {
                   child: ElevatedButton.icon(
                     onPressed: () {
                       final shareText =
-                          'Join Meem Water using my referral code $referralCode and get rewards!';
+                          'Join AQUA POINT using my referral code $referralCode and get rewards!';
                       Clipboard.setData(ClipboardData(text: shareText));
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -254,19 +250,15 @@ class ReferWinPage extends StatelessWidget {
     required IconData icon,
     Color iconColor = AppColors.primary,
   }) {
-    return Container(
+    return GlassCard(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(
-        color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.cardBorder),
-      ),
+      borderRadius: 16,
       child: Row(
         children: [
           Container(
             width: 36,
             height: 36,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColors.inputFill,
               shape: BoxShape.circle,
             ),

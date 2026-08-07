@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/widgets/glass_card.dart';
 import '../../domain/entities/hydration_entity.dart';
 
 class HydrationTrackerWidget extends StatelessWidget {
@@ -19,31 +20,11 @@ class HydrationTrackerWidget extends StatelessWidget {
         ? (hydration.currentGlasses / hydration.targetGlasses).clamp(0.0, 1.0)
         : 0.0;
 
-    return Container(
-      width: double.infinity,
+    return GlassCard(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFF1E3A8A), // Deep Ocean Navy
-            Color(0xFF06B6D4), // Deep Cyan
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(
-          color: const Color(0xFF06B6D4).withValues(alpha: 0.35),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF06B6D4).withValues(alpha: 0.25),
-            blurRadius: 18,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
+      borderRadius: 22,
+      fillColor: const Color(0x2A1E3A8A),
+      borderColor: const Color(0xFF06B6D4).withValues(alpha: 0.4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -231,5 +212,3 @@ class HydrationTrackerWidget extends StatelessWidget {
     );
   }
 }
-
-

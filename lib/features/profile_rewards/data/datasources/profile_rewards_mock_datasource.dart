@@ -58,20 +58,20 @@ class ProfileRewardsMockDatasource {
     await Future.delayed(const Duration(milliseconds: 300));
     return const [
       FaqModel(
-        question: 'মীম ওয়াটার পয়েন্ট কি?',
-        answer: 'মীম ওয়াটার পয়েন্ট হলো AQUA POINT অ্যাপের একটি রিওয়ার্ড প্রোগ্রাম, যার মাধ্যমে আপনি অ্যাপ ব্যবহার, সেবা গ্রহণ ও রেফারেলের মাধ্যমে পয়েন্ট অর্জন করতে পারবেন।',
+        question: 'What are Aqua Point Points?',
+        answer: 'Aqua Point Points is a reward program in the AQUA POINT app where you can earn points through app usage, receiving services, and referring friends.',
       ),
       FaqModel(
-        question: 'কিভাবে মীম ওয়াটার পয়েন্ট পাওয়ার জন্য বিবেচিত হবো?',
-        answer: 'AQUA POINT অ্যাপে অ্যাকাউন্ট খোলার পর প্রতিটি সেবা গ্রহণ ও ক্রয়ের সাথে সাথে আপনি পয়েন্ট অর্জনের জন্য বিবেচিত হবেন।',
+        question: 'How do I qualify for Aqua Point Points?',
+        answer: 'After creating an account on the AQUA POINT app, you qualify to earn reward points with every service request and purchase.',
       ),
       FaqModel(
-        question: 'মীম ওয়াটার পয়েন্ট অর্জন করবো কিভাবে?',
-        answer: 'অ্যাপ ব্যবহার, পণ্য ও সেবা ক্রয়, সার্ভিস সম্পূর্ণকরণ এবং বন্ধুদের রেফার করার মাধ্যমে পয়েন্ট অর্জন করতে পারবেন।',
+        question: 'How can I earn points?',
+        answer: 'You can earn points by using the app, purchasing products & services, completing service requests, and referring friends.',
       ),
       FaqModel(
-        question: 'শর্ত সমুহ',
-        answer: 'রিওয়ার্ড পয়েন্টসমূহ অন্য কোন অ্যাকাউন্টে হস্তান্তর করা যাবে না এবং নির্দিষ্ট সময়সীমার মধ্যে ব্যবহার করতে হবে।',
+        question: 'Terms & Conditions',
+        answer: 'Reward points cannot be transferred to another account and must be redeemed within the valid period.',
       ),
     ];
   }

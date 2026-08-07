@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/glass_card.dart';
 import '../../../inbox_support/presentation/pages/help_support_page.dart';
 import '../../../inbox_support/presentation/pages/refer_win_page.dart';
 import '../bloc/profile_rewards_bloc.dart';
@@ -194,12 +195,9 @@ class ProfilePage extends StatelessWidget {
     required VoidCallback onTap,
     bool isLogout = false,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.cardBorder),
-      ),
+    return GlassCard(
+      padding: EdgeInsets.zero,
+      borderRadius: 16,
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         onTap: onTap,
