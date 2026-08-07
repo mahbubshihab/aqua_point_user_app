@@ -4,12 +4,10 @@ import '../../../../core/widgets/glass_card.dart';
 
 class MyProductsSection extends StatelessWidget {
   final VoidCallback? onViewAllTap;
-  final VoidCallback? onAddProductTap;
 
   const MyProductsSection({
     super.key,
     this.onViewAllTap,
-    this.onAddProductTap,
   });
 
   @override
@@ -120,52 +118,6 @@ class MyProductsSection extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   color: AppColors.textSecondary,
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Vibrant Electric Cyan/Blue Gradient Action Button + Add Product
-              Container(
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF00E5FF), Color(0xFF3B82F6)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF00E5FF).withValues(alpha: 0.35),
-                      blurRadius: 12,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: onAddProductTap,
-                    borderRadius: BorderRadius.circular(12),
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.add_rounded, size: 18, color: Color(0xFF0A0D16)),
-                          SizedBox(width: 6),
-                          Text(
-                            'Add Product',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF0A0D16),
-                              letterSpacing: 0.3,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ],

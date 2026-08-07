@@ -55,11 +55,11 @@ class QuickActionGrid extends StatelessWidget {
             glowColor: Color(0x55F59E0B),
           ),
           const QuickActionItem(
-            label: 'Support / Report',
+            label: 'Support',
             icon: Icons.support_agent_rounded,
-            iconColor: Color(0xFFF43F5E),
-            gradientColors: [Color(0xFFBE185D), Color(0xFFF43F5E)],
-            glowColor: Color(0x55F43F5E),
+            iconColor: Color(0xFFEC4899),
+            gradientColors: [Color(0xFFBE185D), Color(0xFFEC4899)],
+            glowColor: Color(0x55EC4899),
           ),
         ];
 
@@ -69,7 +69,7 @@ class QuickActionGrid extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       crossAxisSpacing: 10,
       mainAxisSpacing: 10,
-      childAspectRatio: 0.82,
+      childAspectRatio: 0.85,
       children: actionItems.map((item) {
         return QuickActionTile(item: item);
       }).toList(),
@@ -114,8 +114,8 @@ class _QuickActionTileState extends State<QuickActionTile> {
         },
         onTapCancel: () => setState(() => _isPressed = false),
         child: GlassCard(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-          borderRadius: 18,
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+          borderRadius: 16,
           fillColor: const Color(0x1F141A2D),
           borderGradient: const LinearGradient(
             begin: Alignment.topCenter,
@@ -129,13 +129,13 @@ class _QuickActionTileState extends State<QuickActionTile> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // 54x54px 3D Gradient Icon Container with Glow Shadow
+              // 44x44px 3D Glowing Gradient Icon Badge
               Container(
-                width: 54,
-                height: 54,
+                width: 44,
+                height: 44,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                   gradient: LinearGradient(
                     colors: gradientColors,
                     begin: Alignment.topLeft,
@@ -148,34 +148,31 @@ class _QuickActionTileState extends State<QuickActionTile> {
                   boxShadow: [
                     BoxShadow(
                       color: glowColor,
-                      blurRadius: 12,
+                      blurRadius: 10,
                       spreadRadius: 0,
-                      offset: const Offset(0, 4),
+                      offset: const Offset(0, 3),
                     ),
                   ],
                 ),
                 child: Icon(
                   item.icon,
                   color: Colors.white,
-                  size: 26,
+                  size: 22,
                 ),
               ),
-              const SizedBox(height: 8),
-              // Clean, bold, high-contrast white title typography
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  item.label,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    height: 1.15,
-                    letterSpacing: 0.1,
-                  ),
+              const SizedBox(height: 6),
+              // Standard text size (fontSize: 12.5, fontWeight: FontWeight.w600)
+              Text(
+                item.label,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                  height: 1.15,
+                  letterSpacing: 0.1,
                 ),
               ),
             ],

@@ -9,6 +9,7 @@ import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
 import '../widgets/blogs_news_section.dart';
+import '../widgets/home_footer_widget.dart';
 import '../widgets/home_header_banner.dart';
 import '../widgets/hydration_tracker_widget.dart';
 import '../widgets/my_products_section.dart';
@@ -76,7 +77,7 @@ class HomePage extends StatelessWidget {
                         );
                       },
                     ),
-                    const Gap(18),
+                    const Gap(14),
 
                     // Content below header banner with horizontal padding
                     Padding(
@@ -118,11 +119,11 @@ class HomePage extends StatelessWidget {
                                 },
                               ),
                               QuickActionItem(
-                                label: 'Support / Report',
+                                label: 'Support',
                                 icon: Icons.support_agent_rounded,
-                                iconColor: const Color(0xFFF43F5E),
-                                gradientColors: const [Color(0xFFBE185D), Color(0xFFF43F5E)],
-                                glowColor: const Color(0x55F43F5E),
+                                iconColor: const Color(0xFFEC4899),
+                                gradientColors: const [Color(0xFFBE185D), Color(0xFFEC4899)],
+                                glowColor: const Color(0x55EC4899),
                                 onTap: () {
                                   Navigator.push(
                                     context,
@@ -132,11 +133,11 @@ class HomePage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          const Gap(18),
+                          const Gap(14),
 
                           // My Products Section
                           const MyProductsSection(),
-                          const Gap(18),
+                          const Gap(14),
 
                           // Hydration Tracker Widget
                           HydrationTrackerWidget(
@@ -148,33 +149,23 @@ class HomePage extends StatelessWidget {
                               context.read<HomeBloc>().add(const DecrementHydration());
                             },
                           ),
-                          const Gap(18),
+                          const Gap(14),
 
                           // Water Quality Card
                           WaterQualityCard(waterQuality: state.waterQuality),
-                          const Gap(18),
+                          const Gap(14),
 
                           // Services Grid
                           const ServicesGrid(),
-                          const Gap(18),
+                          const Gap(14),
 
                           // Blogs & News Section
                           BlogsNewsSection(blogs: state.blogs),
-                          const Gap(24),
+                          const Gap(14),
 
-                          // Footer
-                          const Center(
-                            child: Text(
-                              'Crafted With ❤️ by AQUA POINT',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.textSecondary,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
+                          // Standalone Modular Footer Widget
+                          const HomeFooterWidget(),
+                          const Gap(14),
                         ],
                       ),
                     ),
