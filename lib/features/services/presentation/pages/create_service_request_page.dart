@@ -188,6 +188,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
           }
         },
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,

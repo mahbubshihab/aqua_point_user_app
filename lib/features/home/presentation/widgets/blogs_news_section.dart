@@ -111,107 +111,107 @@ class BlogsNewsSection extends StatelessWidget {
                                 fit: BoxFit.cover,
                                 cacheWidth: 600,
                                 cacheHeight: 600,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  decoration: const BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    decoration: const BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
                                     ),
-                                  ),
-                                  child: const Center(
-                                    child: Icon(
-                                      Icons.article_rounded,
-                                      size: 34,
-                                      color: Color(0xFF60A5FA),
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.article_rounded,
+                                        size: 34,
+                                        color: Color(0xFF60A5FA),
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                          Positioned.fill(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.transparent,
-                                    const Color(0x1F1A2236).withValues(alpha: 0.9),
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
+                            Positioned.fill(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.transparent,
+                                      const Color(0x1F1A2236).withValues(alpha: 0.9),
+                                    ],
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      // Blog Details
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Blog Title Styling
-                            Text(
-                              blog.title,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
-                                height: 1.35,
-                                letterSpacing: 0.1,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-
-                            // Date Chip
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.inputFill,
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: AppColors.cardBorder,
-                                  width: 1,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(
-                                    Icons.calendar_today_rounded,
-                                    size: 11,
-                                    color: Color(0xFF60A5FA),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    blog.date,
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                ],
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
+
+                        // Blog Details
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Blog Title Styling
+                              Text(
+                                blog.title,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary,
+                                  height: 1.35,
+                                  letterSpacing: 0.1,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+
+                              // Date Chip
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.inputFill,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: AppColors.cardBorder,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.calendar_today_rounded,
+                                      size: 11,
+                                      color: Color(0xFF60A5FA),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      blog.date,
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.textSecondary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
           ),
         ),
       ],

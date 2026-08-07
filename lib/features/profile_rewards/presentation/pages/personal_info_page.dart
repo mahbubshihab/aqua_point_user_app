@@ -79,6 +79,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           }
         },
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,

@@ -307,12 +307,15 @@ class _ServicesTabContent extends StatelessWidget {
 
     return ListView.builder(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 90),
+      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      cacheExtent: 800,
       itemCount: servicesList.length,
       itemBuilder: (context, index) {
         final item = servicesList[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: AppCard(
+        return RepaintBoundary(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: AppCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -414,8 +417,9 @@ class _ServicesTabContent extends StatelessWidget {
               ],
             ),
           ),
-        );
-      },
+        ),
+      );
+    },
     );
   }
 
@@ -459,12 +463,15 @@ class _OrdersTabContent extends StatelessWidget {
 
     return ListView.builder(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 90),
+      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      cacheExtent: 800,
       itemCount: ordersList.length,
       itemBuilder: (context, index) {
         final item = ordersList[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: AppCard(
+        return RepaintBoundary(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: AppCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -527,8 +534,9 @@ class _OrdersTabContent extends StatelessWidget {
               ],
             ),
           ),
-        );
-      },
+        ),
+      );
+    },
     );
   }
 }
@@ -550,12 +558,15 @@ class _InvoicesTabContent extends StatelessWidget {
 
     return ListView.builder(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 90),
+      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      cacheExtent: 800,
       itemCount: invoicesList.length,
       itemBuilder: (context, index) {
         final item = invoicesList[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: AppCard(
+        return RepaintBoundary(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: AppCard(
             child: Row(
               children: [
                 Container(
@@ -614,8 +625,9 @@ class _InvoicesTabContent extends StatelessWidget {
               ],
             ),
           ),
-        );
-      },
+        ),
+      );
+    },
     );
   }
 }

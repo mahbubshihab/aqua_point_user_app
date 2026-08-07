@@ -161,6 +161,7 @@ class _AddProductModalState extends State<AddProductModal> {
               ),
             ),
             child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -285,6 +286,8 @@ class _AddProductModalState extends State<AddProductModal> {
                                           height: 60,
                                           width: 60,
                                           fit: BoxFit.cover,
+                                          cacheWidth: 600,
+                                          cacheHeight: 600,
                                         ),
                                       ),
                                       const Gap(6),

@@ -131,6 +131,7 @@ class _ProfilePageState extends State<ProfilePage> {
           }
 
           return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Column(
               children: [
@@ -155,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             backgroundColor: AppColors.cardBackground,
                             backgroundImage: (userProfile?.avatarUrl != null &&
                                     userProfile!.avatarUrl.startsWith('http'))
-                                ? NetworkImage(userProfile.avatarUrl)
+                                ? ResizeImage(NetworkImage(userProfile.avatarUrl), width: 600, height: 600)
                                 : null,
                             child: _isUploadingAvatar
                                 ? const SizedBox(

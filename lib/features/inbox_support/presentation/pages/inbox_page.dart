@@ -172,11 +172,14 @@ class _NotificationsTabContent extends StatelessWidget {
 
     return ListView.separated(
       padding: const EdgeInsets.all(16),
+      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      cacheExtent: 800,
       itemCount: notifications.length,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         final item = notifications[index];
-        return Container(
+        return RepaintBoundary(
+          child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: AppColors.cardBackground,
@@ -253,8 +256,9 @@ class _NotificationsTabContent extends StatelessWidget {
               ),
             ],
           ),
-        );
-      },
+        ),
+      );
+    },
     );
   }
 
@@ -343,11 +347,14 @@ class _MessagesTabContent extends StatelessWidget {
 
     return ListView.separated(
       padding: const EdgeInsets.all(16),
+      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      cacheExtent: 800,
       itemCount: chatMessages.length,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         final chat = chatMessages[index];
-        return Align(
+        return RepaintBoundary(
+          child: Align(
           alignment: chat.isFromUser ? Alignment.centerRight : Alignment.centerLeft,
           child: Container(
             constraints: BoxConstraints(
@@ -400,8 +407,9 @@ class _MessagesTabContent extends StatelessWidget {
               ],
             ),
           ),
-        );
-      },
+        ),
+      );
+    },
     );
   }
 }
