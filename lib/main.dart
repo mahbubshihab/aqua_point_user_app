@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/constants/app_constants.dart';
 import 'core/theme/app_theme.dart';
-import 'features/home/data/datasources/home_mock_datasource.dart';
+import 'features/home/data/datasources/home_remote_datasource.dart';
 import 'features/home/data/repositories/home_repository_impl.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
 import 'features/home/presentation/bloc/home_event.dart';
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeRepository = HomeRepositoryImpl(
-      datasource: HomeMockDatasource(),
+      datasource: HomeRemoteDatasource(),
     );
     final servicesRepository = ServicesRepositoryImpl(
       datasource: ServicesMockDatasource(),

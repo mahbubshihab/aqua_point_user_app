@@ -13,6 +13,7 @@ import '../widgets/home_footer_widget.dart';
 import '../widgets/home_header_banner.dart';
 import '../widgets/hydration_tracker_widget.dart';
 import '../widgets/my_products_section.dart';
+import '../widgets/promotional_banners_slider.dart';
 import '../widgets/quick_action_grid.dart';
 import '../widgets/services_grid.dart';
 import '../widgets/water_quality_card.dart';
@@ -63,7 +64,6 @@ class HomePage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Header Banner
                     HomeHeaderBanner(
                       onProfileTap: () {
                         Navigator.push(
@@ -79,14 +79,15 @@ class HomePage extends StatelessWidget {
                       },
                     ),
                     const Gap(14),
-
-                    // Content below header banner with horizontal padding
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Quick Action Buttons (4 round square buttons)
+                          if (state.banners.isNotEmpty) ...[
+                            PromotionalBannersSlider(banners: state.banners),
+                            const Gap(14),
+                          ],
                           QuickActionGrid(
                             items: [
                               QuickActionItem(
@@ -135,12 +136,8 @@ class HomePage extends StatelessWidget {
                             ],
                           ),
                           const Gap(14),
-
-                          // My Products Section
                           const MyProductsSection(),
                           const Gap(14),
-
-                          // Hydration Tracker Widget
                           HydrationTrackerWidget(
                             hydration: state.hydration,
                             onIncrement: () {
@@ -151,21 +148,13 @@ class HomePage extends StatelessWidget {
                             },
                           ),
                           const Gap(14),
-
-                          // Water Quality Card
                           WaterQualityCard(waterQuality: state.waterQuality),
                           const Gap(14),
-
-                          // Services Grid
                           const ServicesGrid(),
                           const Gap(14),
-
-                          // Blogs & News Section
                           BlogsNewsSection(blogs: state.blogs),
                           const Gap(14),
-
-                          // Standalone Modular Footer Widget
-                          const HomeFooterWidget(),
+                          HomeFooterWidget(companyInfo: state.companyInfo),
                           const Gap(14),
                         ],
                       ),
