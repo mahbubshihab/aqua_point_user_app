@@ -80,10 +80,10 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
 
   void _onVerifyPressed() {
     final code = _pinController.text.trim();
-    if (code.length < 4) {
+    if (code.length < 6) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please enter 4-digit code'),
+          content: Text('Please enter 6-digit code'),
           backgroundColor: AppColors.accentRed,
         ),
       );
@@ -109,16 +109,16 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
   @override
   Widget build(BuildContext context) {
     final defaultPinTheme = PinTheme(
-      width: 60,
-      height: 64,
+      width: 48,
+      height: 54,
       textStyle: GoogleFonts.outfit(
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: FontWeight.bold,
         color: Colors.white,
       ),
       decoration: BoxDecoration(
         color: AppColors.inputFill,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.divider, width: 1.2),
         boxShadow: [
           BoxShadow(
@@ -299,9 +299,9 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                         borderColor: AppColors.divider,
                         child: Column(
                           children: [
-                            // 4-Digit Glassmorphic Pinput
+                            // 6-Digit Glassmorphic Pinput
                             Pinput(
-                              length: 4,
+                              length: 6,
                               controller: _pinController,
                               focusNode: _pinFocusNode,
                               autofocus: true,

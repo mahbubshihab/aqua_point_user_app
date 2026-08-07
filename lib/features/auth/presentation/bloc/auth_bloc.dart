@@ -46,9 +46,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoading());
 
-    // Generate 4-digit random OTP (1000 - 9999)
+    // Generate 6-digit random OTP (100000 - 999999)
     final random = Random();
-    final otpCode = (1000 + random.nextInt(9000)).toString();
+    final otpCode = (100000 + random.nextInt(900000)).toString();
+
+    // Write/verify unique OTP document in Cloud Firestore otp_verifications collection
+    await remoteDatasource.saveOtpVerification(
+      phoneNumber: event.phoneNumber,
+      otpCode: otpCode,
+    );
 
     final response = await bulkSmsService.sendOtp(
       phoneNumber: event.phoneNumber,
@@ -78,7 +84,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoading());
 
-    if (event.inputOtp.trim() == event.expectedOtp.trim()) {
+    final isVerified = await remoteDatasource.verifyOtp(
+      phoneNumber: event.phoneNumber,
+      inputOtp: event.inputOtp,
+      expectedOtp: event.expectedOtp,
+    );
+
+    if (isVerified) {
       final userId = event.phoneNumber;
 
       // Persist session locally
@@ -96,7 +108,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(Authenticated(phoneNumber: event.phoneNumber, userId: userId));
     } else {
       emit(const AuthError(
-        message: 'Incorrect OTP entered. Please verify the code and try again.',
+        message: 'Incorrect or expired OTP entered. Please verify the code and try again.',
       ));
     }
   }
