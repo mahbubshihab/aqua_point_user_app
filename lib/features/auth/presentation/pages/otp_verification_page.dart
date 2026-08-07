@@ -34,6 +34,18 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
   late int _timerSeconds;
   Timer? _timer;
 
+  String get _formattedPhone {
+    final phone = widget.phoneNumber.trim();
+    if (phone.startsWith('0')) {
+      return '+88$phone';
+    } else if (phone.startsWith('+880')) {
+      return phone;
+    } else if (phone.startsWith('880')) {
+      return '+$phone';
+    }
+    return '+880$phone';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -71,7 +83,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
     if (code.length < 4) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please enter full 4-digit OTP code'),
+          content: Text('Please enter 4-digit code'),
           backgroundColor: AppColors.accentRed,
         ),
       );
@@ -92,19 +104,13 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
     _pinController.clear();
     context.read<AuthBloc>().add(SendOtpEvent(phoneNumber: widget.phoneNumber));
     _startResendTimer();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Resending OTP code via BulkSMSBD...'),
-        backgroundColor: AppColors.primary,
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     final defaultPinTheme = PinTheme(
-      width: 58,
-      height: 62,
+      width: 60,
+      height: 64,
       textStyle: GoogleFonts.outfit(
         fontSize: 24,
         fontWeight: FontWeight.bold,
@@ -112,7 +118,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
       ),
       decoration: BoxDecoration(
         color: AppColors.inputFill,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.divider, width: 1.2),
         boxShadow: [
           BoxShadow(
@@ -126,11 +132,11 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
 
     final focusedPinTheme = defaultPinTheme.copyWith(
       decoration: defaultPinTheme.decoration!.copyWith(
-        border: Border.all(color: AppColors.primary, width: 2),
+        border: Border.all(color: const Color(0xFF00E5FF), width: 2),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.35),
-            blurRadius: 14,
+            color: const Color(0xFF00E5FF).withValues(alpha: 0.4),
+            blurRadius: 16,
             spreadRadius: 1,
           ),
         ],
@@ -139,7 +145,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
 
     final submittedPinTheme = defaultPinTheme.copyWith(
       decoration: defaultPinTheme.decoration!.copyWith(
-        border: Border.all(color: AppColors.accentGreen, width: 1.5),
+        border: Border.all(color: const Color(0xFF00E5FF), width: 1.5),
       ),
     );
 
@@ -150,12 +156,6 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
             _currentExpectedOtp = state.expectedOtp;
           });
         } else if (state is Authenticated) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Phone verified successfully! Welcome to AQUA POINT.'),
-              backgroundColor: AppColors.accentGreen,
-            ),
-          );
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (_) => const MainShellPage()),
@@ -176,36 +176,27 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
           backgroundColor: AppColors.background,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                color: AppColors.textPrimary),
+            icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
             onPressed: () => Navigator.pop(context),
-          ),
-          title: Text(
-            'Verification',
-            style: GoogleFonts.outfit(
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.w600,
-              fontSize: 18,
-            ),
           ),
         ),
         body: Stack(
           children: [
             // Background cyan glow
             Positioned(
-              top: 40,
+              top: -40,
               left: -50,
               child: Container(
-                width: 260,
-                height: 260,
+                width: 280,
+                height: 280,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: AppColors.primary.withValues(alpha: 0.12),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.2),
-                      blurRadius: 100,
-                      spreadRadius: 40,
+                      color: AppColors.primary.withValues(alpha: 0.25),
+                      blurRadius: 120,
+                      spreadRadius: 50,
                     ),
                   ],
                 ),
@@ -219,45 +210,57 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
                   child: Column(
                     children: [
-                      // Lock/Shield Icon Card
-                      GlassCard(
-                        borderRadius: 40.0,
-                        padding: const EdgeInsets.all(18.0),
-                        fillColor: const Color(0x22131826),
-                        borderColor: AppColors.primary.withValues(alpha: 0.5),
-                        child: const Icon(
-                          Icons.mark_email_read_rounded,
-                          size: 48,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-
+                      // Header: Verify OTP Title
                       Text(
-                        'Verify Mobile Number',
+                        'Verify OTP',
                         style: GoogleFonts.outfit(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.0,
                           color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              color: AppColors.primary.withValues(alpha: 0.4),
+                              blurRadius: 14,
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 12),
 
-                      RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            color: AppColors.textSecondary,
-                            height: 1.4,
+                      // Phone Number Badge
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: AppColors.primary.withValues(alpha: 0.4),
+                            width: 1,
                           ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withValues(alpha: 0.15),
+                              blurRadius: 12,
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            const TextSpan(text: 'Enter the 4-digit code sent to '),
-                            TextSpan(
-                              text: '+88 ${widget.phoneNumber}',
+                            const Icon(
+                              Icons.phone_android_rounded,
+                              size: 16,
+                              color: AppColors.primary,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              _formattedPhone,
                               style: GoogleFonts.inter(
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primary,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                                letterSpacing: 0.5,
                               ),
                             ),
                           ],
@@ -286,16 +289,17 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                         ),
                       ],
 
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 36),
 
-                      // OTP Pinput Fields with Auto-fill
+                      // Glassmorphic OTP Card
                       GlassCard(
-                        borderRadius: 20.0,
-                        padding: const EdgeInsets.symmetric(horizontal: 16.5, vertical: 24.0),
+                        borderRadius: 24.0,
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 28.0),
                         fillColor: const Color(0x281E293B),
                         borderColor: AppColors.divider,
                         child: Column(
                           children: [
+                            // 4-Digit Glassmorphic Pinput
                             Pinput(
                               length: 4,
                               controller: _pinController,
@@ -311,82 +315,91 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                             ),
                             const SizedBox(height: 28),
 
-                            // Timer & Resend Button
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.timer_outlined,
-                                  size: 16,
-                                  color: _timerSeconds > 0
-                                      ? AppColors.textSecondary
-                                      : AppColors.primary,
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  _timerSeconds > 0
-                                      ? 'Resend OTP in ${_timerSeconds}s'
-                                      : 'Didn\'t receive code?',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 13,
-                                    color: _timerSeconds > 0
-                                        ? AppColors.textSecondary
-                                        : Colors.white,
-                                  ),
-                                ),
-                                if (_timerSeconds == 0) ...[
-                                  TextButton(
-                                    onPressed: _onResendOtp,
-                                    child: Text(
-                                      'Resend',
-                                      style: GoogleFonts.inter(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.primary,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ],
-                            ),
-                            const SizedBox(height: 20),
-
-                            // Submit Verification Button
+                            // Primary Button Verify with Cyan Gradient & Glow
                             BlocBuilder<AuthBloc, AuthState>(
                               builder: (context, state) {
                                 final isLoading = state is AuthLoading;
 
-                                return SizedBox(
+                                return Container(
                                   width: double.infinity,
-                                  height: 50,
-                                  child: ElevatedButton(
-                                    onPressed: isLoading ? null : _onVerifyPressed,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.primary,
-                                      foregroundColor: Colors.black,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(14),
+                                  height: 52,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        Color(0xFF00E5FF),
+                                        Color(0xFF0090B8),
+                                      ],
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xFF00E5FF).withValues(alpha: 0.35),
+                                        blurRadius: 16,
+                                        spreadRadius: 0,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      onTap: isLoading ? null : _onVerifyPressed,
+                                      borderRadius: BorderRadius.circular(16),
+                                      child: Center(
+                                        child: isLoading
+                                            ? const SizedBox(
+                                                width: 22,
+                                                height: 22,
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2.5,
+                                                  color: Colors.black,
+                                                ),
+                                              )
+                                            : Text(
+                                                'Verify',
+                                                style: GoogleFonts.inter(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Colors.black,
+                                                  letterSpacing: 0.5,
+                                                ),
+                                              ),
                                       ),
                                     ),
-                                    child: isLoading
-                                        ? const SizedBox(
-                                            width: 22,
-                                            height: 22,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2.5,
-                                              color: Colors.black,
-                                            ),
-                                          )
-                                        : Text(
-                                            'Verify & Continue',
-                                            style: GoogleFonts.inter(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
                                   ),
                                 );
                               },
+                            ),
+                            const SizedBox(height: 20),
+
+                            // Minimal Resend Timer
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (_timerSeconds > 0)
+                                  Text(
+                                    'Resend in ${_timerSeconds}s',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  )
+                                else
+                                  GestureDetector(
+                                    onTap: _onResendOtp,
+                                    child: Text(
+                                      'Resend Code',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w700,
+                                        color: const Color(0xFF00E5FF),
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
                           ],
                         ),
@@ -402,3 +415,4 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
     );
   }
 }
+
