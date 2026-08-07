@@ -158,76 +158,40 @@ class _ServicesHistoryPageState extends State<ServicesHistoryPage>
           }
 
           if (state is ServicesLoaded) {
-            return Stack(
+            return TabBarView(
+              controller: _tabController,
               children: [
-                TabBarView(
-                  controller: _tabController,
-                  children: [
-                    _ServicesTabContent(servicesList: state.servicesList),
-                    _OrdersTabContent(ordersList: state.ordersList),
-                    _InvoicesTabContent(invoicesList: state.invoicesList),
-                  ],
-                ),
-
-                // Floating Action Button (+ NEW REQUEST)
-                Positioned(
-                  right: 20,
-                  bottom: 20,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF60A5FA), Color(0xFF8B5CF6)],
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF8B5CF6).withValues(alpha: 0.4),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: _navigateToCreateRequest,
-                        borderRadius: BorderRadius.circular(30),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 14,
-                          ),
-                          child: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.add_rounded,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                              Gap(8),
-                              Text(
-                                '+ NEW REQUEST',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                _ServicesTabContent(servicesList: state.servicesList),
+                _OrdersTabContent(ordersList: state.ordersList),
+                _InvoicesTabContent(invoicesList: state.invoicesList),
               ],
             );
           }
 
           return const SizedBox.shrink();
         },
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 70),
+        child: FloatingActionButton.extended(
+          onPressed: _navigateToCreateRequest,
+          backgroundColor: const Color(0xFF00BCE1),
+          elevation: 8,
+          icon: const Icon(
+            Icons.build_rounded,
+            color: Colors.white,
+            size: 20,
+          ),
+          label: const Text(
+            '+ Request Service',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ),
       ),
     );
   }

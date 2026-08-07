@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/widgets/glass_card.dart';
+import '../../../services/presentation/bloc/services_bloc.dart';
+import '../../../services/presentation/pages/create_service_request_page.dart';
 
 class QuickActionItem {
   final String label;
@@ -110,7 +113,19 @@ class _QuickActionTileState extends State<QuickActionTile> {
         onTapDown: (_) => setState(() => _isPressed = true),
         onTapUp: (_) {
           setState(() => _isPressed = false);
-          item.onTap?.call();
+          if (item.onTap != null) {
+            item.onTap!();
+          } else if (item.label == 'Request Service' || item.label == 'Book Service') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => BlocProvider.value(
+                  value: context.read<ServicesBloc>(),
+                  child: const CreateServiceRequestPage(),
+                ),
+              ),
+            );
+          }
         },
         onTapCancel: () => setState(() => _isPressed = false),
         child: GlassCard(

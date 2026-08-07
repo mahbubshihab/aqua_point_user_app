@@ -5,6 +5,8 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../inbox_support/presentation/pages/help_support_page.dart';
 import '../../../profile_rewards/presentation/pages/profile_page.dart';
 import '../../../profile_rewards/presentation/pages/reward_points_page.dart';
+import '../../../services/presentation/bloc/services_bloc.dart';
+import '../../../services/presentation/pages/create_service_request_page.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
@@ -97,7 +99,15 @@ class HomePage extends StatelessWidget {
                                 gradientColors: const [Color(0xFF1D4ED8), Color(0xFF00E5FF)],
                                 glowColor: const Color(0x5500E5FF),
                                 onTap: () {
-                                  context.read<HomeBloc>().add(const SelectTab(1));
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => BlocProvider.value(
+                                        value: context.read<ServicesBloc>(),
+                                        child: const CreateServiceRequestPage(),
+                                      ),
+                                    ),
+                                  );
                                 },
                               ),
                               QuickActionItem(
@@ -150,7 +160,45 @@ class HomePage extends StatelessWidget {
                           const Gap(14),
                           WaterQualityCard(waterQuality: state.waterQuality),
                           const Gap(14),
-                          const ServicesGrid(),
+                          ServicesGrid(
+                            services: [
+                              ServiceTileData(
+                                title: 'Schedule Service',
+                                description: 'Filter replacement & maintenance',
+                                icon: Icons.calendar_month_outlined,
+                                color: AppColors.primary,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => BlocProvider.value(
+                                        value: context.read<ServicesBloc>(),
+                                        child: const CreateServiceRequestPage(),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              const ServiceTileData(
+                                title: 'Water Reminder',
+                                description: 'Stay hydrated with alerts',
+                                icon: Icons.alarm_rounded,
+                                color: AppColors.accentGreen,
+                              ),
+                              const ServiceTileData(
+                                title: 'Store Locator',
+                                description: 'Find nearest Aqua Point branch',
+                                icon: Icons.location_on_outlined,
+                                color: AppColors.accentYellow,
+                              ),
+                              const ServiceTileData(
+                                title: 'Transaction History',
+                                description: 'View orders and bills',
+                                icon: Icons.history_edu_rounded,
+                                color: Color(0xFFA855F7),
+                              ),
+                            ],
+                          ),
                           const Gap(14),
                           BlogsNewsSection(blogs: state.blogs),
                           const Gap(14),
