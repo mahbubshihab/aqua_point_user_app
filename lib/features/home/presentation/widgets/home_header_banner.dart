@@ -197,7 +197,7 @@ class HomeHeaderBanner extends StatelessWidget {
                 padding: const EdgeInsets.all(2.5),
                 child: ClipOval(
                   child: Image.asset(
-                    'assets/images/app_logo.jpg',
+                    'assets/images/app_logo.png',
                     fit: BoxFit.cover,
                   ),
                 ),

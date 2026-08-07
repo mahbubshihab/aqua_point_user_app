@@ -134,7 +134,7 @@ class _ProductsPageState extends State<ProductsPage> {
                           border: Border.all(color: AppColors.divider),
                         ),
                         child: const Icon(
-                          Icons.water_drop_outlined,
+                          Icons.inventory_2_outlined,
                           size: 48,
                           color: AppColors.textSecondary,
                         ),

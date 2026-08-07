@@ -223,22 +223,19 @@ class ReferWinPage extends StatelessWidget {
 
                 _buildStepItem(
                   stepNumber: 1,
-                  title: 'Share link/code',
-                  description: 'Send your unique referral code or link to your friends.',
+                  text: 'Share your link or code with your friends.',
                   icon: Icons.send_rounded,
                 ),
                 const SizedBox(height: 14),
                 _buildStepItem(
                   stepNumber: 2,
-                  title: 'They sign up',
-                  description: 'Your friend registers on Meem Water app using your code.',
+                  text: 'They sign up using your referral link.',
                   icon: Icons.person_add_alt_1_rounded,
                 ),
                 const SizedBox(height: 14),
                 _buildStepItem(
                   stepNumber: 3,
-                  title: 'Receive 50 points',
-                  description: 'Both of you get 50 bonus reward points added to your account.',
+                  text: 'You receive 50 reward points instantly!',
                   icon: Icons.stars_rounded,
                   iconColor: AppColors.accentYellow,
                 ),
@@ -253,13 +250,12 @@ class ReferWinPage extends StatelessWidget {
 
   Widget _buildStepItem({
     required int stepNumber,
-    required String title,
-    required String description,
+    required String text,
     required IconData icon,
     Color iconColor = AppColors.primary,
   }) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(16),
@@ -268,41 +264,35 @@ class ReferWinPage extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 42,
-            height: 42,
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
-              color: iconColor.withValues(alpha: 0.15),
+              color: AppColors.inputFill,
               shape: BoxShape.circle,
             ),
             child: Center(
-              child: Icon(icon, color: iconColor, size: 22),
+              child: Text(
+                '$stepNumber',
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 14),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Step $stepNumber: $title',
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  description,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textSecondary,
-                    height: 1.3,
-                  ),
-                ),
-              ],
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
+          Icon(icon, color: AppColors.textSecondary, size: 20),
         ],
       ),
     );
