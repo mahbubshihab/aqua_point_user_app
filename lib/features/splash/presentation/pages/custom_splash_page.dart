@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/glass_card.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_state.dart';
+import '../../../auth/presentation/pages/login_page.dart';
 import '../../../home/presentation/pages/main_shell_page.dart';
 
 class CustomSplashPage extends StatefulWidget {
@@ -43,13 +47,17 @@ class _CustomSplashPageState extends State<CustomSplashPage>
   }
 
   void _navigateToNext() async {
-    await Future.delayed(const Duration(milliseconds: 800));
+    await Future.delayed(const Duration(milliseconds: 1000));
     if (!mounted) return;
+
+    final authState = context.read<AuthBloc>().state;
+    final Widget targetPage = (authState is Authenticated)
+        ? const MainShellPage()
+        : const LoginPage();
 
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const MainShellPage(),
+        pageBuilder: (context, animation, secondaryAnimation) => targetPage,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(
             opacity: animation,

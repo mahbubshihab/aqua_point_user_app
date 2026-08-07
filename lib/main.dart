@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/constants/app_constants.dart';
+import 'core/services/bulk_sms_service.dart';
 import 'core/theme/app_theme.dart';
+import 'features/auth/data/datasources/auth_local_datasource.dart';
+import 'features/auth/data/datasources/auth_remote_datasource.dart';
+import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/auth/presentation/bloc/auth_event.dart';
 import 'features/home/data/datasources/home_remote_datasource.dart';
 import 'features/home/data/repositories/home_repository_impl.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
@@ -78,6 +83,13 @@ class MyApp extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
+          BlocProvider<AuthBloc>(
+            create: (context) => AuthBloc(
+              bulkSmsService: BulkSmsService(),
+              localDatasource: AuthLocalDatasource(),
+              remoteDatasource: AuthRemoteDatasource(),
+            )..add(const CheckAuthStatus()),
+          ),
           BlocProvider<CartBloc>(
             create: (context) => CartBloc(),
           ),

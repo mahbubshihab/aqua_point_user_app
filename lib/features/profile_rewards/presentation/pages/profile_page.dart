@@ -13,6 +13,9 @@ import '../bloc/profile_rewards_event.dart';
 import '../bloc/profile_rewards_state.dart';
 import 'personal_info_page.dart';
 import 'reward_points_page.dart';
+import '../../../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../../../features/auth/presentation/bloc/auth_event.dart';
+import '../../../../features/auth/presentation/pages/login_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -363,7 +366,13 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               onPressed: () {
                 context.read<ProfileRewardsBloc>().add(const LogoutUser());
+                context.read<AuthBloc>().add(const LogoutEvent());
                 Navigator.pop(dialogContext);
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginPage()),
+                  (route) => false,
+                );
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Successfully logged out')),
                 );
