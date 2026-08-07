@@ -28,9 +28,9 @@ class ProductsRemoteDatasourceImpl implements ProductsRemoteDatasource {
   Future<List<ProductEntity>> fetchProducts({String? targetCategory}) async {
     Query<Map<String, dynamic>> query = firestore.collection('products');
     if (targetCategory != null && targetCategory.isNotEmpty && targetCategory != 'All') {
-      query = query.where('categoryId', isEqualTo: targetCategory);
+      query = query.where('category', isEqualTo: targetCategory);
     }
-    final snapshot = await query.limit(15).get();
+    final snapshot = await query.get();
 
     return snapshot.docs.map((docSnap) {
       final data = docSnap.data();
@@ -46,11 +46,11 @@ class ProductsRemoteDatasourceImpl implements ProductsRemoteDatasource {
         warrantyDetails: data['warranty'] ?? data['warrantyDetails'] ?? '1 Year Official Warranty',
         purchaseDate: data['createdAt'] != null ? data['createdAt'].toString() : 'Available',
         isCustom: data['isCustom'] ?? false,
-        price: rawPrice != null ? (rawPrice as num).toDouble() : 1999.0,
+        price: rawPrice != null ? (rawPrice as num).toDouble() : 0.0,
         originalPrice: rawOrigPrice != null ? (rawOrigPrice as num).toDouble() : null,
         category: data['category'] ?? data['categoryId'] ?? 'RO Water Purifiers',
         rating: rawRating != null ? (rawRating as num).toDouble() : 4.8,
-        reviewsCount: rawReviews != null ? (rawReviews as num).toInt() : 42,
+        reviewsCount: rawReviews != null ? (rawReviews as num).toInt() : 0,
         description: data['description'] ?? 'High quality water purification system and parts.',
         inStock: data['inStock'] ?? true,
       );

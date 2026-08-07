@@ -18,9 +18,22 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   ) async {
     emit(const ProductsLoading());
     try {
+      final shopProducts = await repository.getProducts();
       final customProducts = await repository.getCustomProducts();
       final categories = await repository.getCategories();
-      emit(ProductsLoaded(customProducts, categories: categories));
+
+      // De-duplicate products by ID if custom and shop overlap
+      final Set<String> seenIds = {};
+      final List<ProductEntity> allProducts = [];
+
+      for (final p in [...shopProducts, ...customProducts]) {
+        if (!seenIds.contains(p.id)) {
+          seenIds.add(p.id);
+          allProducts.add(p);
+        }
+      }
+
+      emit(ProductsLoaded(allProducts, categories: categories));
     } catch (e) {
       emit(ProductsError(e.toString()));
     }
@@ -63,9 +76,18 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       await repository.addProduct(product);
       emit(const ProductAddSuccess());
 
-      final updatedList = await repository.getCustomProducts();
+      final shopProducts = await repository.getProducts();
+      final updatedCustom = await repository.getCustomProducts();
       final categories = await repository.getCategories();
-      emit(ProductsLoaded(updatedList, categories: categories));
+      final Set<String> seenIds = {};
+      final List<ProductEntity> allProducts = [];
+      for (final p in [...shopProducts, ...updatedCustom]) {
+        if (!seenIds.contains(p.id)) {
+          seenIds.add(p.id);
+          allProducts.add(p);
+        }
+      }
+      emit(ProductsLoaded(allProducts, categories: categories));
     } catch (e) {
       emit(ProductsError(e.toString()));
     }

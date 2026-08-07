@@ -5,6 +5,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/stat_badge.dart';
 import '../../../orders/presentation/bloc/cart_bloc.dart';
+import '../../../orders/presentation/pages/cart_page.dart';
 import '../../../orders/presentation/pages/checkout_page.dart';
 import '../../domain/entities/product_entity.dart';
 import '../pages/product_detail_page.dart';
@@ -58,7 +59,7 @@ class ProductItemCard extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const CheckoutPage()),
+              MaterialPageRoute(builder: (_) => const CartPage()),
             );
           },
         ),

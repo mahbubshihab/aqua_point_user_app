@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../orders/presentation/bloc/cart_bloc.dart';
+import '../../../orders/presentation/pages/cart_page.dart';
 import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/product_entity.dart';
 import '../bloc/products_bloc.dart';
 import '../bloc/products_event.dart';
 import '../bloc/products_state.dart';
-import '../cart_manager.dart';
-import '../widgets/cart_bottom_sheet.dart';
 import '../widgets/shop_product_card.dart';
 import 'category_shop_page.dart';
 
@@ -62,15 +62,19 @@ class _ShopPageState extends State<ShopPage> {
         ),
         actions: [
           // Cart Icon Button with Counter Badge
-          ListenableBuilder(
-            listenable: CartManager.instance,
-            builder: (context, _) {
-              final count = CartManager.instance.totalItemCount;
+          BlocBuilder<CartBloc, CartState>(
+            builder: (context, cartState) {
+              final count = cartState.totalItemCount;
               return Stack(
                 alignment: Alignment.center,
                 children: [
                   IconButton(
-                    onPressed: () => CartBottomSheet.show(context),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const CartPage()),
+                      );
+                    },
                     icon: const Icon(Icons.shopping_bag_outlined, color: Colors.white, size: 24),
                   ),
                   if (count > 0)
@@ -149,9 +153,9 @@ class _ShopPageState extends State<ShopPage> {
                     child: Container(
                       height: 46,
                       decoration: BoxDecoration(
-                        color: AppColors.cardBackground,
+                        color: const Color(0xB31E293B),
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppColors.divider),
+                        border: Border.all(color: const Color(0x80334155)),
                       ),
                       child: TextField(
                         controller: _searchController,
@@ -394,7 +398,7 @@ class _ShopPageState extends State<ShopPage> {
       // Horizontal Product List
       sectionWidgets.add(
         SizedBox(
-          height: 275,
+          height: 290,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),

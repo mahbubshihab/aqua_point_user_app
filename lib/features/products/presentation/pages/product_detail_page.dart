@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/stat_badge.dart';
 import '../../../orders/presentation/bloc/cart_bloc.dart';
+import '../../../orders/presentation/pages/cart_page.dart';
 import '../../../orders/presentation/pages/checkout_page.dart';
 import '../../domain/entities/product_entity.dart';
 
@@ -61,7 +62,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const CheckoutPage()),
+              MaterialPageRoute(builder: (_) => const CartPage()),
             );
           },
         ),
@@ -117,7 +118,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const CheckoutPage()),
+                        MaterialPageRoute(builder: (_) => const CartPage()),
                       );
                     },
                   ),

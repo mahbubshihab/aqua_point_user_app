@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../orders/presentation/bloc/cart_bloc.dart';
-import '../../../orders/presentation/pages/checkout_page.dart';
+import '../../../orders/presentation/pages/cart_page.dart';
 import '../bloc/products_bloc.dart';
 import '../bloc/products_event.dart';
 import '../bloc/products_state.dart';
@@ -54,7 +54,7 @@ class _ProductsPageState extends State<ProductsPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const CheckoutPage()),
+                        MaterialPageRoute(builder: (_) => const CartPage()),
                       );
                     },
                   ),

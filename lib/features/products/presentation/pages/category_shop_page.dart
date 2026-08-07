@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/entities/product_entity.dart';
-import '../cart_manager.dart';
-import '../widgets/cart_bottom_sheet.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../orders/presentation/bloc/cart_bloc.dart';
+import '../../../orders/presentation/pages/cart_page.dart';
 import '../widgets/shop_product_card.dart';
 
 class CategoryShopPage extends StatefulWidget {
@@ -80,15 +81,19 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
         ),
         actions: [
           // Cart Icon Button with Badge
-          ListenableBuilder(
-            listenable: CartManager.instance,
-            builder: (context, _) {
-              final count = CartManager.instance.totalItemCount;
+          BlocBuilder<CartBloc, CartState>(
+            builder: (context, cartState) {
+              final count = cartState.totalItemCount;
               return Stack(
                 alignment: Alignment.center,
                 children: [
                   IconButton(
-                    onPressed: () => CartBottomSheet.show(context),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const CartPage()),
+                      );
+                    },
                     icon: const Icon(Icons.shopping_bag_outlined, color: Colors.white, size: 24),
                   ),
                   if (count > 0)
@@ -136,9 +141,9 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                     child: Container(
                       height: 44,
                       decoration: BoxDecoration(
-                        color: AppColors.cardBackground,
+                        color: const Color(0xB31E293B),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.divider),
+                        border: Border.all(color: const Color(0x80334155)),
                       ),
                       child: TextField(
                         controller: _searchController,
@@ -151,7 +156,7 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                         decoration: InputDecoration(
                           hintText: 'Search in ${widget.categoryName}...',
                           hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 12.5),
-                          prefixIcon: const Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 20),
+                          prefixIcon: const Icon(Icons.search_rounded, color: AppColors.primary, size: 20),
                           suffixIcon: _searchQuery.isNotEmpty
                               ? GestureDetector(
                                   onTap: () {
@@ -175,14 +180,14 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                     height: 44,
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
-                      color: AppColors.cardBackground,
+                      color: const Color(0xB31E293B),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                      border: Border.all(color: const Color(0x8000BCE1)),
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: _sortBy,
-                        dropdownColor: AppColors.cardBackground,
+                        dropdownColor: const Color(0xFF1E293B),
                         icon: const Icon(Icons.tune_rounded, color: AppColors.primary, size: 18),
                         style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
                         items: ['Featured', 'Price: Low to High', 'Price: High to Low', 'Top Rated']
@@ -243,7 +248,7 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                       padding: const EdgeInsets.all(16),
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
-                        childAspectRatio: 0.65,
+                        childAspectRatio: 0.57,
                         crossAxisSpacing: 14,
                         mainAxisSpacing: 14,
                       ),
