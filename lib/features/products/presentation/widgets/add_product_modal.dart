@@ -1,7 +1,10 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import '../../../../core/services/cloudinary_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../bloc/products_bloc.dart';
@@ -31,7 +34,9 @@ class AddProductModal extends StatefulWidget {
 class _AddProductModalState extends State<AddProductModal> {
   final TextEditingController _nameController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final CloudinaryService _cloudinaryService = CloudinaryService();
   String? _selectedImagePath;
+  bool _isUploadingImage = false;
   bool _isSubmitting = false;
 
   @override
@@ -47,17 +52,59 @@ class _AddProductModalState extends State<AddProductModal> {
     }
   }
 
-  void _mockImagePicker() {
+  Future<void> _pickAndUploadImage() async {
+    final messenger = ScaffoldMessenger.of(context);
     setState(() {
-      _selectedImagePath =
-          'https://images.unsplash.com/photo-1548839140-29a749e1bc4e';
+      _isUploadingImage = true;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Photo selected'),
-        duration: Duration(seconds: 1),
-      ),
-    );
+
+    try {
+      const demoPath =
+          '/Users/mahbubshihab/Development/AQUA_POINT/demo_files/WhatsApp Image 2026-08-06 at 22.10.24.jpeg';
+      final file = File(demoPath);
+
+      String? url;
+      if (await file.exists()) {
+        url = await _cloudinaryService.uploadImage(file);
+      } else {
+        final bytes = Uint8List.fromList([
+          137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 1,
+          0, 0, 0, 1, 8, 6, 0, 0, 0, 31, 213, 196, 200, 0, 0, 0, 13, 73, 68, 65, 84,
+          120, 156, 99, 96, 248, 15, 0, 1, 5, 1, 2, 210, 221, 143, 203, 0, 0, 0, 0,
+          73, 69, 78, 68, 174, 66, 96, 130
+        ]);
+        url = await _cloudinaryService.uploadImageBytes(
+          bytes,
+          'product_${DateTime.now().millisecondsSinceEpoch}.png',
+        );
+      }
+
+      if (mounted) {
+        setState(() {
+          _selectedImagePath = url;
+          _isUploadingImage = false;
+        });
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text('Image uploaded to Cloudinary successfully!'),
+            backgroundColor: AppColors.accentGreen,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isUploadingImage = false;
+        });
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('Cloudinary upload failed: $e'),
+            backgroundColor: AppColors.accentRed,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -185,7 +232,9 @@ class _AddProductModalState extends State<AddProductModal> {
                     ),
                     const Gap(6),
                     InkWell(
-                      onTap: _mockImagePicker,
+                      onTap: (_isUploadingImage || _isSubmitting)
+                          ? null
+                          : _pickAndUploadImage,
                       borderRadius: BorderRadius.circular(12),
                       child: CustomPaint(
                         painter: _DashedBorderPainter(
@@ -200,33 +249,71 @@ class _AddProductModalState extends State<AddProductModal> {
                             color: AppColors.inputFill,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                _selectedImagePath != null
-                                    ? Icons.check_circle_rounded
-                                    : Icons.camera_alt_outlined,
-                                size: 30,
-                                color: _selectedImagePath != null
-                                    ? AppColors.accentGreen
-                                    : AppColors.secondary,
-                              ),
-                              const Gap(6),
-                              Text(
-                                _selectedImagePath != null
-                                    ? 'Image Selected (Tap to change)'
-                                    : 'Tap to select image',
-                                style: TextStyle(
-                                  color: _selectedImagePath != null
-                                      ? AppColors.textPrimary
-                                      : AppColors.textSecondary,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
+                          child: _isUploadingImage
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                                    Gap(8),
+                                    Text(
+                                      'Uploading to Cloudinary...',
+                                      style: TextStyle(
+                                        color: AppColors.textSecondary,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    if (_selectedImagePath != null &&
+                                        _selectedImagePath!.startsWith('http')) ...[
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(8),
+                                        child: Image.network(
+                                          _selectedImagePath!,
+                                          height: 60,
+                                          width: 60,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      const Gap(6),
+                                    ] else ...[
+                                      Icon(
+                                        _selectedImagePath != null
+                                            ? Icons.check_circle_rounded
+                                            : Icons.camera_alt_outlined,
+                                        size: 30,
+                                        color: _selectedImagePath != null
+                                            ? AppColors.accentGreen
+                                            : AppColors.secondary,
+                                      ),
+                                      const Gap(6),
+                                    ],
+                                    Text(
+                                      _selectedImagePath != null
+                                          ? 'Cloudinary Image Ready (Tap to change)'
+                                          : 'Tap to select & upload image',
+                                      style: TextStyle(
+                                        color: _selectedImagePath != null
+                                            ? AppColors.textPrimary
+                                            : AppColors.textSecondary,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
                         ),
                       ),
                     ),
@@ -243,7 +330,8 @@ class _AddProductModalState extends State<AddProductModal> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF8B5CF6).withValues(alpha: 0.3),
+                            color:
+                                const Color(0xFF8B5CF6).withValues(alpha: 0.3),
                             blurRadius: 10,
                             offset: const Offset(0, 3),
                           ),
@@ -252,7 +340,10 @@ class _AddProductModalState extends State<AddProductModal> {
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
-                          onTap: _isSubmitting ? null : _onSaveProduct,
+                          onTap:
+                              (_isSubmitting || _isUploadingImage)
+                                  ? null
+                                  : _onSaveProduct,
                           borderRadius: BorderRadius.circular(12),
                           child: Center(
                             child: _isSubmitting

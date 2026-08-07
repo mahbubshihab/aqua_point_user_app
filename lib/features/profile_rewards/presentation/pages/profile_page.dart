@@ -1,17 +1,88 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/services/cloudinary_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../inbox_support/presentation/pages/help_support_page.dart';
 import '../../../inbox_support/presentation/pages/refer_win_page.dart';
+import '../../domain/entities/user_profile_entity.dart';
 import '../bloc/profile_rewards_bloc.dart';
 import '../bloc/profile_rewards_event.dart';
 import '../bloc/profile_rewards_state.dart';
 import 'personal_info_page.dart';
 import 'reward_points_page.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  bool _isUploadingAvatar = false;
+  final CloudinaryService _cloudinaryService = CloudinaryService();
+
+  Future<void> _pickAndUploadAvatar(
+      BuildContext context, UserProfileEntity profile) async {
+    final bloc = context.read<ProfileRewardsBloc>();
+    final messenger = ScaffoldMessenger.of(context);
+
+    setState(() {
+      _isUploadingAvatar = true;
+    });
+
+    try {
+      const demoPath =
+          '/Users/mahbubshihab/Development/AQUA_POINT/demo_files/WhatsApp Image 2026-08-06 at 22.10.25 (1).jpeg';
+      final file = File(demoPath);
+
+      String? url;
+      if (await file.exists()) {
+        url = await _cloudinaryService.uploadImage(file);
+      } else {
+        final bytes = Uint8List.fromList([
+          137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 1,
+          0, 0, 0, 1, 8, 6, 0, 0, 0, 31, 213, 196, 200, 0, 0, 0, 13, 73, 68, 65, 84,
+          120, 156, 99, 96, 248, 15, 0, 1, 5, 1, 2, 210, 221, 143, 203, 0, 0, 0, 0,
+          73, 69, 78, 68, 174, 66, 96, 130
+        ]);
+        url = await _cloudinaryService.uploadImageBytes(
+          bytes,
+          'avatar_${DateTime.now().millisecondsSinceEpoch}.png',
+        );
+      }
+
+      if (url != null && mounted) {
+        bloc.add(
+          UpdateProfile(profile: profile.copyWith(avatarUrl: url)),
+        );
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text('Avatar uploaded & updated via Cloudinary!'),
+            backgroundColor: AppColors.accentGreen,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('Avatar upload failed: $e'),
+            backgroundColor: AppColors.accentRed,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isUploadingAvatar = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +92,8 @@ class ProfilePage extends StatelessWidget {
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textPrimary),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded,
+              color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -34,7 +106,8 @@ class ProfilePage extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings_outlined, color: AppColors.textPrimary),
+            icon: const Icon(Icons.settings_outlined,
+                color: AppColors.textPrimary),
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Settings tapped')),
@@ -47,9 +120,11 @@ class ProfilePage extends StatelessWidget {
         builder: (context, state) {
           String name = 'Customer';
           String initial = 'C';
+          UserProfileEntity? userProfile;
 
           if (state is ProfileRewardsLoaded) {
-            name = state.userProfile.name;
+            userProfile = state.userProfile;
+            name = userProfile.name;
             if (name.isNotEmpty) {
               initial = name[0].toUpperCase();
             }
@@ -62,41 +137,63 @@ class ProfilePage extends StatelessWidget {
                 const SizedBox(height: 8),
                 // Center Avatar
                 Center(
-                  child: Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(3),
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.divider,
-                        ),
-                        child: CircleAvatar(
-                          radius: 38,
-                          backgroundColor: AppColors.cardBackground,
-                          child: Text(
-                            initial,
-                            style: const TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
-                            ),
+                  child: GestureDetector(
+                    onTap: (_isUploadingAvatar || userProfile == null)
+                        ? null
+                        : () => _pickAndUploadAvatar(context, userProfile!),
+                    child: Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.divider,
+                          ),
+                          child: CircleAvatar(
+                            radius: 38,
+                            backgroundColor: AppColors.cardBackground,
+                            backgroundImage: (userProfile?.avatarUrl != null &&
+                                    userProfile!.avatarUrl.startsWith('http'))
+                                ? NetworkImage(userProfile.avatarUrl)
+                                : null,
+                            child: _isUploadingAvatar
+                                ? const SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: AppColors.primary,
+                                    ),
+                                  )
+                                : (userProfile?.avatarUrl != null &&
+                                        userProfile!.avatarUrl
+                                            .startsWith('http'))
+                                    ? null
+                                    : Text(
+                                        initial,
+                                        style: const TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.textPrimary,
+                                        ),
+                                      ),
                           ),
                         ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
+                        Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt_outlined,
+                            size: 14,
+                            color: Colors.black87,
+                          ),
                         ),
-                        child: const Icon(
-                          Icons.camera_alt_outlined,
-                          size: 14,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -120,7 +217,8 @@ class ProfilePage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const PersonalInfoPage()),
+                      MaterialPageRoute(
+                          builder: (_) => const PersonalInfoPage()),
                     );
                   },
                 ),
@@ -134,7 +232,8 @@ class ProfilePage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const RewardPointsPage()),
+                      MaterialPageRoute(
+                          builder: (_) => const RewardPointsPage()),
                     );
                   },
                 ),
@@ -162,7 +261,8 @@ class ProfilePage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const HelpSupportPage()),
+                      MaterialPageRoute(
+                          builder: (_) => const HelpSupportPage()),
                     );
                   },
                 ),
@@ -199,7 +299,8 @@ class ProfilePage extends StatelessWidget {
       padding: EdgeInsets.zero,
       borderRadius: 14,
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
         onTap: onTap,
         leading: Container(
           padding: const EdgeInsets.all(8),
@@ -240,7 +341,8 @@ class ProfilePage extends StatelessWidget {
           backgroundColor: AppColors.cardBackground,
           title: const Text(
             'Logout',
-            style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: AppColors.textPrimary, fontWeight: FontWeight.bold),
           ),
           content: const Text(
             'Are you sure you want to sign out from your account?',
@@ -249,7 +351,8 @@ class ProfilePage extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+              child: const Text('Cancel',
+                  style: TextStyle(color: AppColors.textSecondary)),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
