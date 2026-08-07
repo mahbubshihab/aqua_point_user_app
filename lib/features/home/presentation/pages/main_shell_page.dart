@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../products/presentation/pages/products_page.dart';
 import '../../../services/presentation/pages/services_history_page.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
@@ -22,7 +23,7 @@ class MainShellPage extends StatelessWidget {
             children: const [
               HomePage(),
               ServicesHistoryPage(),
-              _PlaceholderTab(title: 'Products'),
+              ProductsPage(),
               _PlaceholderTab(title: 'Inbox'),
             ],
           ),

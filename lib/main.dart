@@ -7,6 +7,11 @@ import 'features/home/data/repositories/home_repository_impl.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
 import 'features/home/presentation/bloc/home_event.dart';
 import 'features/home/presentation/pages/main_shell_page.dart';
+import 'features/products/data/datasources/products_mock_datasource.dart';
+import 'features/products/data/repositories/products_repository_impl.dart';
+import 'features/products/domain/repositories/products_repository.dart';
+import 'features/products/presentation/bloc/products_bloc.dart';
+import 'features/products/presentation/bloc/products_event.dart';
 import 'features/services/data/datasources/services_mock_datasource.dart';
 import 'features/services/data/repositories/services_repository_impl.dart';
 import 'features/services/domain/repositories/services_repository.dart';
@@ -28,9 +33,19 @@ class MyApp extends StatelessWidget {
     final servicesRepository = ServicesRepositoryImpl(
       datasource: ServicesMockDatasource(),
     );
+    final productsRepository = ProductsRepositoryImpl(
+      datasource: ProductsMockDatasource(),
+    );
 
-    return RepositoryProvider<ServicesRepository>.value(
-      value: servicesRepository,
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<ServicesRepository>.value(
+          value: servicesRepository,
+        ),
+        RepositoryProvider<ProductsRepository>.value(
+          value: productsRepository,
+        ),
+      ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider<HomeBloc>(
@@ -40,6 +55,10 @@ class MyApp extends StatelessWidget {
           BlocProvider<ServicesBloc>(
             create: (context) => ServicesBloc(repository: servicesRepository)
               ..add(const LoadServicesHistory()),
+          ),
+          BlocProvider<ProductsBloc>(
+            create: (context) => ProductsBloc(repository: productsRepository)
+              ..add(const LoadProducts()),
           ),
         ],
         child: MaterialApp(
