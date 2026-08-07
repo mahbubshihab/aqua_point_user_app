@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../domain/entities/banner_entity.dart';
+import '../../domain/entities/company_info_entity.dart';
 import '../../domain/repositories/home_repository.dart';
 import 'home_event.dart';
 import 'home_state.dart';
@@ -19,12 +21,28 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) async {
     emit(const HomeLoading());
     try {
+      List<BannerEntity> banners = [];
+      try {
+        banners = await repository.getBanners();
+      } catch (_) {
+        banners = [];
+      }
+
+      CompanyInfoEntity companyInfo;
+      try {
+        companyInfo = await repository.getCompanyInfo();
+      } catch (_) {
+        companyInfo = const CompanyInfoEntity();
+      }
+
       final hydration = await repository.getHydrationData();
       final waterQuality = await repository.getWaterQualityData();
       final blogs = await repository.getBlogs();
 
       emit(HomeLoaded(
         tabIndex: 0,
+        banners: banners,
+        companyInfo: companyInfo,
         hydration: hydration,
         waterQuality: waterQuality,
         blogs: blogs,
