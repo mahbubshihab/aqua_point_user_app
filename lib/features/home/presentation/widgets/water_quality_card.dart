@@ -15,8 +15,8 @@ class WaterQualityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassCard(
-      padding: const EdgeInsets.all(14),
-      borderRadius: 16,
+      padding: const EdgeInsets.all(18),
+      borderRadius: 18,
       borderColor: AppColors.primary.withValues(alpha: 0.35),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,7 +46,7 @@ class WaterQualityCard extends StatelessWidget {
                   const Text(
                     'Water Quality',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 15,
                       fontWeight: FontWeight.bold,
                       color: AppColors.textPrimary,
                       letterSpacing: 0.2,
@@ -58,9 +58,9 @@ class WaterQualityCard extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
 
-          // Large Electric Cyan TDS Numeric Display
+          // Large Bold Electric Cyan TDS Numeric Display
           Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
@@ -68,17 +68,17 @@ class WaterQualityCard extends StatelessWidget {
               Text(
                 '${waterQuality.tds}',
                 style: const TextStyle(
-                  fontSize: 32,
+                  fontSize: 36,
                   fontWeight: FontWeight.w900,
                   color: AppColors.primary,
                   letterSpacing: -0.5,
                 ),
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: 8),
               const Text(
                 'TDS',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textSecondary,
                   letterSpacing: 0.5,
@@ -87,28 +87,31 @@ class WaterQualityCard extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 14),
 
-          // 3 Minimal Metric Pills: Iron: 0.05, pH: 7.2, Hardness: Low
+          // 3 Spacious Sub-Metric Boxes: Iron: 0.05, pH: 7.2, Hardness: Low
           Row(
             children: [
               Expanded(
-                child: _MinimalMetricPill(
-                  label: 'Iron: ${waterQuality.iron}',
+                child: _SpaciousMetricBox(
+                  label: 'Iron',
+                  value: '${waterQuality.iron}',
                   accentColor: AppColors.primary,
                 ),
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: 8),
               Expanded(
-                child: _MinimalMetricPill(
-                  label: 'pH: ${waterQuality.ph}',
+                child: _SpaciousMetricBox(
+                  label: 'pH',
+                  value: '${waterQuality.ph}',
                   accentColor: AppColors.accentGreen,
                 ),
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: 8),
               Expanded(
-                child: _MinimalMetricPill(
-                  label: 'Hardness: ${waterQuality.hardness}',
+                child: _SpaciousMetricBox(
+                  label: 'Hardness',
+                  value: waterQuality.hardness,
                   accentColor: AppColors.accentGold,
                 ),
               ),
@@ -120,40 +123,52 @@ class WaterQualityCard extends StatelessWidget {
   }
 }
 
-class _MinimalMetricPill extends StatelessWidget {
+class _SpaciousMetricBox extends StatelessWidget {
   final String label;
+  final String value;
   final Color accentColor;
 
-  const _MinimalMetricPill({
+  const _SpaciousMetricBox({
     required this.label,
+    required this.value,
     required this.accentColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
       decoration: BoxDecoration(
-        color: AppColors.background.withValues(alpha: 0.6),
-        borderRadius: BorderRadius.circular(10),
+        color: AppColors.background.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppColors.divider,
+          color: accentColor.withValues(alpha: 0.25),
           width: 1,
         ),
       ),
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Text(
-          label,
-          textAlign: TextAlign.center,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
+      child: Column(
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textSecondary,
+            ),
           ),
-        ),
+          const SizedBox(height: 4),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

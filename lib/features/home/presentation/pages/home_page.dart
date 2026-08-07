@@ -76,7 +76,7 @@ class HomePage extends StatelessWidget {
                         );
                       },
                     ),
-                    const Gap(12),
+                    const Gap(18),
 
                     // Content below header banner with horizontal padding
                     Padding(
@@ -124,11 +124,11 @@ class HomePage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          const Gap(12),
+                          const Gap(18),
 
                           // My Products Section
                           const MyProductsSection(),
-                          const Gap(12),
+                          const Gap(18),
 
                           // Hydration Tracker Widget
                           HydrationTrackerWidget(
@@ -140,19 +140,19 @@ class HomePage extends StatelessWidget {
                               context.read<HomeBloc>().add(const DecrementHydration());
                             },
                           ),
-                          const Gap(12),
+                          const Gap(18),
 
                           // Water Quality Card
                           WaterQualityCard(waterQuality: state.waterQuality),
-                          const Gap(12),
+                          const Gap(18),
 
                           // Services Grid
                           const ServicesGrid(),
-                          const Gap(12),
+                          const Gap(18),
 
                           // Blogs & News Section
                           BlogsNewsSection(blogs: state.blogs),
-                          const Gap(20),
+                          const Gap(24),
 
                           // Footer
                           const Center(
