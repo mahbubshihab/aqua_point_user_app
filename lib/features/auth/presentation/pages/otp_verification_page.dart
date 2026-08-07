@@ -51,6 +51,26 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
     super.initState();
     _currentExpectedOtp = widget.expectedOtp;
     _startResendTimer();
+
+    if (widget.apiMessage != null && widget.apiMessage!.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              widget.apiMessage!,
+              style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+            ),
+            backgroundColor: AppColors.cardBackground,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: const BorderSide(color: AppColors.divider),
+            ),
+          ),
+        );
+      });
+    }
   }
 
   void _startResendTimer() {
@@ -155,6 +175,22 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
           setState(() {
             _currentExpectedOtp = state.expectedOtp;
           });
+          if (state.apiMessage != null && state.apiMessage!.isNotEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  state.apiMessage!,
+                  style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+                ),
+                backgroundColor: AppColors.cardBackground,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: const BorderSide(color: AppColors.divider),
+                ),
+              ),
+            );
+          }
         } else if (state is Authenticated) {
           Navigator.pushAndRemoveUntil(
             context,
@@ -266,28 +302,6 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                           ],
                         ),
                       ),
-
-                      if (widget.apiMessage != null && widget.apiMessage!.isNotEmpty) ...[
-                        const SizedBox(height: 12),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: AppColors.primary.withValues(alpha: 0.3),
-                            ),
-                          ),
-                          child: Text(
-                            widget.apiMessage!,
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.inter(
-                              fontSize: 11.5,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ),
-                      ],
 
                       const SizedBox(height: 36),
 
