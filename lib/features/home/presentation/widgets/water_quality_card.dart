@@ -6,10 +6,12 @@ import '../../domain/entities/water_quality_entity.dart';
 
 class WaterQualityCard extends StatelessWidget {
   final WaterQualityEntity waterQuality;
+  final VoidCallback? onTap;
 
   const WaterQualityCard({
     super.key,
     required this.waterQuality,
+    this.onTap,
   });
 
   @override
@@ -17,6 +19,7 @@ class WaterQualityCard extends StatelessWidget {
     return GlassCard(
       padding: const EdgeInsets.all(18),
       borderRadius: 18,
+      onTap: onTap,
       borderColor: AppColors.primary.withValues(alpha: 0.35),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

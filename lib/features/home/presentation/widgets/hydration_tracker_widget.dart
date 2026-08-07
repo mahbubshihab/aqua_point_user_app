@@ -6,12 +6,14 @@ class HydrationTrackerWidget extends StatelessWidget {
   final HydrationEntity hydration;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
+  final VoidCallback? onTap;
 
   const HydrationTrackerWidget({
     super.key,
     required this.hydration,
     required this.onIncrement,
     required this.onDecrement,
+    this.onTap,
   });
 
   @override
@@ -23,6 +25,7 @@ class HydrationTrackerWidget extends StatelessWidget {
     return GlassCard(
       padding: EdgeInsets.zero,
       borderRadius: 18,
+      onTap: onTap,
       borderColor: const Color(0xFF0284C7).withValues(alpha: 0.5),
       fillColor: Colors.transparent,
       child: Container(

@@ -13,7 +13,12 @@ import '../bloc/services_state.dart';
 import 'create_service_request_page.dart';
 
 class ServicesHistoryPage extends StatefulWidget {
-  const ServicesHistoryPage({super.key});
+  final int initialTabIndex;
+
+  const ServicesHistoryPage({
+    super.key,
+    this.initialTabIndex = 0,
+  });
 
   @override
   State<ServicesHistoryPage> createState() => _ServicesHistoryPageState();
@@ -26,7 +31,11 @@ class _ServicesHistoryPageState extends State<ServicesHistoryPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(
+      length: 3,
+      vsync: this,
+      initialIndex: widget.initialTabIndex,
+    );
     _tabController.addListener(_handleTabSelection);
 
     // Initial load

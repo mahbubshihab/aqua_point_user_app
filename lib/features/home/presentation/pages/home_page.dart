@@ -7,6 +7,11 @@ import '../../../profile_rewards/presentation/pages/profile_page.dart';
 import '../../../profile_rewards/presentation/pages/reward_points_page.dart';
 import '../../../services/presentation/bloc/services_bloc.dart';
 import '../../../services/presentation/pages/create_service_request_page.dart';
+import '../../../services/presentation/pages/services_history_page.dart';
+import '../../../tools/presentation/pages/blogs_news_page.dart';
+import '../../../tools/presentation/pages/store_locator_page.dart';
+import '../../../tools/presentation/pages/tds_meter_page.dart';
+import '../../../tools/presentation/pages/water_reminder_page.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
@@ -127,7 +132,15 @@ class HomePage extends StatelessWidget {
                                 gradientColors: const [Color(0xFFB45309), Color(0xFFF59E0B)],
                                 glowColor: const Color(0x55F59E0B),
                                 onTap: () {
-                                  context.read<HomeBloc>().add(const SelectTab(1));
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => BlocProvider.value(
+                                        value: context.read<ServicesBloc>(),
+                                        child: const ServicesHistoryPage(initialTabIndex: 2),
+                                      ),
+                                    ),
+                                  );
                                 },
                               ),
                               QuickActionItem(
@@ -156,9 +169,25 @@ class HomePage extends StatelessWidget {
                             onDecrement: () {
                               context.read<HomeBloc>().add(const DecrementHydration());
                             },
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => const WaterReminderPage()),
+                              );
+                            },
                           ),
                           const Gap(14),
-                          WaterQualityCard(waterQuality: state.waterQuality),
+                          WaterQualityCard(
+                            waterQuality: state.waterQuality,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => TdsMeterPage(waterQuality: state.waterQuality),
+                                ),
+                              );
+                            },
+                          ),
                           const Gap(14),
                           ServicesGrid(
                             services: [
@@ -179,28 +208,69 @@ class HomePage extends StatelessWidget {
                                   );
                                 },
                               ),
-                              const ServiceTileData(
+                              ServiceTileData(
                                 title: 'Water Reminder',
                                 description: 'Stay hydrated with alerts',
                                 icon: Icons.alarm_rounded,
                                 color: AppColors.accentGreen,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (_) => const WaterReminderPage()),
+                                  );
+                                },
                               ),
-                              const ServiceTileData(
+                              ServiceTileData(
                                 title: 'Store Locator',
                                 description: 'Find nearest Aqua Point branch',
                                 icon: Icons.location_on_outlined,
                                 color: AppColors.accentYellow,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (_) => const StoreLocatorPage()),
+                                  );
+                                },
                               ),
-                              const ServiceTileData(
+                              ServiceTileData(
                                 title: 'Transaction History',
                                 description: 'View orders and bills',
                                 icon: Icons.history_edu_rounded,
-                                color: Color(0xFFA855F7),
+                                color: const Color(0xFFA855F7),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => BlocProvider.value(
+                                        value: context.read<ServicesBloc>(),
+                                        child: const ServicesHistoryPage(initialTabIndex: 1),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           ),
                           const Gap(14),
-                          BlogsNewsSection(blogs: state.blogs),
+                          BlogsNewsSection(
+                            blogs: state.blogs,
+                            onViewAllTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BlogsNewsPage(initialBlogs: state.blogs),
+                                ),
+                              );
+                            },
+                            onBlogTap: (blog) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BlogsNewsPage(initialBlogs: state.blogs),
+                                ),
+                              );
+                            },
+                          ),
                           const Gap(14),
                           HomeFooterWidget(companyInfo: state.companyInfo),
                           const Gap(14),
