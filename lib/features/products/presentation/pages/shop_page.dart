@@ -357,7 +357,7 @@ class _ShopPageState extends State<ShopPage> {
                     MaterialPageRoute(
                       builder: (_) => CategoryShopPage(
                         categoryName: categoryName,
-                        products: allProducts.where((p) => (p.category ?? 'RO Water Purifiers') == categoryName).toList(),
+                        products: categoryMap[categoryName] ?? [],
                       ),
                     ),
                   );

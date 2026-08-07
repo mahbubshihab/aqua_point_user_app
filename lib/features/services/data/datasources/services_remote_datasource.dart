@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../domain/entities/invoice_entity.dart';
 import '../../domain/entities/order_entity.dart';
 import '../../domain/entities/shipping_address_entity.dart';
@@ -16,9 +17,15 @@ abstract class ServicesRemoteDatasource {
 
 class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
   final FirebaseFirestore firestore;
+  final FirebaseAuth auth;
 
-  ServicesRemoteDatasourceImpl({FirebaseFirestore? firestore})
-      : firestore = firestore ?? FirebaseFirestore.instance;
+  ServicesRemoteDatasourceImpl({
+    FirebaseFirestore? firestore,
+    FirebaseAuth? auth,
+  })  : firestore = firestore ?? FirebaseFirestore.instance,
+        auth = auth ?? FirebaseAuth.instance;
+
+  String get _currentUserId => auth.currentUser?.uid ?? 'guest_user';
 
   @override
   Future<List<WaterServiceModel>> getServicesHistory() async {
@@ -26,10 +33,23 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
     try {
       snapshot = await firestore
           .collection('services')
+          .where('userId', isEqualTo: _currentUserId)
           .orderBy('createdAt', descending: true)
+          .limit(15)
           .get();
     } catch (_) {
-      snapshot = await firestore.collection('services').get();
+      try {
+        snapshot = await firestore
+            .collection('services')
+            .where('userId', isEqualTo: _currentUserId)
+            .limit(15)
+            .get();
+      } catch (_) {
+        snapshot = await firestore
+            .collection('services')
+            .limit(15)
+            .get();
+      }
     }
 
     return snapshot.docs
@@ -39,7 +59,29 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
 
   @override
   Future<List<OrderEntity>> getOrdersHistory() async {
-    final snapshot = await firestore.collection('orders').get();
+    QuerySnapshot<Map<String, dynamic>> snapshot;
+    try {
+      snapshot = await firestore
+          .collection('orders')
+          .where('userId', isEqualTo: _currentUserId)
+          .orderBy('createdAt', descending: true)
+          .limit(15)
+          .get();
+    } catch (_) {
+      try {
+        snapshot = await firestore
+            .collection('orders')
+            .where('userId', isEqualTo: _currentUserId)
+            .limit(15)
+            .get();
+      } catch (_) {
+        snapshot = await firestore
+            .collection('orders')
+            .limit(15)
+            .get();
+      }
+    }
+
     return snapshot.docs.map((docSnap) {
       final data = docSnap.data();
       final items = data['items'] as List<dynamic>?;
@@ -62,7 +104,17 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
 
   @override
   Future<List<InvoiceEntity>> getInvoicesHistory() async {
-    final snapshot = await firestore.collection('invoices').get();
+    QuerySnapshot<Map<String, dynamic>> snapshot;
+    try {
+      snapshot = await firestore
+          .collection('invoices')
+          .where('userId', isEqualTo: _currentUserId)
+          .limit(15)
+          .get();
+    } catch (_) {
+      snapshot = await firestore.collection('invoices').limit(15).get();
+    }
+
     return snapshot.docs.map((docSnap) {
       final data = docSnap.data();
       return InvoiceEntity(
@@ -97,7 +149,7 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
 
   @override
   Future<List<String>> getAvailableMachines() async {
-    final snapshot = await firestore.collection('products').get();
+    final snapshot = await firestore.collection('products').limit(15).get();
     if (snapshot.docs.isNotEmpty) {
       return snapshot.docs
           .map((doc) => doc.data()['name']?.toString() ?? 'Aqua Pure RO System')
@@ -113,6 +165,8 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
   @override
   Future<void> submitServiceRequest(WaterServiceEntity request) async {
     final model = WaterServiceModel.fromEntity(request);
-    await firestore.collection('services').add(model.toFirestore());
+    final mapData = model.toFirestore();
+    mapData['userId'] = _currentUserId;
+    await firestore.collection('services').add(mapData);
   }
 }

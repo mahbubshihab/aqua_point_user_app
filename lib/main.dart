@@ -12,12 +12,12 @@ import 'features/inbox_support/data/repositories/inbox_support_repository_impl.d
 import 'features/inbox_support/domain/repositories/inbox_support_repository.dart';
 import 'features/inbox_support/presentation/bloc/inbox_support_bloc.dart';
 import 'features/inbox_support/presentation/bloc/inbox_support_event.dart';
-import 'features/products/data/datasources/products_mock_datasource.dart';
+import 'features/products/data/datasources/products_remote_datasource.dart';
 import 'features/products/data/repositories/products_repository_impl.dart';
 import 'features/products/domain/repositories/products_repository.dart';
 import 'features/products/presentation/bloc/products_bloc.dart';
 import 'features/products/presentation/bloc/products_event.dart';
-import 'features/services/data/datasources/services_mock_datasource.dart';
+import 'features/services/data/datasources/services_remote_datasource.dart';
 import 'features/services/data/repositories/services_repository_impl.dart';
 import 'features/services/domain/repositories/services_repository.dart';
 import 'features/services/presentation/bloc/services_bloc.dart';
@@ -49,10 +49,10 @@ class MyApp extends StatelessWidget {
       datasource: HomeRemoteDatasource(),
     );
     final servicesRepository = ServicesRepositoryImpl(
-      datasource: ServicesMockDatasource(),
+      remoteDatasource: ServicesRemoteDatasourceImpl(),
     );
     final productsRepository = ProductsRepositoryImpl(
-      datasource: ProductsMockDatasource(),
+      remoteDatasource: ProductsRemoteDatasourceImpl(),
     );
     final inboxSupportRepository = InboxSupportRepositoryImpl(
       datasource: InboxSupportMockDatasource(),

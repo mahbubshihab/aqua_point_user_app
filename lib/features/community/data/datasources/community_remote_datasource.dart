@@ -23,22 +23,31 @@ class CommunityRemoteDatasourceImpl implements CommunityRemoteDatasource {
 
   @override
   Future<List<ReviewModel>> getReviews() async {
-    final snapshot = await firestore.collection('reviews').get();
-    return snapshot.docs
-        .map((doc) => ReviewModel.fromFirestore(doc))
-        .where((r) => r.isApproved)
-        .toList();
+    QuerySnapshot<Map<String, dynamic>> snapshot;
+    try {
+      snapshot = await firestore
+          .collection('reviews')
+          .where('isApproved', isEqualTo: true)
+          .limit(15)
+          .get();
+    } catch (_) {
+      snapshot = await firestore
+          .collection('reviews')
+          .where('isApproved', isEqualTo: true)
+          .get();
+    }
+    return snapshot.docs.map((doc) => ReviewModel.fromFirestore(doc)).toList();
   }
 
   @override
   Future<List<ClientModel>> getClients() async {
-    final snapshot = await firestore.collection('clients').get();
+    final snapshot = await firestore.collection('clients').limit(15).get();
     return snapshot.docs.map((doc) => ClientModel.fromFirestore(doc)).toList();
   }
 
   @override
   Future<List<FaqModel>> getFaqs() async {
-    final snapshot = await firestore.collection('faqs').get();
+    final snapshot = await firestore.collection('faqs').limit(15).get();
     return snapshot.docs.map((doc) => FaqModel.fromFirestore(doc)).toList();
   }
 

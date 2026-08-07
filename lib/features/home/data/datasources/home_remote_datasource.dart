@@ -20,18 +20,24 @@ class HomeRemoteDatasource {
             .collection('banners')
             .where('isActive', isEqualTo: true)
             .orderBy('createdAt', descending: true)
+            .limit(15)
             .get();
       } catch (_) {
         snapshot = await _firestore
             .collection('banners')
             .where('isActive', isEqualTo: true)
+            .limit(15)
             .get();
       }
 
-      return snapshot.docs
-          .map((doc) => BannerModel.fromFirestore(doc))
-          .where((banner) => banner.imageUrl.isNotEmpty)
-          .toList();
+      final List<BannerModel> banners = [];
+      for (final doc in snapshot.docs) {
+        final model = BannerModel.fromFirestore(doc);
+        if (model.imageUrl.isNotEmpty) {
+          banners.add(model);
+        }
+      }
+      return banners;
     } catch (e) {
       rethrow;
     }

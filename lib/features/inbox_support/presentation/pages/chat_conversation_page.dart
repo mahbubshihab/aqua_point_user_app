@@ -354,6 +354,7 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                     .doc(_currentUserId)
                     .collection('messages')
                     .orderBy('createdAt', descending: true)
+                    .limit(20)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {

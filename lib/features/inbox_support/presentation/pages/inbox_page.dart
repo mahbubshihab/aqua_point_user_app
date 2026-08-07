@@ -452,7 +452,7 @@ class _MessagesTabContent extends StatelessWidget {
                 .doc(_currentUserId)
                 .collection('messages')
                 .orderBy('createdAt', descending: true)
-                .limit(5)
+                .limit(20)
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {

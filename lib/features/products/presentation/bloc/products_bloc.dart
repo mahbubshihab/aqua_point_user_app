@@ -18,9 +18,9 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   ) async {
     emit(const ProductsLoading());
     try {
-      final products = await repository.getProducts();
+      final customProducts = await repository.getCustomProducts();
       final categories = await repository.getCategories();
-      emit(ProductsLoaded(products, categories: categories));
+      emit(ProductsLoaded(customProducts, categories: categories));
     } catch (e) {
       emit(ProductsError(e.toString()));
     }
@@ -63,7 +63,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       await repository.addProduct(product);
       emit(const ProductAddSuccess());
 
-      final updatedList = await repository.getProducts();
+      final updatedList = await repository.getCustomProducts();
       final categories = await repository.getCategories();
       emit(ProductsLoaded(updatedList, categories: categories));
     } catch (e) {

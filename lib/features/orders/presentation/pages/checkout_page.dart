@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -65,9 +66,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
     final dateStr = DateFormat('MMM dd, yyyy - hh:mm a').format(now);
 
     final itemsPayload = cartState.items.map((item) => item.toMap()).toList();
+    final userId = FirebaseAuth.instance.currentUser?.uid ?? 'guest_user';
 
     final orderData = {
       'orderId': orderId,
+      'userId': userId,
       'customerName': _nameController.text.trim(),
       'phone': _phoneController.text.trim(),
       'address': _addressController.text.trim(),

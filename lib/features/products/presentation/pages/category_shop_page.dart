@@ -32,13 +32,19 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
   }
 
   List<ProductEntity> get _filteredProducts {
-    List<ProductEntity> result = widget.products.where((p) {
-      if (_searchQuery.isEmpty) return true;
+    List<ProductEntity> result = [];
+    if (_searchQuery.isEmpty) {
+      result = List.from(widget.products);
+    } else {
       final query = _searchQuery.toLowerCase();
-      final nameMatches = p.name.toLowerCase().contains(query);
-      final descMatches = p.description?.toLowerCase().contains(query) ?? false;
-      return nameMatches || descMatches;
-    }).toList();
+      for (final p in widget.products) {
+        final nameMatches = p.name.toLowerCase().contains(query);
+        final descMatches = p.description?.toLowerCase().contains(query) ?? false;
+        if (nameMatches || descMatches) {
+          result.add(p);
+        }
+      }
+    }
 
     if (_sortBy == 'Price: Low to High') {
       result.sort((a, b) => a.price.compareTo(b.price));
