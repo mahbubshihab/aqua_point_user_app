@@ -1,7 +1,7 @@
 class ApiConfig {
   static const String bulkSmsApiKey = String.fromEnvironment(
     'BULKSMSBD_API_KEY',
-    defaultValue: 'sRoxc3uzjSe80UU13qwD',
+    defaultValue: 'g0Szw5nu85jMzETms1GM',
   );
   static const String bulkSmsSenderId = String.fromEnvironment(
     'BULKSMSBD_SENDER_ID',
