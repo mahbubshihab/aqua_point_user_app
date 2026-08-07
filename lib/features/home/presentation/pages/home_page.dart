@@ -89,32 +89,40 @@ class HomePage extends StatelessWidget {
                             items: [
                               QuickActionItem(
                                 label: 'Request Service',
-                                icon: Icons.build_circle_outlined,
-                                iconColor: const Color(0xFF3B82F6),
+                                icon: Icons.home_repair_service_rounded,
+                                iconColor: const Color(0xFF00E5FF),
+                                gradientColors: const [Color(0xFF1D4ED8), Color(0xFF00E5FF)],
+                                glowColor: const Color(0x5500E5FF),
                                 onTap: () {
                                   context.read<HomeBloc>().add(const SelectTab(1));
                                 },
                               ),
                               QuickActionItem(
                                 label: 'Buy Parts',
-                                icon: Icons.shopping_bag_outlined,
+                                icon: Icons.shopping_bag_rounded,
                                 iconColor: const Color(0xFF10B981),
+                                gradientColors: const [Color(0xFF047857), Color(0xFF10B981)],
+                                glowColor: const Color(0x5510B981),
                                 onTap: () {
                                   context.read<HomeBloc>().add(const SelectTab(2));
                                 },
                               ),
                               QuickActionItem(
                                 label: 'Invoices',
-                                icon: Icons.receipt_long_outlined,
+                                icon: Icons.receipt_long_rounded,
                                 iconColor: const Color(0xFFF59E0B),
+                                gradientColors: const [Color(0xFFB45309), Color(0xFFF59E0B)],
+                                glowColor: const Color(0x55F59E0B),
                                 onTap: () {
                                   context.read<HomeBloc>().add(const SelectTab(1));
                                 },
                               ),
                               QuickActionItem(
-                                label: 'Support',
-                                icon: Icons.headset_mic_outlined,
-                                iconColor: const Color(0xFFEC4899),
+                                label: 'Support / Report',
+                                icon: Icons.support_agent_rounded,
+                                iconColor: const Color(0xFFF43F5E),
+                                gradientColors: const [Color(0xFFBE185D), Color(0xFFF43F5E)],
+                                glowColor: const Color(0x55F43F5E),
                                 onTap: () {
                                   Navigator.push(
                                     context,

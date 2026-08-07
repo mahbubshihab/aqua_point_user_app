@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/glass_card.dart';
 
 class QuickActionItem {
@@ -7,6 +6,8 @@ class QuickActionItem {
   final IconData icon;
   final Color iconColor;
   final Color? secondaryColor;
+  final List<Color>? gradientColors;
+  final Color? glowColor;
   final VoidCallback? onTap;
 
   const QuickActionItem({
@@ -14,6 +15,8 @@ class QuickActionItem {
     required this.icon,
     required this.iconColor,
     this.secondaryColor,
+    this.gradientColors,
+    this.glowColor,
     this.onTap,
   });
 }
@@ -32,27 +35,31 @@ class QuickActionGrid extends StatelessWidget {
         [
           const QuickActionItem(
             label: 'Request Service',
-            icon: Icons.build_circle_outlined,
-            iconColor: Color(0xFF3B82F6), // Electric Blue glow
-            secondaryColor: Color(0xFF60A5FA),
+            icon: Icons.home_repair_service_rounded,
+            iconColor: Color(0xFF00E5FF),
+            gradientColors: [Color(0xFF1D4ED8), Color(0xFF00E5FF)],
+            glowColor: Color(0x5500E5FF),
           ),
           const QuickActionItem(
             label: 'Buy Parts',
-            icon: Icons.shopping_bag_outlined,
-            iconColor: Color(0xFF10B981), // Emerald Cyan glow
-            secondaryColor: Color(0xFF34D399),
+            icon: Icons.shopping_bag_rounded,
+            iconColor: Color(0xFF10B981),
+            gradientColors: [Color(0xFF047857), Color(0xFF10B981)],
+            glowColor: Color(0x5510B981),
           ),
           const QuickActionItem(
             label: 'Invoices',
-            icon: Icons.receipt_long_outlined,
-            iconColor: Color(0xFFF59E0B), // Warm Amber Gold glow
-            secondaryColor: Color(0xFFFBBF24),
+            icon: Icons.receipt_long_rounded,
+            iconColor: Color(0xFFF59E0B),
+            gradientColors: [Color(0xFFB45309), Color(0xFFF59E0B)],
+            glowColor: Color(0x55F59E0B),
           ),
           const QuickActionItem(
-            label: 'Support',
-            icon: Icons.headset_mic_outlined,
-            iconColor: Color(0xFFEC4899), // Magenta Purple glow
-            secondaryColor: Color(0xFFF472B6),
+            label: 'Support / Report',
+            icon: Icons.support_agent_rounded,
+            iconColor: Color(0xFFF43F5E),
+            gradientColors: [Color(0xFFBE185D), Color(0xFFF43F5E)],
+            glowColor: Color(0x55F43F5E),
           ),
         ];
 
@@ -62,54 +69,99 @@ class QuickActionGrid extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       crossAxisSpacing: 10,
       mainAxisSpacing: 10,
-      childAspectRatio: 0.92,
+      childAspectRatio: 0.82,
       children: actionItems.map((item) {
-        final secColor = item.secondaryColor ?? item.iconColor.withValues(alpha: 0.6);
+        return QuickActionTile(item: item);
+      }).toList(),
+    );
+  }
+}
 
-        return GlassCard(
+class QuickActionTile extends StatefulWidget {
+  final QuickActionItem item;
+
+  const QuickActionTile({
+    super.key,
+    required this.item,
+  });
+
+  @override
+  State<QuickActionTile> createState() => _QuickActionTileState();
+}
+
+class _QuickActionTileState extends State<QuickActionTile> {
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final item = widget.item;
+    final gradientColors = item.gradientColors ??
+        [
+          item.secondaryColor ?? item.iconColor.withValues(alpha: 0.8),
+          item.iconColor,
+        ];
+    final glowColor = item.glowColor ?? item.iconColor.withValues(alpha: 0.35);
+
+    return AnimatedScale(
+      scale: _isPressed ? 0.94 : 1.0,
+      duration: const Duration(milliseconds: 120),
+      curve: Curves.easeOutCubic,
+      child: GestureDetector(
+        onTapDown: (_) => setState(() => _isPressed = true),
+        onTapUp: (_) {
+          setState(() => _isPressed = false);
+          item.onTap?.call();
+        },
+        onTapCancel: () => setState(() => _isPressed = false),
+        child: GlassCard(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-          borderRadius: 16,
-          borderColor: const Color(0x3300E5FF),
-          fillColor: const Color(0x1F1A2236),
-          onTap: item.onTap,
+          borderRadius: 18,
+          fillColor: const Color(0x1F141A2D),
+          borderGradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0x3300E5FF),
+              Color(0x0500E5FF),
+            ],
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Dual-tone Gradient Glowing Icon Circle (50x50px)
+              // 54x54px 3D Gradient Icon Container with Glow Shadow
               Container(
-                width: 50,
-                height: 50,
+                width: 54,
+                height: 54,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(16),
                   gradient: LinearGradient(
-                    colors: [
-                      item.iconColor.withValues(alpha: 0.35),
-                      secColor.withValues(alpha: 0.15),
-                    ],
+                    colors: gradientColors,
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   border: Border.all(
-                    color: item.iconColor.withValues(alpha: 0.5),
-                    width: 1.5,
+                    color: Colors.white.withValues(alpha: 0.25),
+                    width: 1,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: item.iconColor.withValues(alpha: 0.25),
-                      blurRadius: 10,
-                      spreadRadius: 1,
+                      color: glowColor,
+                      blurRadius: 12,
+                      spreadRadius: 0,
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
                 child: Icon(
                   item.icon,
-                  color: item.iconColor,
-                  size: 24,
+                  color: Colors.white,
+                  size: 26,
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 8),
+              // Clean, bold, high-contrast white title typography
               FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
@@ -119,8 +171,8 @@ class QuickActionGrid extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
                     height: 1.15,
                     letterSpacing: 0.1,
                   ),
@@ -128,8 +180,8 @@ class QuickActionGrid extends StatelessWidget {
               ),
             ],
           ),
-        );
-      }).toList(),
+        ),
+      ),
     );
   }
 }

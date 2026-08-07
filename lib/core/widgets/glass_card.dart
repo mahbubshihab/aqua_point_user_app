@@ -11,6 +11,7 @@ class GlassCard extends StatelessWidget {
   final double borderRadius;
   final Color? fillColor;
   final Color? borderColor;
+  final Gradient? borderGradient;
   final double borderWidth;
   final List<BoxShadow>? boxShadow;
   final VoidCallback? onTap;
@@ -26,6 +27,7 @@ class GlassCard extends StatelessWidget {
     this.borderRadius = 16.0,
     this.fillColor,
     this.borderColor,
+    this.borderGradient,
     this.borderWidth = 1.0,
     this.boxShadow,
     this.onTap,
@@ -39,14 +41,18 @@ class GlassCard extends StatelessWidget {
     final effectiveFillColor = fillColor ?? const Color(0x1F1A2236);
     final effectiveBorderColor = borderColor ?? const Color(0x2B00E5FF);
 
-    Widget content = Container(
+    Widget innerContent = Container(
       width: width,
       height: height,
       padding: padding,
       decoration: BoxDecoration(
         color: effectiveFillColor,
-        borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(color: effectiveBorderColor, width: borderWidth),
+        borderRadius: BorderRadius.circular(
+          borderGradient != null ? (borderRadius - borderWidth).clamp(0.0, 999.0) : borderRadius,
+        ),
+        border: borderGradient == null
+            ? Border.all(color: effectiveBorderColor, width: borderWidth)
+            : null,
         boxShadow: boxShadow ??
             [
               BoxShadow(
@@ -59,6 +65,20 @@ class GlassCard extends StatelessWidget {
       ),
       child: child,
     );
+
+    Widget content;
+    if (borderGradient != null) {
+      content = Container(
+        decoration: BoxDecoration(
+          gradient: borderGradient,
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        padding: EdgeInsets.all(borderWidth),
+        child: innerContent,
+      );
+    } else {
+      content = innerContent;
+    }
 
     Widget cardWidget = ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
