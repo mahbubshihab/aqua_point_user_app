@@ -56,85 +56,83 @@ class QuickActionGrid extends StatelessWidget {
           ),
         ];
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final double itemPadding = constraints.maxWidth < 360 ? 6.0 : 10.0;
-        final double iconSize = constraints.maxWidth < 360 ? 20.0 : 24.0;
-        final double iconPadding = constraints.maxWidth < 360 ? 8.0 : 10.0;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: actionItems.map((item) {
+        final secColor = item.secondaryColor ?? item.iconColor.withValues(alpha: 0.6);
 
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: actionItems.map((item) {
-            final secColor = item.secondaryColor ?? item.iconColor.withValues(alpha: 0.6);
-
-            return Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 3),
-                child: GlassCard(
-                  padding: EdgeInsets.symmetric(vertical: itemPadding, horizontal: 4),
-                  borderRadius: 14,
-                  borderColor: item.iconColor.withValues(alpha: 0.3),
-                  fillColor: const Color(0x1F1A2236),
-                  onTap: item.onTap,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Dual-tone Gradient Glowing Icon Circle
-                      Container(
-                        padding: EdgeInsets.all(iconPadding),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              item.iconColor.withValues(alpha: 0.3),
-                              secColor.withValues(alpha: 0.15),
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          border: Border.all(
-                            color: item.iconColor.withValues(alpha: 0.5),
-                            width: 1.5,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: item.iconColor.withValues(alpha: 0.25),
-                              blurRadius: 10,
-                              spreadRadius: 1,
-                            ),
+        return Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 3),
+            child: AspectRatio(
+              aspectRatio: 1.05,
+              child: GlassCard(
+                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+                borderRadius: 14,
+                borderColor: item.iconColor.withValues(alpha: 0.3),
+                fillColor: const Color(0x1F1A2236),
+                onTap: item.onTap,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Dual-tone Gradient Glowing Icon Circle (40x40px)
+                    Container(
+                      width: 40,
+                      height: 40,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            item.iconColor.withValues(alpha: 0.3),
+                            secColor.withValues(alpha: 0.15),
                           ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
-                        child: Icon(
-                          item.icon,
-                          color: item.iconColor,
-                          size: iconSize,
+                        border: Border.all(
+                          color: item.iconColor.withValues(alpha: 0.5),
+                          width: 1.5,
                         ),
-                      ),
-                      const SizedBox(height: 6),
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          item.label,
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                            height: 1.2,
-                            letterSpacing: 0.1,
+                        boxShadow: [
+                          BoxShadow(
+                            color: item.iconColor.withValues(alpha: 0.25),
+                            blurRadius: 8,
+                            spreadRadius: 1,
                           ),
+                        ],
+                      ),
+                      child: Icon(
+                        item.icon,
+                        color: item.iconColor,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        item.label,
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                          height: 1.1,
+                          letterSpacing: 0.1,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            );
-          }).toList(),
+            ),
+          ),
         );
-      },
+      }).toList(),
     );
   }
 }

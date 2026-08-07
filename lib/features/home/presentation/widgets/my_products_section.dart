@@ -63,17 +63,18 @@ class MyProductsSection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
 
-        // Products Glass Card
+        // Slim & Sleek Horizontal Empty State Glass Card
         GlassCard(
-          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-          borderRadius: 20,
-          child: Column(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          borderRadius: 16,
+          child: Row(
             children: [
-              // Sleek Icon Badge
+              // Sleek Icon Badge Container
               Container(
-                padding: const EdgeInsets.all(14),
+                width: 38,
+                height: 38,
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
@@ -84,31 +85,48 @@ class MyProductsSection extends StatelessWidget {
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.primary.withValues(alpha: 0.15),
-                      blurRadius: 12,
+                      blurRadius: 10,
                       spreadRadius: 1,
                     ),
                   ],
                 ),
                 child: const Icon(
                   Icons.water_drop_outlined,
-                  size: 28,
+                  size: 20,
                   color: AppColors.primary,
                 ),
               ),
-              const SizedBox(height: 12),
-              // Minimal Empty State Text
-              const Text(
-                'No Products',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary,
-                  letterSpacing: 0.1,
+              const SizedBox(width: 12),
+
+              // Title and Subtitle Text
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'No Products',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                        letterSpacing: 0.1,
+                      ),
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      'Connect your water purifier',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(width: 8),
 
-              // Gradient Action Button + Add Product
+              // Compact Gradient Action Button + Add Product
               Container(
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
@@ -116,33 +134,38 @@ class MyProductsSection extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
+                      color: AppColors.primary.withValues(alpha: 0.25),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
-                child: ElevatedButton(
-                  onPressed: onAddProductTap,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    foregroundColor: const Color(0xFF0A0D16),
-                    minimumSize: const Size(140, 40),
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    '+ Add Product',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.3,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: onAddProductTap,
+                    borderRadius: BorderRadius.circular(10),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.add, size: 14, color: Color(0xFF0A0D16)),
+                          SizedBox(width: 3),
+                          Text(
+                            'Add Product',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF0A0D16),
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

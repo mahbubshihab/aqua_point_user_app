@@ -15,8 +15,8 @@ class WaterQualityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassCard(
-      padding: const EdgeInsets.all(20),
-      borderRadius: 20,
+      padding: const EdgeInsets.all(14),
+      borderRadius: 16,
       borderColor: AppColors.primary.withValues(alpha: 0.35),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,7 +46,7 @@ class WaterQualityCard extends StatelessWidget {
                   const Text(
                     'Water Quality',
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: AppColors.textPrimary,
                       letterSpacing: 0.2,
@@ -58,7 +58,7 @@ class WaterQualityCard extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 14),
+          const SizedBox(height: 8),
 
           // Large Electric Cyan TDS Numeric Display
           Row(
@@ -68,7 +68,7 @@ class WaterQualityCard extends StatelessWidget {
               Text(
                 '${waterQuality.tds}',
                 style: const TextStyle(
-                  fontSize: 38,
+                  fontSize: 32,
                   fontWeight: FontWeight.w900,
                   color: AppColors.primary,
                   letterSpacing: -0.5,
@@ -78,7 +78,7 @@ class WaterQualityCard extends StatelessWidget {
               const Text(
                 'TDS',
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 13,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textSecondary,
                   letterSpacing: 0.5,
@@ -87,7 +87,7 @@ class WaterQualityCard extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
 
           // 3 Minimal Metric Pills: Iron: 0.05, pH: 7.2, Hardness: Low
           Row(
@@ -132,10 +132,10 @@ class _MinimalMetricPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
       decoration: BoxDecoration(
         color: AppColors.background.withValues(alpha: 0.6),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: AppColors.divider,
           width: 1,

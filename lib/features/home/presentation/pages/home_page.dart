@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../inbox_support/presentation/pages/help_support_page.dart';
 import '../../../profile_rewards/presentation/pages/profile_page.dart';
@@ -75,7 +76,7 @@ class HomePage extends StatelessWidget {
                         );
                       },
                     ),
-                    const SizedBox(height: 20),
+                    const Gap(12),
 
                     // Content below header banner with horizontal padding
                     Padding(
@@ -123,11 +124,11 @@ class HomePage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 24),
+                          const Gap(12),
 
                           // My Products Section
                           const MyProductsSection(),
-                          const SizedBox(height: 24),
+                          const Gap(12),
 
                           // Hydration Tracker Widget
                           HydrationTrackerWidget(
@@ -139,19 +140,19 @@ class HomePage extends StatelessWidget {
                               context.read<HomeBloc>().add(const DecrementHydration());
                             },
                           ),
-                          const SizedBox(height: 24),
+                          const Gap(12),
 
                           // Water Quality Card
                           WaterQualityCard(waterQuality: state.waterQuality),
-                          const SizedBox(height: 24),
+                          const Gap(12),
 
                           // Services Grid
                           const ServicesGrid(),
-                          const SizedBox(height: 24),
+                          const Gap(12),
 
                           // Blogs & News Section
                           BlogsNewsSection(blogs: state.blogs),
-                          const SizedBox(height: 32),
+                          const Gap(20),
 
                           // Footer
                           const Center(
