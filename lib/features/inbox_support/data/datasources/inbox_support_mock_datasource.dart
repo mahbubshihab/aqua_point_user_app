@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/entities/app_notification_entity.dart';
 import '../../domain/entities/chat_message_entity.dart';
 
@@ -18,7 +19,18 @@ class InboxSupportMockDatasource {
     required String subject,
     required String message,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 800));
+    try {
+      await FirebaseFirestore.instance.collection('inquiries').add({
+        'name': fullName,
+        'phone': phoneNumber,
+        'subject': subject,
+        'message': message,
+        'status': 'New',
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      // Fallback
+    }
   }
 
   Future<String> fetchReferralCode() async {
@@ -26,3 +38,4 @@ class InboxSupportMockDatasource {
     return '';
   }
 }
+
