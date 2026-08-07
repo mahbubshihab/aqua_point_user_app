@@ -60,8 +60,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           'Personal Info',
           style: TextStyle(
             color: AppColors.textPrimary,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
           ),
         ),
       ),
@@ -79,7 +79,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           }
         },
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
             child: Column(
@@ -90,16 +90,16 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   style: TextStyle(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.w600,
-                    fontSize: 14,
+                    fontSize: 11.5,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 TextFormField(
                   controller: _nameController,
-                  style: const TextStyle(color: AppColors.textPrimary),
+                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 12.5),
                   decoration: const InputDecoration(
                     hintText: 'Enter your name',
-                    prefixIcon: Icon(Icons.person_outline, color: AppColors.textSecondary),
+                    prefixIcon: Icon(Icons.person_outline, color: AppColors.textSecondary, size: 18),
                   ),
                   validator: (val) {
                     if (val == null || val.trim().isEmpty) {
@@ -108,24 +108,24 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
 
                 const Text(
                   'Phone Number',
                   style: TextStyle(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.w600,
-                    fontSize: 14,
+                    fontSize: 11.5,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 TextFormField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
-                  style: const TextStyle(color: AppColors.textPrimary),
+                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 12.5),
                   decoration: const InputDecoration(
                     hintText: 'Enter your phone number',
-                    prefixIcon: Icon(Icons.phone_outlined, color: AppColors.textSecondary),
+                    prefixIcon: Icon(Icons.phone_outlined, color: AppColors.textSecondary, size: 18),
                   ),
                   validator: (val) {
                     if (val == null || val.trim().isEmpty) {
@@ -134,46 +134,46 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
 
                 const Text(
                   'Email Address',
                   style: TextStyle(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.w600,
-                    fontSize: 14,
+                    fontSize: 11.5,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  style: const TextStyle(color: AppColors.textPrimary),
+                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 12.5),
                   decoration: const InputDecoration(
                     hintText: 'Enter your email address',
-                    prefixIcon: Icon(Icons.email_outlined, color: AppColors.textSecondary),
+                    prefixIcon: Icon(Icons.email_outlined, color: AppColors.textSecondary, size: 18),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
 
                 const Text(
                   'Address',
                   style: TextStyle(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.w600,
-                    fontSize: 14,
+                    fontSize: 11.5,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 TextFormField(
                   controller: _addressController,
                   maxLines: 3,
-                  style: const TextStyle(color: AppColors.textPrimary),
+                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 12.5),
                   decoration: const InputDecoration(
                     hintText: 'Enter your full address',
                     prefixIcon: Padding(
-                      padding: EdgeInsets.only(bottom: 40),
-                      child: Icon(Icons.location_on_outlined, color: AppColors.textSecondary),
+                      padding: EdgeInsets.only(bottom: 30),
+                      child: Icon(Icons.location_on_outlined, color: AppColors.textSecondary, size: 18),
                     ),
                   ),
                   validator: (val) {
@@ -183,7 +183,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 36),
+                const SizedBox(height: 24),
 
                 BlocBuilder<ProfileRewardsBloc, ProfileRewardsState>(
                   builder: (context, state) {

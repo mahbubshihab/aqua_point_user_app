@@ -120,7 +120,7 @@ class HomeHeaderBanner extends StatelessWidget {
                               const Text(
                                 'AQUA POINT',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.textPrimary,
                                   letterSpacing: 0.3,
@@ -235,7 +235,7 @@ class HomeHeaderBanner extends StatelessWidget {
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
-                                          fontSize: 13,
+                                          fontSize: 12,
                                           fontWeight: FontWeight.w600,
                                           color: AppColors.textPrimary,
                                           letterSpacing: 0.2,
@@ -263,8 +263,8 @@ class HomeHeaderBanner extends StatelessWidget {
                             borderRadius: BorderRadius.circular(30),
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 7,
+                                horizontal: 12,
+                                vertical: 6,
                               ),
                               decoration: BoxDecoration(
                                 color: const Color(0x1F1A2236),
@@ -286,13 +286,13 @@ class HomeHeaderBanner extends StatelessWidget {
                                 children: [
                                   const Text(
                                     '⭐',
-                                    style: TextStyle(fontSize: 13),
+                                    style: TextStyle(fontSize: 12),
                                   ),
-                                  const SizedBox(width: 6),
+                                  const SizedBox(width: 5),
                                   Text(
                                     '$points Points',
                                     style: const TextStyle(
-                                      fontSize: 12,
+                                      fontSize: 11,
                                       fontWeight: FontWeight.w700,
                                       color: AppColors.accentGold,
                                       letterSpacing: 0.2,

@@ -25,8 +25,8 @@ class InboxPage extends StatelessWidget {
             'Inbox',
             style: TextStyle(
               color: AppColors.textPrimary,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
             ),
           ),
           centerTitle: false,
@@ -54,7 +54,7 @@ class InboxPage extends StatelessWidget {
             const SizedBox(width: 8),
           ],
           bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(48),
+            preferredSize: const Size.fromHeight(40),
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
@@ -70,7 +70,7 @@ class InboxPage extends StatelessWidget {
                 indicatorSize: TabBarIndicatorSize.tab,
                 labelColor: AppColors.textPrimary,
                 unselectedLabelColor: AppColors.textSecondary,
-                labelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                labelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
                 onTap: (index) {
                   context.read<InboxSupportBloc>().add(SelectInboxTab(index));
                 },
@@ -225,7 +225,7 @@ class _NotificationsTabContent extends StatelessWidget {
                           child: Text(
                             item.title,
                             style: const TextStyle(
-                              fontSize: 15,
+                              fontSize: 13.5,
                               fontWeight: FontWeight.w600,
                               color: AppColors.textPrimary,
                             ),
@@ -242,20 +242,20 @@ class _NotificationsTabContent extends StatelessWidget {
                           ),
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Text(
                       item.message,
                       style: const TextStyle(
-                        fontSize: 13,
+                        fontSize: 11.5,
                         color: AppColors.textSecondary,
                         height: 1.3,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     Text(
                       _formatTimestamp(item.timestamp),
                       style: const TextStyle(
-                        fontSize: 11,
+                        fontSize: 10.5,
                         color: AppColors.textSecondary,
                       ),
                     ),
@@ -304,30 +304,30 @@ class _MessagesTabContent extends StatelessWidget {
                 ),
                 child: const Icon(
                   Icons.chat_bubble_outline_rounded,
-                  size: 56,
+                  size: 48,
                   color: AppColors.secondary,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
               const Text(
                 'No active chats',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               const Text(
                 'Need assistance? Start a conversation with our customer support team.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 11.5,
                   color: AppColors.textSecondary,
                   height: 1.4,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: () {
                   Navigator.push(
@@ -335,12 +335,12 @@ class _MessagesTabContent extends StatelessWidget {
                     MaterialPageRoute(builder: (_) => const HelpSupportPage()),
                   );
                 },
-                icon: const Icon(Icons.support_agent_rounded, size: 18),
+                icon: const Icon(Icons.support_agent_rounded, size: 16),
                 label: const Text('Contact Support'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -364,16 +364,16 @@ class _MessagesTabContent extends StatelessWidget {
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width * 0.78,
             ),
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: chat.isFromUser
                   ? AppColors.primary
                   : AppColors.cardBackground,
               borderRadius: BorderRadius.only(
-                topLeft: const Radius.circular(16),
-                topRight: const Radius.circular(16),
-                bottomLeft: Radius.circular(chat.isFromUser ? 16 : 4),
-                bottomRight: Radius.circular(chat.isFromUser ? 4 : 16),
+                topLeft: const Radius.circular(14),
+                topRight: const Radius.circular(14),
+                bottomLeft: Radius.circular(chat.isFromUser ? 14 : 4),
+                bottomRight: Radius.circular(chat.isFromUser ? 4 : 14),
               ),
               border: Border.all(
                 color: chat.isFromUser ? AppColors.primary : AppColors.cardBorder,
@@ -386,7 +386,7 @@ class _MessagesTabContent extends StatelessWidget {
                 Text(
                   chat.senderName,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: 10.5,
                     fontWeight: FontWeight.w600,
                     color: chat.isFromUser ? Colors.white70 : AppColors.secondary,
                   ),
@@ -395,12 +395,12 @@ class _MessagesTabContent extends StatelessWidget {
                 Text(
                   chat.message,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 12.5,
                     color: chat.isFromUser ? Colors.white : AppColors.textPrimary,
                     height: 1.3,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 Text(
                   chat.time,
                   style: TextStyle(

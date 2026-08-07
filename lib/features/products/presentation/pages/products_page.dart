@@ -37,8 +37,8 @@ class _ProductsPageState extends State<ProductsPage> {
           'My Products',
           style: TextStyle(
             color: AppColors.textPrimary,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
           ),
         ),
         actions: [
@@ -144,17 +144,17 @@ class _ProductsPageState extends State<ProductsPage> {
                         'No products found',
                         style: TextStyle(
                           color: AppColors.textPrimary,
-                          fontSize: 18,
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const Gap(8),
+                      const Gap(6),
                       const Text(
                         'Check History for your orders',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: AppColors.textSecondary,
-                          fontSize: 14,
+                          fontSize: 11.5,
                         ),
                       ),
                     ],

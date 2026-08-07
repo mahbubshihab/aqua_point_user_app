@@ -74,7 +74,7 @@ class ServicesGrid extends StatelessWidget {
             const Text(
               'Services & Features',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 14,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
                 letterSpacing: 0.2,
@@ -98,7 +98,7 @@ class ServicesGrid extends StatelessWidget {
           itemBuilder: (context, index) {
             final item = list[index];
             return GlassCard(
-              padding: const EdgeInsets.all(14),
+              padding: const EdgeInsets.all(12),
               borderRadius: 16,
               onTap: item.onTap,
               borderColor: item.color.withValues(alpha: 0.25),
@@ -111,16 +111,16 @@ class ServicesGrid extends StatelessWidget {
                     children: [
                       // Rounded Icon Badge
                       Container(
-                        padding: const EdgeInsets.all(9),
+                        padding: const EdgeInsets.all(7),
                         decoration: BoxDecoration(
                           color: item.color.withValues(alpha: 0.14),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(10),
                           border: Border.all(
                             color: item.color.withValues(alpha: 0.3),
                             width: 1,
                           ),
                         ),
-                        child: Icon(item.icon, size: 20, color: item.color),
+                        child: Icon(item.icon, size: 18, color: item.color),
                       ),
                       Icon(
                         Icons.chevron_right_rounded,
@@ -129,13 +129,13 @@ class ServicesGrid extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   Text(
                     item.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontSize: 13,
+                      fontSize: 11.5,
                       fontWeight: FontWeight.bold,
                       color: AppColors.textPrimary,
                       letterSpacing: 0.1,

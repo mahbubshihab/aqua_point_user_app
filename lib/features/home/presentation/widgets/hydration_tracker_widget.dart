@@ -67,7 +67,7 @@ class HydrationTrackerWidget extends StatelessWidget {
                     const Text(
                       'Daily Hydration',
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         letterSpacing: 0.2,
@@ -121,7 +121,7 @@ class HydrationTrackerWidget extends StatelessWidget {
                 Text(
                   '${(progressRatio * 100).toInt()}% Achieved',
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 11.5,
                     fontWeight: FontWeight.w600,
                     color: Colors.white.withValues(alpha: 0.9),
                   ),
@@ -133,10 +133,10 @@ class HydrationTrackerWidget extends StatelessWidget {
                       color: Colors.transparent,
                       child: InkWell(
                         onTap: hydration.currentGlasses > 0 ? onDecrement : null,
-                        borderRadius: BorderRadius.circular(18),
+                        borderRadius: BorderRadius.circular(15),
                         child: Container(
-                          width: 36,
-                          height: 36,
+                          width: 30,
+                          height: 30,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: hydration.currentGlasses > 0
@@ -159,7 +159,7 @@ class HydrationTrackerWidget extends StatelessWidget {
                           ),
                           child: Icon(
                             Icons.remove_rounded,
-                            size: 20,
+                            size: 16,
                             color: hydration.currentGlasses > 0
                                 ? Colors.white
                                 : Colors.white.withValues(alpha: 0.4),
@@ -167,11 +167,11 @@ class HydrationTrackerWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 10),
 
                     // Central Count Display
                     Container(
-                      constraints: const BoxConstraints(minWidth: 24),
+                      constraints: const BoxConstraints(minWidth: 20),
                       alignment: Alignment.center,
                       child: Text(
                         '${hydration.currentGlasses}',
@@ -182,17 +182,17 @@ class HydrationTrackerWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 10),
 
                     // Frosted White Glass Increment Button (+)
                     Material(
                       color: Colors.transparent,
                       child: InkWell(
                         onTap: onIncrement,
-                        borderRadius: BorderRadius.circular(18),
+                        borderRadius: BorderRadius.circular(15),
                         child: Container(
-                          width: 36,
-                          height: 36,
+                          width: 30,
+                          height: 30,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.white.withValues(alpha: 0.3),
@@ -210,7 +210,7 @@ class HydrationTrackerWidget extends StatelessWidget {
                           ),
                           child: const Icon(
                             Icons.add_rounded,
-                            size: 20,
+                            size: 16,
                             color: Colors.white,
                           ),
                         ),

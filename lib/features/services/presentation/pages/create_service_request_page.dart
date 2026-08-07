@@ -161,8 +161,8 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
           'Service Request',
           style: TextStyle(
             color: AppColors.textPrimary,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
           ),
         ),
         centerTitle: false,
@@ -188,7 +188,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
           }
         },
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
             child: Column(
@@ -199,17 +199,17 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                   'Address Shipping',
                   style: TextStyle(
                     color: AppColors.textSecondary,
-                    fontSize: 14,
+                    fontSize: 11.5,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const Gap(8),
+                const Gap(6),
                 AppCard(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(12),
                   child: Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withValues(alpha: 0.15),
                           shape: BoxShape.circle,
@@ -217,10 +217,10 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                         child: const Icon(
                           Icons.home_outlined,
                           color: AppColors.primary,
-                          size: 22,
+                          size: 18,
                         ),
                       ),
-                      const Gap(14),
+                      const Gap(12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,22 +229,22 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                               'Default Shipping Address',
                               style: TextStyle(
                                 color: AppColors.textSecondary,
-                                fontSize: 12,
+                                fontSize: 11,
                               ),
                             ),
-                            const Gap(4),
+                            const Gap(2),
                             Text(
                               _shippingAddress,
                               style: const TextStyle(
                                 color: AppColors.textPrimary,
-                                fontSize: 14,
+                                fontSize: 12.5,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const Gap(8),
+                      const Gap(6),
                       TextButton.icon(
                         onPressed: () {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -257,18 +257,18 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                         style: TextButton.styleFrom(
                           foregroundColor: AppColors.secondary,
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
+                            horizontal: 8,
+                            vertical: 4,
                           ),
                         ),
                         icon: const Text(
                           '✏️',
-                          style: TextStyle(fontSize: 14),
+                          style: TextStyle(fontSize: 12),
                         ),
                         label: const Text(
                           'Change',
                           style: TextStyle(
-                            fontSize: 13,
+                            fontSize: 11.5,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -277,44 +277,44 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                   ),
                 ),
 
-                const Gap(24),
+                const Gap(20),
 
                 // Water Filter Machine Name field
                 const Text(
                   'Water Filter Machine Name',
                   style: TextStyle(
                     color: AppColors.textSecondary,
-                    fontSize: 14,
+                    fontSize: 11.5,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const Gap(8),
+                const Gap(6),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
                   decoration: BoxDecoration(
                     color: AppColors.inputFill,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: AppColors.divider),
                   ),
                   child: _isLoadingMachines
                       ? Container(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
                           child: const Row(
                             children: [
                               SizedBox(
-                                width: 18,
-                                height: 18,
+                                width: 16,
+                                height: 16,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
                                   color: AppColors.primary,
                                 ),
                               ),
-                              Gap(12),
+                              Gap(10),
                               Text(
                                 'Loading products...',
                                 style: TextStyle(
                                   color: AppColors.textSecondary,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                 ),
                               ),
                             ],
@@ -331,7 +331,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                             ),
                             style: const TextStyle(
                               color: AppColors.textPrimary,
-                              fontSize: 15,
+                              fontSize: 12.5,
                               fontWeight: FontWeight.w500,
                             ),
                             items: _machines.map((machine) {
@@ -349,29 +349,29 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                         ),
                 ),
 
-                const Gap(24),
+                const Gap(20),
 
                 // Appointment Date field
                 const Text(
                   'Appointment Date',
                   style: TextStyle(
                     color: AppColors.textSecondary,
-                    fontSize: 14,
+                    fontSize: 11.5,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const Gap(8),
+                const Gap(6),
                 InkWell(
                   onTap: _selectDate,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
+                      horizontal: 14,
+                      vertical: 12,
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.inputFill,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: AppColors.divider),
                     ),
                     child: Row(
@@ -379,14 +379,14 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                         const Icon(
                           Icons.calendar_today_outlined,
                           color: AppColors.secondary,
-                          size: 20,
+                          size: 18,
                         ),
-                        const Gap(12),
+                        const Gap(10),
                         Text(
                           _formattedDate,
                           style: const TextStyle(
                             color: AppColors.textPrimary,
-                            fontSize: 15,
+                            fontSize: 12.5,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -394,30 +394,30 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                         const Icon(
                           Icons.edit_calendar_outlined,
                           color: AppColors.textSecondary,
-                          size: 18,
+                          size: 16,
                         ),
                       ],
                     ),
                   ),
                 ),
 
-                const Gap(24),
+                const Gap(20),
 
                 // Appointment Time field
                 const Text(
                   'Appointment Time',
                   style: TextStyle(
                     color: AppColors.textSecondary,
-                    fontSize: 14,
+                    fontSize: 11.5,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const Gap(8),
+                const Gap(6),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
                   decoration: BoxDecoration(
                     color: AppColors.inputFill,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: AppColors.divider),
                   ),
                   child: DropdownButtonHideUnderline(
@@ -427,7 +427,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                         'Select a time slot',
                         style: TextStyle(
                           color: AppColors.textSecondary,
-                          fontSize: 14,
+                          fontSize: 12,
                         ),
                       ),
                       isExpanded: true,
@@ -438,7 +438,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                       ),
                       style: const TextStyle(
                         color: AppColors.textPrimary,
-                        fontSize: 15,
+                        fontSize: 12.5,
                         fontWeight: FontWeight.w500,
                       ),
                       items: _timeSlots.map((slot) {
@@ -456,50 +456,50 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                   ),
                 ),
 
-                const Gap(24),
+                const Gap(20),
 
                 // Problem Description (Optional) field
                 const Text(
                   'Problem Description (Optional)',
                   style: TextStyle(
                     color: AppColors.textSecondary,
-                    fontSize: 14,
+                    fontSize: 11.5,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const Gap(8),
+                const Gap(6),
                 TextFormField(
                   controller: _descriptionController,
                   maxLines: 4,
                   style: const TextStyle(
                     color: AppColors.textPrimary,
-                    fontSize: 14,
+                    fontSize: 12.5,
                   ),
                   decoration: InputDecoration(
                     hintText: 'Please describe the issue in detail',
                     hintStyle: const TextStyle(
                       color: AppColors.textSecondary,
-                      fontSize: 14,
+                      fontSize: 12,
                     ),
                     filled: true,
                     fillColor: AppColors.inputFill,
-                    contentPadding: const EdgeInsets.all(16),
+                    contentPadding: const EdgeInsets.all(12),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(12),
                       borderSide: const BorderSide(color: AppColors.divider),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(12),
                       borderSide: const BorderSide(color: AppColors.divider),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(12),
                       borderSide: const BorderSide(color: AppColors.primary),
                     ),
                   ),
                 ),
 
-                const Gap(32),
+                const Gap(24),
 
                 // Submit Request Button
                 BlocBuilder<ServicesBloc, ServicesState>(
@@ -509,12 +509,12 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                       text: 'Submit Request',
                       isLoading: isSubmitting,
                       onPressed: _submitForm,
-                      height: 52,
-                      borderRadius: 14,
+                      height: 44,
+                      borderRadius: 12,
                     );
                   },
                 ),
-                const Gap(24),
+                const Gap(20),
               ],
             ),
           ),

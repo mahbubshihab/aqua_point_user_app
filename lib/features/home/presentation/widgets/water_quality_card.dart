@@ -46,7 +46,7 @@ class WaterQualityCard extends StatelessWidget {
                   const Text(
                     'Water Quality',
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: AppColors.textPrimary,
                       letterSpacing: 0.2,
@@ -58,7 +58,7 @@ class WaterQualityCard extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
           // Large Bold Electric Cyan TDS Numeric Display
           Row(
@@ -68,17 +68,17 @@ class WaterQualityCard extends StatelessWidget {
               Text(
                 '${waterQuality.tds}',
                 style: const TextStyle(
-                  fontSize: 36,
+                  fontSize: 24,
                   fontWeight: FontWeight.w900,
                   color: AppColors.primary,
                   letterSpacing: -0.5,
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 6),
               const Text(
                 'TDS',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 12,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textSecondary,
                   letterSpacing: 0.5,
@@ -87,7 +87,7 @@ class WaterQualityCard extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 14),
+          const SizedBox(height: 12),
 
           // 3 Spacious Sub-Metric Boxes: Iron: 0.05, pH: 7.2, Hardness: Low
           Row(
@@ -137,10 +137,10 @@ class _SpaciousMetricBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
       decoration: BoxDecoration(
         color: AppColors.background.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: accentColor.withValues(alpha: 0.25),
           width: 1,
@@ -150,19 +150,19 @@ class _SpaciousMetricBox extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(
-              fontSize: 11,
+            style: const TextStyle(
+              fontSize: 10.5,
               fontWeight: FontWeight.w500,
               color: AppColors.textSecondary,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 3),
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
               value,
               style: const TextStyle(
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),

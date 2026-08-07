@@ -49,8 +49,8 @@ class ProductItemCard extends StatelessWidget {
                         product.name,
                         style: const TextStyle(
                           color: AppColors.textPrimary,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -62,19 +62,19 @@ class ProductItemCard extends StatelessWidget {
                         text: 'CUSTOM',
                         backgroundColor: Color(0x208B5CF6),
                         textColor: Color(0xFFA78BFA),
-                        fontSize: 10,
+                        fontSize: 9,
                         padding:
-                            EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                       ),
                     ],
                   ],
                 ),
-                const Gap(6),
+                const Gap(4),
                 Row(
                   children: [
                     const Icon(
                       Icons.shield_outlined,
-                      size: 14,
+                      size: 13,
                       color: AppColors.accentGreen,
                     ),
                     const Gap(4),
@@ -83,7 +83,7 @@ class ProductItemCard extends StatelessWidget {
                         product.warrantyDetails,
                         style: const TextStyle(
                           color: AppColors.accentGreen,
-                          fontSize: 12,
+                          fontSize: 11.5,
                           fontWeight: FontWeight.w600,
                         ),
                         maxLines: 1,
@@ -92,12 +92,12 @@ class ProductItemCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const Gap(4),
+                const Gap(3),
                 Row(
                   children: [
                     const Icon(
                       Icons.calendar_today_outlined,
-                      size: 14,
+                      size: 13,
                       color: AppColors.textSecondary,
                     ),
                     const Gap(4),
@@ -105,7 +105,7 @@ class ProductItemCard extends StatelessWidget {
                       'Purchased: ${product.purchaseDate}',
                       style: const TextStyle(
                         color: AppColors.textSecondary,
-                        fontSize: 12,
+                        fontSize: 11.5,
                       ),
                     ),
                   ],

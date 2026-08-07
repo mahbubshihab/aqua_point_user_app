@@ -141,8 +141,8 @@ class _AddProductModalState extends State<AddProductModal> {
                           'Add Custom Product',
                           style: TextStyle(
                             color: AppColors.textPrimary,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         IconButton(
@@ -154,7 +154,7 @@ class _AddProductModalState extends State<AddProductModal> {
                         ),
                       ],
                     ),
-                    const Gap(20),
+                    const Gap(16),
 
                     // Field 1: Product Name
                     AppTextField(
@@ -172,18 +172,18 @@ class _AddProductModalState extends State<AddProductModal> {
                         return null;
                       },
                     ),
-                    const Gap(20),
+                    const Gap(16),
 
                     // Field 2: Warranty Card / Product Photo
                     const Text(
                       'Warranty Card / Product Photo',
                       style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w600,
                         color: AppColors.textSecondary,
                       ),
                     ),
-                    const Gap(8),
+                    const Gap(6),
                     InkWell(
                       onTap: _mockImagePicker,
                       borderRadius: BorderRadius.circular(12),
@@ -195,7 +195,7 @@ class _AddProductModalState extends State<AddProductModal> {
                         ),
                         child: Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 24),
+                          padding: const EdgeInsets.symmetric(vertical: 20),
                           decoration: BoxDecoration(
                             color: AppColors.inputFill,
                             borderRadius: BorderRadius.circular(12),
@@ -207,12 +207,12 @@ class _AddProductModalState extends State<AddProductModal> {
                                 _selectedImagePath != null
                                     ? Icons.check_circle_rounded
                                     : Icons.camera_alt_outlined,
-                                size: 36,
+                                size: 30,
                                 color: _selectedImagePath != null
                                     ? AppColors.accentGreen
                                     : AppColors.secondary,
                               ),
-                              const Gap(8),
+                              const Gap(6),
                               Text(
                                 _selectedImagePath != null
                                     ? 'Image Selected (Tap to change)'
@@ -221,7 +221,7 @@ class _AddProductModalState extends State<AddProductModal> {
                                   color: _selectedImagePath != null
                                       ? AppColors.textPrimary
                                       : AppColors.textSecondary,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -230,22 +230,22 @@ class _AddProductModalState extends State<AddProductModal> {
                         ),
                       ),
                     ),
-                    const Gap(28),
+                    const Gap(24),
 
                     // Save Product Button
                     Container(
                       width: double.infinity,
-                      height: 52,
+                      height: 44,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(12),
                         gradient: const LinearGradient(
                           colors: [Color(0xFF60A5FA), Color(0xFF8B5CF6)],
                         ),
                         boxShadow: [
                           BoxShadow(
                             color: const Color(0xFF8B5CF6).withValues(alpha: 0.3),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
@@ -253,14 +253,14 @@ class _AddProductModalState extends State<AddProductModal> {
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: _isSubmitting ? null : _onSaveProduct,
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(12),
                           child: Center(
                             child: _isSubmitting
                                 ? const SizedBox(
-                                    width: 22,
-                                    height: 22,
+                                    width: 20,
+                                    height: 20,
                                     child: CircularProgressIndicator(
-                                      strokeWidth: 2.5,
+                                      strokeWidth: 2,
                                       color: Colors.white,
                                     ),
                                   )
@@ -268,8 +268,8 @@ class _AddProductModalState extends State<AddProductModal> {
                                     'SAVE PRODUCT',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13.5,
                                       letterSpacing: 0.5,
                                     ),
                                   ),

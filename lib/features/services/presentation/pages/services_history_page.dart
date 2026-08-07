@@ -73,12 +73,12 @@ class _ServicesHistoryPageState extends State<ServicesHistoryPage>
           'My Services',
           style: TextStyle(
             color: AppColors.textPrimary,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
           ),
         ),
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(48),
+          preferredSize: const Size.fromHeight(40),
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
@@ -97,7 +97,7 @@ class _ServicesHistoryPageState extends State<ServicesHistoryPage>
               unselectedLabelColor: AppColors.textSecondary,
               labelStyle: const TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: 14,
+                fontSize: 12,
               ),
               dividerColor: Colors.transparent,
               indicatorSize: TabBarIndicatorSize.tab,
@@ -270,17 +270,17 @@ class _EmptyStateView extends StatelessWidget {
               title,
               style: const TextStyle(
                 color: AppColors.textPrimary,
-                fontSize: 18,
+                fontSize: 14,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const Gap(8),
+            const Gap(6),
             Text(
               subtitle,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: AppColors.textSecondary,
-                fontSize: 14,
+                fontSize: 11.5,
               ),
             ),
           ],
@@ -323,7 +323,7 @@ class _ServicesTabContent extends StatelessWidget {
                       item.id,
                       style: const TextStyle(
                         color: AppColors.secondary,
-                        fontSize: 13,
+                        fontSize: 11.5,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -335,16 +335,16 @@ class _ServicesTabContent extends StatelessWidget {
                   item.machineName,
                   style: const TextStyle(
                     color: AppColors.textPrimary,
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Gap(12),
+                const Gap(10),
                 Row(
                   children: [
                     const Icon(
                       Icons.calendar_month_outlined,
-                      size: 16,
+                      size: 14,
                       color: AppColors.textSecondary,
                     ),
                     const Gap(6),
@@ -352,13 +352,13 @@ class _ServicesTabContent extends StatelessWidget {
                       item.date,
                       style: const TextStyle(
                         color: AppColors.textSecondary,
-                        fontSize: 13,
+                        fontSize: 11.5,
                       ),
                     ),
                     const Gap(16),
                     const Icon(
                       Icons.access_time_rounded,
-                      size: 16,
+                      size: 14,
                       color: AppColors.textSecondary,
                     ),
                     const Gap(6),
@@ -366,18 +366,18 @@ class _ServicesTabContent extends StatelessWidget {
                       item.timeSlot,
                       style: const TextStyle(
                         color: AppColors.textSecondary,
-                        fontSize: 13,
+                        fontSize: 11.5,
                       ),
                     ),
                   ],
                 ),
-                const Gap(8),
+                const Gap(6),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Icon(
                       Icons.location_on_outlined,
-                      size: 16,
+                      size: 14,
                       color: AppColors.textSecondary,
                     ),
                     const Gap(6),
@@ -386,17 +386,17 @@ class _ServicesTabContent extends StatelessWidget {
                         item.address,
                         style: const TextStyle(
                           color: AppColors.textSecondary,
-                          fontSize: 13,
+                          fontSize: 11.5,
                         ),
                       ),
                     ),
                   ],
                 ),
                 if (item.description.isNotEmpty) ...[
-                  const Gap(12),
+                  const Gap(10),
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: AppColors.inputFill,
                       borderRadius: BorderRadius.circular(8),
@@ -405,7 +405,7 @@ class _ServicesTabContent extends StatelessWidget {
                       item.description,
                       style: const TextStyle(
                         color: AppColors.textPrimary,
-                        fontSize: 13,
+                        fontSize: 11.5,
                         fontStyle: FontStyle.italic,
                       ),
                     ),
@@ -475,7 +475,7 @@ class _OrdersTabContent extends StatelessWidget {
                       item.id,
                       style: const TextStyle(
                         color: AppColors.secondary,
-                        fontSize: 13,
+                        fontSize: 11.5,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -489,11 +489,11 @@ class _OrdersTabContent extends StatelessWidget {
                   item.title,
                   style: const TextStyle(
                     color: AppColors.textPrimary,
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Gap(12),
+                const Gap(10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -501,7 +501,7 @@ class _OrdersTabContent extends StatelessWidget {
                       children: [
                         const Icon(
                           Icons.calendar_month_outlined,
-                          size: 16,
+                          size: 14,
                           color: AppColors.textSecondary,
                         ),
                         const Gap(6),
@@ -509,7 +509,7 @@ class _OrdersTabContent extends StatelessWidget {
                           item.date,
                           style: const TextStyle(
                             color: AppColors.textSecondary,
-                            fontSize: 13,
+                            fontSize: 11.5,
                           ),
                         ),
                       ],
@@ -518,7 +518,7 @@ class _OrdersTabContent extends StatelessWidget {
                       '\$${item.amount.toStringAsFixed(2)}',
                       style: const TextStyle(
                         color: AppColors.primary,
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -559,18 +559,18 @@ class _InvoicesTabContent extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(
                     Icons.description_outlined,
                     color: AppColors.primary,
-                    size: 24,
+                    size: 20,
                   ),
                 ),
-                const Gap(16),
+                const Gap(14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -579,7 +579,7 @@ class _InvoicesTabContent extends StatelessWidget {
                         item.invoiceNumber,
                         style: const TextStyle(
                           color: AppColors.textPrimary,
-                          fontSize: 15,
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -588,7 +588,7 @@ class _InvoicesTabContent extends StatelessWidget {
                         item.date,
                         style: const TextStyle(
                           color: AppColors.textSecondary,
-                          fontSize: 13,
+                          fontSize: 11.5,
                         ),
                       ),
                     ],
@@ -601,7 +601,7 @@ class _InvoicesTabContent extends StatelessWidget {
                       '\$${item.amount.toStringAsFixed(2)}',
                       style: const TextStyle(
                         color: AppColors.textPrimary,
-                        fontSize: 15,
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

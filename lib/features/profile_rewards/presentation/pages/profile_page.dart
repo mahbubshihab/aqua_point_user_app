@@ -28,8 +28,8 @@ class ProfilePage extends StatelessWidget {
           'Account',
           style: TextStyle(
             color: AppColors.textPrimary,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
           ),
         ),
         actions: [
@@ -56,28 +56,28 @@ class ProfilePage extends StatelessWidget {
           }
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Column(
               children: [
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 // Center Avatar
                 Center(
                   child: Stack(
                     alignment: Alignment.bottomRight,
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: const EdgeInsets.all(3),
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           color: AppColors.divider,
                         ),
                         child: CircleAvatar(
-                          radius: 46,
+                          radius: 38,
                           backgroundColor: AppColors.cardBackground,
                           child: Text(
                             initial,
                             style: const TextStyle(
-                              fontSize: 40,
+                              fontSize: 30,
                               fontWeight: FontWeight.bold,
                               color: AppColors.textPrimary,
                             ),
@@ -85,30 +85,30 @@ class ProfilePage extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.all(6),
+                        padding: const EdgeInsets.all(5),
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white,
                         ),
                         child: const Icon(
                           Icons.camera_alt_outlined,
-                          size: 16,
+                          size: 14,
                           color: Colors.black87,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 Text(
                   name,
                   style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary,
                   ),
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 20),
 
                 // Menu items list
                 _buildMenuItem(
@@ -124,7 +124,7 @@ class ProfilePage extends StatelessWidget {
                     );
                   },
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 _buildMenuItem(
                   context,
                   icon: Icons.stars_rounded,
@@ -138,7 +138,7 @@ class ProfilePage extends StatelessWidget {
                     );
                   },
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 _buildMenuItem(
                   context,
                   icon: Icons.card_giftcard_outlined,
@@ -152,7 +152,7 @@ class ProfilePage extends StatelessWidget {
                     );
                   },
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 _buildMenuItem(
                   context,
                   icon: Icons.help_outline_rounded,
@@ -166,9 +166,9 @@ class ProfilePage extends StatelessWidget {
                     );
                   },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
                 const Divider(color: AppColors.divider, height: 1),
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
                 _buildMenuItem(
                   context,
                   icon: Icons.logout_rounded,
@@ -197,22 +197,22 @@ class ProfilePage extends StatelessWidget {
   }) {
     return GlassCard(
       padding: EdgeInsets.zero,
-      borderRadius: 16,
+      borderRadius: 14,
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
         onTap: onTap,
         leading: Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: iconColor.withValues(alpha: 0.15),
             shape: BoxShape.circle,
           ),
-          child: Icon(icon, color: iconColor, size: 22),
+          child: Icon(icon, color: iconColor, size: 20),
         ),
         title: Text(
           title,
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 13.5,
             fontWeight: FontWeight.w600,
             color: isLogout ? AppColors.accentRed : AppColors.textPrimary,
           ),
@@ -220,7 +220,7 @@ class ProfilePage extends StatelessWidget {
         subtitle: Text(
           subtitle,
           style: const TextStyle(
-            fontSize: 12,
+            fontSize: 11,
             color: AppColors.textSecondary,
           ),
         ),

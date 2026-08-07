@@ -38,7 +38,7 @@ class BlogsNewsSection extends StatelessWidget {
                 const Text(
                   'Blogs & News',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                     letterSpacing: 0.2,
@@ -58,7 +58,7 @@ class BlogsNewsSection extends StatelessWidget {
                       Text(
                         'View All',
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 12,
                           fontWeight: FontWeight.w600,
                           color: AppColors.primary,
                         ),
@@ -80,7 +80,7 @@ class BlogsNewsSection extends StatelessWidget {
 
         // Horizontal Blogs List
         SizedBox(
-          height: 210,
+          height: 200,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: blogs.length,
@@ -100,7 +100,7 @@ class BlogsNewsSection extends StatelessWidget {
                       Stack(
                         children: [
                           Container(
-                            height: 110,
+                            height: 105,
                             width: double.infinity,
                             color: AppColors.inputFill,
                             child: Image.network(
@@ -118,7 +118,7 @@ class BlogsNewsSection extends StatelessWidget {
                                   child: const Center(
                                     child: Icon(
                                       Icons.article_rounded,
-                                      size: 38,
+                                      size: 34,
                                       color: Color(0xFF60A5FA),
                                     ),
                                   ),
@@ -145,7 +145,7 @@ class BlogsNewsSection extends StatelessWidget {
 
                       // Blog Details
                       Padding(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -155,7 +155,7 @@ class BlogsNewsSection extends StatelessWidget {
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                fontSize: 13,
+                                fontSize: 12,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.textPrimary,
                                 height: 1.35,

@@ -57,8 +57,8 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
           'Help & Support',
           style: TextStyle(
             color: AppColors.textPrimary,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
           ),
         ),
         centerTitle: false,
@@ -102,12 +102,12 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
               const Text(
                 'Quick Support',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
 
               // Quick Support Options Cards
               _buildQuickOptionCard(
@@ -124,7 +124,7 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
                   );
                 },
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
               _buildQuickOptionCard(
                 icon: Icons.headset_mic_rounded,
                 iconColor: AppColors.primary,
@@ -140,18 +140,18 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
                 },
               ),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: 24),
 
               // Form Section
               const Text(
                 'Send us a message',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 12),
 
               Form(
                 key: _formKey,
@@ -275,21 +275,21 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
         title: Text(
           title,
           style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
+            fontSize: 13.5,
+            fontWeight: FontWeight.w600,
             color: AppColors.textPrimary,
           ),
         ),
         subtitle: Text(
           subtitle,
           style: const TextStyle(
-            fontSize: 13,
+            fontSize: 11.5,
             color: AppColors.textSecondary,
           ),
         ),
         trailing: const Icon(
           Icons.arrow_forward_ios_rounded,
-          size: 16,
+          size: 14,
           color: AppColors.textSecondary,
         ),
         onTap: onTap,
@@ -312,7 +312,7 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
         Text(
           label,
           style: const TextStyle(
-            fontSize: 13,
+            fontSize: 11.5,
             fontWeight: FontWeight.w600,
             color: AppColors.textSecondary,
           ),
@@ -322,15 +322,15 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
           controller: controller,
           keyboardType: keyboardType,
           maxLines: maxLines,
-          style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+          style: const TextStyle(color: AppColors.textPrimary, fontSize: 12.5),
           validator: validator,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
-            prefixIcon: Icon(icon, color: AppColors.secondary, size: 20),
+            hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+            prefixIcon: Icon(icon, color: AppColors.secondary, size: 18),
             filled: true,
             fillColor: AppColors.inputFill,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: AppColors.cardBorder),

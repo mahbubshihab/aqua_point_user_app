@@ -114,8 +114,8 @@ class _QuickActionTileState extends State<QuickActionTile> {
         },
         onTapCancel: () => setState(() => _isPressed = false),
         child: GlassCard(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-          borderRadius: 16,
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+          borderRadius: 14,
           fillColor: const Color(0x1F141A2D),
           borderGradient: const LinearGradient(
             begin: Alignment.topCenter,
@@ -129,13 +129,13 @@ class _QuickActionTileState extends State<QuickActionTile> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // 44x44px 3D Glowing Gradient Icon Badge
+              // 38x38px 3D Glowing Gradient Icon Badge
               Container(
-                width: 44,
-                height: 44,
+                width: 38,
+                height: 38,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                   gradient: LinearGradient(
                     colors: gradientColors,
                     begin: Alignment.topLeft,
@@ -148,28 +148,28 @@ class _QuickActionTileState extends State<QuickActionTile> {
                   boxShadow: [
                     BoxShadow(
                       color: glowColor,
-                      blurRadius: 10,
+                      blurRadius: 8,
                       spreadRadius: 0,
-                      offset: const Offset(0, 3),
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
                 child: Icon(
                   item.icon,
                   color: Colors.white,
-                  size: 22,
+                  size: 20,
                 ),
               ),
-              const SizedBox(height: 6),
-              // Standard text size (fontSize: 12.5, fontWeight: FontWeight.w600)
+              const SizedBox(height: 5),
+              // Card title 11px (w500)
               Text(
                 item.label,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
                   color: Colors.white,
                   height: 1.15,
                   letterSpacing: 0.1,
