@@ -6,7 +6,7 @@ import 'features/home/data/datasources/home_mock_datasource.dart';
 import 'features/home/data/repositories/home_repository_impl.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
 import 'features/home/presentation/bloc/home_event.dart';
-import 'features/home/presentation/pages/main_shell_page.dart';
+import 'features/splash/presentation/pages/custom_splash_page.dart';
 import 'features/inbox_support/data/datasources/inbox_support_mock_datasource.dart';
 import 'features/inbox_support/data/repositories/inbox_support_repository_impl.dart';
 import 'features/inbox_support/domain/repositories/inbox_support_repository.dart';
@@ -96,7 +96,7 @@ class MyApp extends StatelessWidget {
           title: AppConstants.appTitle,
           debugShowCheckedModeBanner: false,
           theme: AppTheme.darkTheme,
-          home: const MainShellPage(),
+          home: const CustomSplashPage(),
         ),
       ),
     );
