@@ -63,7 +63,6 @@ class _LoginPageState extends State<LoginPage> {
             MaterialPageRoute(
               builder: (_) => OtpVerificationPage(
                 phoneNumber: state.phoneNumber,
-                expectedOtp: state.expectedOtp,
                 apiMessage: state.apiMessage,
               ),
             ),

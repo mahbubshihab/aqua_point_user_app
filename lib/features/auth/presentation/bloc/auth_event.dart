@@ -23,16 +23,14 @@ class SendOtpEvent extends AuthEvent {
 class VerifyOtpEvent extends AuthEvent {
   final String phoneNumber;
   final String inputOtp;
-  final String expectedOtp;
 
   const VerifyOtpEvent({
     required this.phoneNumber,
     required this.inputOtp,
-    required this.expectedOtp,
   });
 
   @override
-  List<Object?> get props => [phoneNumber, inputOtp, expectedOtp];
+  List<Object?> get props => [phoneNumber, inputOtp];
 }
 
 class LogoutEvent extends AuthEvent {

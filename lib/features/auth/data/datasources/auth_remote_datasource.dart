@@ -34,7 +34,6 @@ class AuthRemoteDatasource {
   Future<bool> verifyOtp({
     required String phoneNumber,
     required String inputOtp,
-    String? expectedOtp,
   }) async {
     final sanitizedPhone = sanitizePhone(phoneNumber);
     try {
@@ -92,10 +91,6 @@ class AuthRemoteDatasource {
       }
     } catch (e) {
       log('Error verifying OTP in Firestore: $e');
-    }
-
-    if (expectedOtp != null && expectedOtp.isNotEmpty && inputOtp.trim() == expectedOtp.trim()) {
-      return true;
     }
 
     return false;

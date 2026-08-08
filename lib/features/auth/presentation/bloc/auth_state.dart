@@ -21,19 +21,17 @@ class Unauthenticated extends AuthState {
 
 class OtpSentState extends AuthState {
   final String phoneNumber;
-  final String expectedOtp;
   final DateTime sentAt;
   final String? apiMessage;
 
   const OtpSentState({
     required this.phoneNumber,
-    required this.expectedOtp,
     required this.sentAt,
     this.apiMessage,
   });
 
   @override
-  List<Object?> get props => [phoneNumber, expectedOtp, sentAt, apiMessage];
+  List<Object?> get props => [phoneNumber, sentAt, apiMessage];
 }
 
 class Authenticated extends AuthState {

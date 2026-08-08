@@ -12,13 +12,11 @@ import '../bloc/auth_state.dart';
 
 class OtpVerificationPage extends StatefulWidget {
   final String phoneNumber;
-  final String expectedOtp;
   final String? apiMessage;
 
   const OtpVerificationPage({
     super.key,
     required this.phoneNumber,
-    required this.expectedOtp,
     this.apiMessage,
   });
 
@@ -30,7 +28,6 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
   final TextEditingController _pinController = TextEditingController();
   final FocusNode _pinFocusNode = FocusNode();
 
-  late String _currentExpectedOtp;
   late int _timerSeconds;
   Timer? _timer;
 
@@ -49,7 +46,6 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
   @override
   void initState() {
     super.initState();
-    _currentExpectedOtp = widget.expectedOtp;
     _startResendTimer();
 
     if (widget.apiMessage != null && widget.apiMessage!.isNotEmpty) {
@@ -114,7 +110,6 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
           VerifyOtpEvent(
             phoneNumber: widget.phoneNumber,
             inputOtp: code,
-            expectedOtp: _currentExpectedOtp,
           ),
         );
   }
@@ -172,9 +167,6 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is OtpSentState) {
-          setState(() {
-            _currentExpectedOtp = state.expectedOtp;
-          });
           if (state.apiMessage != null && state.apiMessage!.isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

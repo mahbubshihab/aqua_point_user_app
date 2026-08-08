@@ -86,19 +86,17 @@ class BulkSmsService {
 
     for (final endpoint in baseEndpoints) {
       for (final senderId in senderIdsToTry) {
-        final uri = Uri.parse(endpoint).replace(queryParameters: {
-          'api_key': ApiConfig.bulkSmsApiKey,
-          'type': 'text',
-          'number': targetNumber,
-          'senderid': senderId,
-          'message': message,
-        });
-
-        log('BulkSMSBD Sending SMS Attempt -> URI: $uri');
-        debugPrint('[BulkSMSBD] Request: Endpoint=$endpoint, SenderID=$senderId, Number=$targetNumber');
-
         try {
-          final response = await http.get(uri).timeout(const Duration(seconds: 10));
+          final response = await http.post(
+            Uri.parse(endpoint),
+            body: {
+              'api_key': ApiConfig.bulkSmsApiKey,
+              'type': 'text',
+              'number': targetNumber,
+              'senderid': senderId,
+              'message': message,
+            },
+          ).timeout(const Duration(seconds: 10));
           log('BulkSMSBD HTTP Status: ${response.statusCode}, Body: ${response.body}');
           debugPrint('[BulkSMSBD] HTTP ${response.statusCode}: ${response.body}');
 

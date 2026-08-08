@@ -65,14 +65,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (response.isSuccess) {
       apiMsg = 'SMS sent successfully!';
     } else if (response.errorMessage.isNotEmpty) {
-      apiMsg = '${response.errorMessage} (Test OTP: $otpCode)';
+      apiMsg = response.errorMessage;
     } else {
-      apiMsg = 'SMS delivery pending. (Test OTP: $otpCode)';
+      apiMsg = 'SMS delivery pending.';
     }
 
     emit(OtpSentState(
       phoneNumber: event.phoneNumber,
-      expectedOtp: otpCode,
       sentAt: DateTime.now(),
       apiMessage: apiMsg,
     ));
@@ -87,7 +86,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final isVerified = await remoteDatasource.verifyOtp(
       phoneNumber: event.phoneNumber,
       inputOtp: event.inputOtp,
-      expectedOtp: event.expectedOtp,
     );
 
     if (isVerified) {
