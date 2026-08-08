@@ -170,8 +170,6 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
           onPressed: () {
             if (Navigator.canPop(context)) {
               Navigator.pop(context);
-            } else {
-              context.read<HomeBloc>().add(const SelectTab(0));
             }
           },
         ),

@@ -175,7 +175,7 @@ class _StoreLocatorPageState extends State<StoreLocatorPage> {
                     phone: data['phone'] as String? ?? '',
                     hours: data['openingHours'] as String? ?? '9:00 AM - 8:00 PM',
                     mapUrl: data['googleMapUrl'] as String? ?? '',
-                    isOpen: data['isActive'] !== false,
+                    isOpen: data['isActive'] != false,
                   );
                 }).where((b) {
                   if (_searchQuery.isEmpty) return true;
