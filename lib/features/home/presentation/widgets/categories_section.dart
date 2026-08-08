@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/glass_card.dart';
 import '../../../products/domain/entities/category_entity.dart';
 import '../../../products/presentation/pages/category_shop_page.dart';
 import '../../../products/presentation/pages/shop_page.dart';
@@ -34,6 +35,13 @@ class CategoriesSection extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppColors.primary,
                     borderRadius: BorderRadius.circular(2),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: AppColors.primary,
+                        blurRadius: 6,
+                        spreadRadius: 1,
+                      ),
+                    ],
                   ),
                 ),
                 const Gap(8),
@@ -84,10 +92,12 @@ class CategoriesSection extends StatelessWidget {
         const Gap(12),
         // Horizontal Scrollable Category Cards List
         SizedBox(
-          height: 140,
+          height: 125,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
             itemCount: categories.length,
             itemBuilder: (context, index) {
               final category = categories[index];
@@ -100,10 +110,17 @@ class CategoriesSection extends StatelessWidget {
   }
 }
 
-class _CategoryCard extends StatelessWidget {
+class _CategoryCard extends StatefulWidget {
   final CategoryEntity category;
 
   const _CategoryCard({required this.category});
+
+  @override
+  State<_CategoryCard> createState() => _CategoryCardState();
+}
+
+class _CategoryCardState extends State<_CategoryCard> {
+  bool _isPressed = false;
 
   IconData _getCategoryFallbackIcon(String name) {
     final lowerName = name.toLowerCase();
@@ -111,26 +128,36 @@ class _CategoryCard extends StatelessWidget {
       return Icons.water_drop_rounded;
     } else if (lowerName.contains('filter') || lowerName.contains('cartridge')) {
       return Icons.filter_alt_rounded;
-    } else if (lowerName.contains('part') || lowerName.contains('spare') || lowerName.contains('fitting')) {
+    } else if (lowerName.contains('part') ||
+        lowerName.contains('spare') ||
+        lowerName.contains('fitting')) {
       return Icons.build_rounded;
     } else if (lowerName.contains('softener') || lowerName.contains('plant')) {
       return Icons.invert_colors_rounded;
     } else if (lowerName.contains('service') || lowerName.contains('maintenance')) {
       return Icons.home_repair_service_rounded;
+    } else if (lowerName.contains('dispenser') || lowerName.contains('tap')) {
+      return Icons.local_drink_rounded;
     }
     return Icons.category_rounded;
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool hasImage = category.imageUrl != null && category.imageUrl!.isNotEmpty;
+    final category = widget.category;
+    final bool hasImage =
+        category.imageUrl != null && category.imageUrl!.isNotEmpty;
 
     return Padding(
       padding: const EdgeInsets.only(right: 12.0),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
+      child: AnimatedScale(
+        scale: _isPressed ? 0.95 : 1.0,
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOutCubic,
+        child: GestureDetector(
+          onTapDown: (_) => setState(() => _isPressed = true),
+          onTapUp: (_) {
+            setState(() => _isPressed = false);
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -141,41 +168,23 @@ class _CategoryCard extends StatelessWidget {
               ),
             );
           },
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            width: 110,
+          onTapCancel: () => setState(() => _isPressed = false),
+          child: GlassCard(
+            width: 105,
             padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF1E293B),
-                  Color(0xFF0F172A),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: const Color(0x3300E5FF),
-                width: 1,
-              ),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x1A000000),
-                  blurRadius: 8,
-                  offset: Offset(0, 4),
-                ),
-              ],
-            ),
+            borderRadius: 16,
+            fillColor: const Color(0x1F141A2D),
+            borderColor: AppColors.primary.withValues(alpha: 0.25),
+            borderWidth: 1,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Category Image / Icon Container
+                // Category Image / Icon Badge
                 Container(
-                  width: 54,
-                  height: 54,
+                  width: 52,
+                  height: 52,
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
+                    borderRadius: BorderRadius.circular(14),
                     gradient: LinearGradient(
                       colors: [
                         AppColors.primary.withValues(alpha: 0.2),
@@ -185,31 +194,49 @@ class _CategoryCard extends StatelessWidget {
                       end: Alignment.bottomRight,
                     ),
                     border: Border.all(
-                      color: AppColors.primary.withValues(alpha: 0.3),
-                      width: 1.5,
+                      color: AppColors.primary.withValues(alpha: 0.35),
+                      width: 1.2,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.15),
+                        blurRadius: 10,
+                        spreadRadius: 0,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
                   ),
-                  child: ClipOval(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
                     child: hasImage
                         ? Image.network(
                             category.imageUrl!,
                             fit: BoxFit.cover,
                             loadingBuilder: (context, child, loadingProgress) {
                               if (loadingProgress == null) return child;
-                              return const _ShimmerImage();
+                              return const Center(
+                                child: SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              );
                             },
                             errorBuilder: (context, error, stackTrace) {
                               return Icon(
                                 _getCategoryFallbackIcon(category.name),
                                 color: AppColors.primary,
-                                size: 26,
+                                size: 24,
                               );
                             },
                           )
                         : Icon(
                             _getCategoryFallbackIcon(category.name),
                             color: AppColors.primary,
-                            size: 26,
+                            size: 24,
                           ),
                   ),
                 ),
@@ -222,19 +249,28 @@ class _CategoryCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: AppColors.textPrimary,
-                    fontSize: 12,
+                    fontSize: 11.5,
                     fontWeight: FontWeight.w600,
                     height: 1.15,
+                    letterSpacing: 0.1,
                   ),
                 ),
                 if (category.productCount > 0) ...[
-                  const Gap(4),
-                  Text(
-                    '${category.productCount} items',
-                    style: const TextStyle(
-                      color: AppColors.primary,
-                      fontSize: 9.5,
-                      fontWeight: FontWeight.w500,
+                  const Gap(3),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '${category.productCount} items',
+                      style: const TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -243,55 +279,6 @@ class _CategoryCard extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _ShimmerImage extends StatefulWidget {
-  const _ShimmerImage();
-
-  @override
-  State<_ShimmerImage> createState() => _ShimmerImageState();
-}
-
-class _ShimmerImageState extends State<_ShimmerImage> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1500),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.white.withValues(alpha: 0.05),
-                Colors.white.withValues(alpha: 0.15),
-                Colors.white.withValues(alpha: 0.05),
-              ],
-              stops: const [0.1, 0.5, 0.9],
-              begin: Alignment(-1.0 + _controller.value * 2, -0.3),
-              end: Alignment(1.0 + _controller.value * 2, 0.3),
-            ),
-          ),
-        );
-      },
     );
   }
 }
