@@ -28,6 +28,9 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _isEditing = false;
   bool _isUploadingAvatar = false;
 
+  List<DocumentSnapshot> _addresses = [];
+  bool _isLoadingAddresses = false;
+
   late String _userId;
   late String _phoneNumber;
 
@@ -43,6 +46,7 @@ class _ProfilePageState extends State<ProfilePage> {
       _userId = authState.userId;
       _phoneNumber = authState.phoneNumber;
       _loadProfile();
+      _loadAddresses();
     } else {
       setState(() => _isLoading = false);
     }
@@ -73,6 +77,133 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future<void> _loadAddresses() async {
+    setState(() => _isLoadingAddresses = true);
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('customers')
+          .doc(_userId)
+          .collection('addresses')
+          .orderBy('createdAt', descending: true)
+          .get();
+
+      setState(() {
+        _addresses = snapshot.docs;
+        if (_addresses.isNotEmpty && _addressController.text.isEmpty) {
+          _addressController.text = _addresses.first['address'] as String;
+        }
+      });
+    } catch (e) {
+      debugPrint('Error loading addresses: $e');
+    } finally {
+      setState(() => _isLoadingAddresses = false);
+    }
+  }
+
+  Future<void> _addAddress(String newAddressStr) async {
+    if (newAddressStr.trim().isEmpty) return;
+    try {
+      await FirebaseFirestore.instance
+          .collection('customers')
+          .doc(_userId)
+          .collection('addresses')
+          .add({
+        'address': newAddressStr.trim(),
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      // Update primary address doc field if empty
+      if (_addressController.text.isEmpty) {
+        _addressController.text = newAddressStr.trim();
+        await FirebaseFirestore.instance
+            .collection('customers')
+            .doc(_userId)
+            .set({'address': newAddressStr.trim()}, SetOptions(merge: true));
+      }
+
+      await _loadAddresses();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Address added successfully'),
+            backgroundColor: AppColors.primary,
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('Error adding address: $e');
+    }
+  }
+
+  Future<void> _deleteAddress(String docId, String addressVal) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('customers')
+          .doc(_userId)
+          .collection('addresses')
+          .doc(docId)
+          .delete();
+
+      if (_addressController.text == addressVal) {
+        _addressController.text = '';
+      }
+      await _loadAddresses();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Address removed'),
+            backgroundColor: AppColors.accentRed,
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('Error deleting address: $e');
+    }
+  }
+
+  void _showAddAddressDialog() {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: AppColors.cardBackground,
+        title: const Text(
+          'Add New Address',
+          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+        ),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          style: const TextStyle(color: AppColors.textPrimary),
+          decoration: InputDecoration(
+            hintText: 'Enter complete address',
+            hintStyle: const TextStyle(color: AppColors.textSecondary),
+            filled: true,
+            fillColor: AppColors.inputFill,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+          ),
+          TextButton(
+            onPressed: () {
+              if (controller.text.trim().isNotEmpty) {
+                _addAddress(controller.text.trim());
+                Navigator.pop(dialogContext);
+              }
+            },
+            child: const Text('Save', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _pickAndUploadImage() async {
     if (!_isEditing) return;
 
@@ -96,7 +227,6 @@ class _ProfilePageState extends State<ProfilePage> {
         setState(() {
           _avatarUrl = url;
         });
-        // Save avatar immediately
         await FirebaseFirestore.instance
             .collection('customers')
             .doc(_userId)
@@ -141,6 +271,23 @@ class _ProfilePageState extends State<ProfilePage> {
           .collection('customers')
           .doc(_userId)
           .set(profileData, SetOptions(merge: true));
+
+      // Also ensure main address is in sub-collection if typed directly
+      if (_addressController.text.trim().isNotEmpty) {
+        final existing = _addresses.any(
+            (doc) => (doc['address'] as String).trim() == _addressController.text.trim());
+        if (!existing) {
+          await FirebaseFirestore.instance
+              .collection('customers')
+              .doc(_userId)
+              .collection('addresses')
+              .add({
+            'address': _addressController.text.trim(),
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+          await _loadAddresses();
+        }
+      }
 
       setState(() => _isEditing = false);
 
@@ -227,7 +374,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           if (_isUploadingAvatar)
                             Positioned.fill(
                               child: Container(
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                   color: Colors.black54,
                                   shape: BoxShape.circle,
                                 ),
@@ -289,16 +436,170 @@ class _ProfilePageState extends State<ProfilePage> {
                     hintText: 'Enter your email',
                     keyboardType: TextInputType.emailAddress,
                   ),
-                  const Gap(16),
+                  const Gap(24),
 
-                  // Address
-                  _buildTextField(
-                    label: 'Address',
-                    controller: _addressController,
-                    readOnly: !_isEditing,
-                    hintText: 'Enter your address',
-                    maxLines: 2,
+                  // Saved Addresses Section Header
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Saved Addresses',
+                        style: TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: _showAddAddressDialog,
+                        borderRadius: BorderRadius.circular(8),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          child: Row(
+                            children: [
+                              Icon(Icons.add_circle_outline_rounded,
+                                  color: AppColors.primary, size: 18),
+                              Gap(4),
+                              Text(
+                                'Add New',
+                                style: TextStyle(
+                                  color: AppColors.primary,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                  const Gap(10),
+
+                  // Addresses List
+                  if (_isLoadingAddresses)
+                    const Center(
+                        child: Padding(
+                      padding: EdgeInsets.all(12.0),
+                      child: CircularProgressIndicator(
+                          color: AppColors.primary, strokeWidth: 2),
+                    ))
+                  else if (_addresses.isEmpty)
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.inputFill.withValues(alpha: 0.5),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.cardBorder, width: 0.5),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.location_off_outlined,
+                              color: AppColors.textSecondary, size: 20),
+                          Gap(10),
+                          Expanded(
+                            child: Text(
+                              'No saved addresses yet. Tap "+ Add New" to add one.',
+                              style: TextStyle(
+                                  color: AppColors.textSecondary, fontSize: 13),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  else
+                    Column(
+                      children: _addresses.map((doc) {
+                        final addressStr = doc['address'] as String;
+                        final isPrimary = _addressController.text == addressStr;
+
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: isPrimary
+                                ? AppColors.primary.withValues(alpha: 0.1)
+                                : AppColors.inputFill,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: isPrimary
+                                  ? AppColors.primary
+                                  : AppColors.cardBorder,
+                              width: isPrimary ? 1.2 : 0.5,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                isPrimary
+                                    ? Icons.location_on_rounded
+                                    : Icons.location_on_outlined,
+                                color: isPrimary
+                                    ? AppColors.primary
+                                    : AppColors.textSecondary,
+                                size: 20,
+                              ),
+                              const Gap(10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      addressStr,
+                                      style: TextStyle(
+                                        color: AppColors.textPrimary,
+                                        fontSize: 14,
+                                        fontWeight: isPrimary
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                      ),
+                                    ),
+                                    if (isPrimary)
+                                      const Text(
+                                        'Primary Address',
+                                        style: TextStyle(
+                                          color: AppColors.primary,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              if (!isPrimary && _isEditing)
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _addressController.text = addressStr;
+                                    });
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(4.0),
+                                    child: Text(
+                                      'Set Primary',
+                                      style: TextStyle(
+                                        color: AppColors.primary,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.delete_outline,
+                                  color: AppColors.accentRed,
+                                  size: 20,
+                                ),
+                                onPressed: () =>
+                                    _deleteAddress(doc.id, addressStr),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
 
                   const Gap(32),
 
@@ -352,7 +653,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     TextButton(
                       onPressed: () {
                         setState(() => _isEditing = false);
-                        _loadProfile(); // Reset to saved values
+                        _loadProfile();
                       },
                       child: const Text(
                         'Cancel',
