@@ -111,11 +111,11 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
     } catch (_) {}
   }
 
-  void _showAddAddressDialog() {
+  void _showAddAddressDialog({bool fromBottomSheet = false}) {
     final controller = TextEditingController();
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         backgroundColor: AppColors.cardBackground,
         title: const Text(
           'Add New Address',
@@ -134,7 +134,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: const Text(
               'Cancel',
               style: TextStyle(color: AppColors.textSecondary),
@@ -144,11 +144,9 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
             onPressed: () {
               if (controller.text.trim().isNotEmpty) {
                 _addAddress(controller.text.trim());
-                Navigator.pop(context);
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(
-                    context,
-                  ); // close bottom sheet if opened from it
+                Navigator.pop(dialogContext);
+                if (fromBottomSheet && Navigator.canPop(context)) {
+                  Navigator.pop(context);
                 }
               }
             },
@@ -239,7 +237,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                     const Gap(16),
                     AppButton(
                       text: 'Add New Address',
-                      onPressed: _showAddAddressDialog,
+                      onPressed: () => _showAddAddressDialog(fromBottomSheet: true),
                     ),
                   ],
                 ),
