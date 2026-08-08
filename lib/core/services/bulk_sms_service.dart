@@ -58,6 +58,7 @@ class BulkSmsService {
 
   /// List of candidate sender IDs to attempt if primary sender ID fails
   static const List<String> senderIdCandidates = [
+    '8809648910347',
     '8809617885841',
     '09617',
     'aquapoint45',
