@@ -89,26 +89,26 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
           .collection('service_requests')
           .where('userId', isEqualTo: userId)
           .orderBy('createdAt', descending: true)
-          .limit(20)
+          .limit(10)
           .get();
     } catch (_) {
       try {
         snapshot = await firestore
             .collection('service_requests')
             .where('userId', isEqualTo: userId)
-            .limit(20)
+            .limit(10)
             .get();
       } catch (_) {
         try {
           snapshot = await firestore
               .collection('services')
               .where('userId', isEqualTo: userId)
-              .limit(20)
+              .limit(10)
               .get();
         } catch (_) {
           snapshot = await firestore
               .collection('service_requests')
-              .limit(20)
+              .limit(10)
               .get();
         }
       }
@@ -140,19 +140,19 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
           .collection('orders')
           .where('userId', isEqualTo: userId)
           .orderBy('createdAt', descending: true)
-          .limit(20)
+          .limit(10)
           .get();
     } catch (_) {
       try {
         snapshot = await firestore
             .collection('orders')
             .where('customerPhone', isEqualTo: userId)
-            .limit(20)
+            .limit(10)
             .get();
       } catch (_) {
         snapshot = await firestore
             .collection('orders')
-            .limit(20)
+            .limit(10)
             .get();
       }
     }
@@ -185,10 +185,10 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
       snapshot = await firestore
           .collection('invoices')
           .where('userId', isEqualTo: userId)
-          .limit(20)
+          .limit(10)
           .get();
     } catch (_) {
-      snapshot = await firestore.collection('invoices').limit(20).get();
+      snapshot = await firestore.collection('invoices').limit(10).get();
     }
 
     return snapshot.docs.map((docSnap) {

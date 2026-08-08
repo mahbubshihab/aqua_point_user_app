@@ -33,7 +33,7 @@ class ProductsRemoteDatasourceImpl implements ProductsRemoteDatasource {
     if (targetCategory != null && targetCategory.isNotEmpty && targetCategory != 'All') {
       query = query.where('category', isEqualTo: targetCategory);
     }
-    final snapshot = await query.get();
+    final snapshot = await query.limit(10).get();
 
     return snapshot.docs.map((docSnap) => ProductModel.fromFirestore(docSnap)).toList();
   }
@@ -59,14 +59,14 @@ class ProductsRemoteDatasourceImpl implements ProductsRemoteDatasource {
           .doc(uid)
           .collection('custom_products')
           .orderBy('createdAt', descending: true)
-          .limit(15)
+          .limit(10)
           .get();
     } catch (_) {
       snapshot = await firestore
           .collection('customers')
           .doc(uid)
           .collection('custom_products')
-          .limit(15)
+          .limit(10)
           .get();
     }
 

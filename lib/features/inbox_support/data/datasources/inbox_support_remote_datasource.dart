@@ -16,7 +16,7 @@ class InboxSupportRemoteDatasource {
         final notifSnap = await FirebaseFirestore.instance
             .collection('notifications')
             .where('userId', isEqualTo: userId)
-            .limit(20)
+            .limit(10)
             .get();
 
         for (final doc in notifSnap.docs) {
