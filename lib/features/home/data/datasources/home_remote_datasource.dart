@@ -95,20 +95,12 @@ class HomeRemoteDatasource {
 
   Future<List<CategoryEntity>> fetchCategories() async {
     try {
-      QuerySnapshot snapshot;
-      try {
-        snapshot = await _firestore
-            .collection('categories')
-            .where('isActive', isEqualTo: true)
-            .get();
-      } catch (_) {
-        snapshot = await _firestore.collection('categories').get();
-      }
+      final snapshot = await _firestore.collection('categories').get();
 
       if (snapshot.docs.isNotEmpty) {
         final List<CategoryEntity> categories = [];
         for (final doc in snapshot.docs) {
-          final data = doc.data() as Map<String, dynamic>;
+          final data = doc.data();
           final name = data['name'] ?? data['title'] ?? 'Category';
           final icon = data['icon'];
           final imageUrl = data['imageUrl'] ?? data['image'] ?? data['photoUrl'];
