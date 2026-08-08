@@ -172,43 +172,6 @@ class HomePage extends StatelessWidget {
                           const Gap(14),
                           CategoriesSection(categories: state.categories),
                           const Gap(14),
-                          // 4 Dedicated Product Type Sections querying Firestore by type
-                          ProductTypeSection(
-                            title: 'Open Type Purifiers',
-                            typeTag: 'open_type',
-                            subtitle: 'High performance open structure water purifiers',
-                            icon: Icons.view_headline_rounded,
-                            accentColor: const Color(0xFF00E5FF),
-                            products: state.openTypeProducts,
-                          ),
-                          const Gap(14),
-                          ProductTypeSection(
-                            title: 'Box Type Purifiers',
-                            typeTag: 'box_type',
-                            subtitle: 'Sleek enclosed box design for modern kitchens',
-                            icon: Icons.inventory_2_outlined,
-                            accentColor: const Color(0xFF10B981),
-                            products: state.boxTypeProducts,
-                          ),
-                          const Gap(14),
-                          ProductTypeSection(
-                            title: 'Hot Cold Normal',
-                            typeTag: 'hot_cold_normal',
-                            subtitle: 'Multi-temperature instant water dispensers',
-                            icon: Icons.thermostat_rounded,
-                            accentColor: const Color(0xFFF59E0B),
-                            products: state.hotColdNormalProducts,
-                          ),
-                          const Gap(14),
-                          ProductTypeSection(
-                            title: 'Cabinet Type Purifiers',
-                            typeTag: 'cabinet_type',
-                            subtitle: 'Premium cabinet standing purifiers with extra capacity',
-                            icon: Icons.kitchen_rounded,
-                            accentColor: const Color(0xFFA855F7),
-                            products: state.cabinetTypeProducts,
-                          ),
-                          const Gap(14),
                           MyProductsSection(
                             onViewAllTap: () {
                               context.read<HomeBloc>().add(const SelectTab(2));
