@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../products/domain/entities/category_entity.dart';
 import '../../domain/entities/banner_entity.dart';
 import '../../domain/entities/company_info_entity.dart';
 import '../../domain/repositories/home_repository.dart';
@@ -35,6 +36,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         companyInfo = const CompanyInfoEntity();
       }
 
+      List<CategoryEntity> categories = [];
+      try {
+        categories = await repository.getCategories();
+      } catch (_) {
+        categories = [];
+      }
+
       final hydration = await repository.getHydrationData();
       final waterQuality = await repository.getWaterQualityData();
       final blogs = await repository.getBlogs();
@@ -46,11 +54,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         hydration: hydration,
         waterQuality: waterQuality,
         blogs: blogs,
+        categories: categories,
       ));
     } catch (e) {
       emit(HomeError(e.toString()));
     }
   }
+
 
   void _onIncrementHydration(
     IncrementHydration event,

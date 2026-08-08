@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../products/domain/entities/category_entity.dart';
 import '../../domain/entities/banner_entity.dart';
 import '../../domain/entities/blog_entity.dart';
 import '../../domain/entities/company_info_entity.dart';
@@ -27,6 +28,7 @@ class HomeLoaded extends HomeState {
   final HydrationEntity hydration;
   final WaterQualityEntity waterQuality;
   final List<BlogEntity> blogs;
+  final List<CategoryEntity> categories;
 
   const HomeLoaded({
     this.tabIndex = 0,
@@ -35,6 +37,7 @@ class HomeLoaded extends HomeState {
     required this.hydration,
     required this.waterQuality,
     required this.blogs,
+    this.categories = const [],
   });
 
   HomeLoaded copyWith({
@@ -44,6 +47,7 @@ class HomeLoaded extends HomeState {
     HydrationEntity? hydration,
     WaterQualityEntity? waterQuality,
     List<BlogEntity>? blogs,
+    List<CategoryEntity>? categories,
   }) {
     return HomeLoaded(
       tabIndex: tabIndex ?? this.tabIndex,
@@ -52,6 +56,7 @@ class HomeLoaded extends HomeState {
       hydration: hydration ?? this.hydration,
       waterQuality: waterQuality ?? this.waterQuality,
       blogs: blogs ?? this.blogs,
+      categories: categories ?? this.categories,
     );
   }
 
@@ -63,8 +68,10 @@ class HomeLoaded extends HomeState {
         hydration,
         waterQuality,
         blogs,
+        categories,
       ];
 }
+
 
 class HomeError extends HomeState {
   final String message;

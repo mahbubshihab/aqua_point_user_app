@@ -1,3 +1,4 @@
+import '../../../products/domain/entities/category_entity.dart';
 import '../../domain/entities/banner_entity.dart';
 import '../../domain/entities/blog_entity.dart';
 import '../../domain/entities/company_info_entity.dart';
@@ -25,4 +26,8 @@ class HomeRepositoryImpl implements HomeRepository {
 
   @override
   Future<List<BlogEntity>> getBlogs() => datasource.fetchBlogs();
+
+  @override
+  Future<List<CategoryEntity>> getCategories() => datasource.fetchCategories();
 }
+

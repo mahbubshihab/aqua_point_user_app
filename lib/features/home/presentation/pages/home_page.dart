@@ -17,6 +17,7 @@ import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
 import '../widgets/blogs_news_section.dart';
+import '../widgets/categories_section.dart';
 import '../widgets/home_footer_widget.dart';
 import '../widgets/home_header_banner.dart';
 import '../widgets/hydration_tracker_widget.dart';
@@ -165,11 +166,14 @@ class HomePage extends StatelessWidget {
                             ],
                           ),
                           const Gap(14),
+                          CategoriesSection(categories: state.categories),
+                          const Gap(14),
                           MyProductsSection(
                             onViewAllTap: () {
                               context.read<HomeBloc>().add(const SelectTab(2));
                             },
                           ),
+
                           const Gap(14),
                           HydrationTrackerWidget(
                             hydration: state.hydration,

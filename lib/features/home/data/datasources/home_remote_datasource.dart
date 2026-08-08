@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:user_app/core/services/firebase_service.dart';
+import '../../../products/domain/entities/category_entity.dart';
 import '../../domain/entities/blog_entity.dart';
 import '../../domain/entities/hydration_entity.dart';
 import '../../domain/entities/water_quality_entity.dart';
@@ -75,4 +76,68 @@ class HomeRemoteDatasource {
   Future<List<BlogEntity>> fetchBlogs() async {
     return const [];
   }
+
+  Future<List<CategoryEntity>> fetchCategories() async {
+    try {
+      QuerySnapshot snapshot;
+      try {
+        snapshot = await _firestore
+            .collection('categories')
+            .where('isActive', isEqualTo: true)
+            .get();
+      } catch (_) {
+        snapshot = await _firestore.collection('categories').get();
+      }
+
+      if (snapshot.docs.isNotEmpty) {
+        final List<CategoryEntity> categories = [];
+        for (final doc in snapshot.docs) {
+          final data = doc.data() as Map<String, dynamic>;
+          final name = data['name'] ?? data['title'] ?? 'Category';
+          final icon = data['icon'];
+          final imageUrl = data['imageUrl'] ?? data['image'] ?? data['photoUrl'];
+          final count = (data['productCount'] as num?)?.toInt() ?? 0;
+          categories.add(CategoryEntity(
+            id: doc.id,
+            name: name,
+            icon: icon,
+            imageUrl: imageUrl,
+            productCount: count,
+          ));
+        }
+        return categories;
+      }
+      return _fallbackCategories;
+    } catch (_) {
+      return _fallbackCategories;
+    }
+  }
+
+  static const List<CategoryEntity> _fallbackCategories = [
+    CategoryEntity(
+      id: 'cat_1',
+      name: 'RO Purifiers',
+      imageUrl: 'https://images.unsplash.com/photo-1548839140-29a749e1bc4e?w=500&auto=format&fit=crop&q=60',
+      productCount: 12,
+    ),
+    CategoryEntity(
+      id: 'cat_2',
+      name: 'Filter Cartridges',
+      imageUrl: 'https://images.unsplash.com/photo-1628102491629-778571d893a3?w=500&auto=format&fit=crop&q=60',
+      productCount: 8,
+    ),
+    CategoryEntity(
+      id: 'cat_3',
+      name: 'Spare Parts',
+      imageUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500&auto=format&fit=crop&q=60',
+      productCount: 15,
+    ),
+    CategoryEntity(
+      id: 'cat_4',
+      name: 'Water Softeners',
+      imageUrl: 'https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=500&auto=format&fit=crop&q=60',
+      productCount: 6,
+    ),
+  ];
 }
+

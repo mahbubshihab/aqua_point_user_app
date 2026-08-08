@@ -1,3 +1,4 @@
+import '../../../products/domain/entities/category_entity.dart';
 import '../entities/banner_entity.dart';
 import '../entities/blog_entity.dart';
 import '../entities/company_info_entity.dart';
@@ -10,4 +11,6 @@ abstract class HomeRepository {
   Future<HydrationEntity> getHydrationData();
   Future<WaterQualityEntity> getWaterQualityData();
   Future<List<BlogEntity>> getBlogs();
+  Future<List<CategoryEntity>> getCategories();
 }
+
