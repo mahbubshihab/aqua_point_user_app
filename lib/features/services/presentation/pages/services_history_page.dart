@@ -300,7 +300,7 @@ class _ServicesTabContent extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: AppCard(
-                    child: Column(
+                      child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
@@ -441,7 +441,7 @@ class _OrdersTabContent extends StatelessWidget {
       color: AppColors.primary,
       backgroundColor: AppColors.cardBackground,
       onRefresh: () async {
-        context.read<ServicesBloc>().add(const LoadOrdersHistory());
+        context.read<ServicesBloc>().add(const LoadServicesHistory());
         await Future.delayed(const Duration(milliseconds: 600));
       },
       child: ordersList.isEmpty
@@ -461,49 +461,49 @@ class _OrdersTabContent extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: AppCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              item.id,
-                              style: const TextStyle(
-                                color: AppColors.secondary,
-                                fontSize: 11.5,
-                                fontWeight: FontWeight.w600,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                item.id,
+                                style: const TextStyle(
+                                  color: AppColors.secondary,
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
-                            StatBadge.excellent(
-                              text: item.status,
-                            ),
-                          ],
-                        ),
-                        const Gap(8),
-                        Text(
-                          item.title,
-                          style: const TextStyle(
-                            color: AppColors.textPrimary,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
+                              StatBadge.excellent(
+                                text: item.status,
+                              ),
+                            ],
                           ),
-                        ),
-                        const Gap(4),
-                        Text(
-                          '${item.date} • \$${item.totalAmount.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 12,
+                          const Gap(8),
+                          Text(
+                            item.title,
+                            style: const TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
+                          const Gap(4),
+                          Text(
+                            '${item.date} • ৳${item.amount.toStringAsFixed(0)}',
+                            style: const TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
-          ),
+                );
+              },
+            ),
     );
   }
 }
@@ -519,7 +519,7 @@ class _InvoicesTabContent extends StatelessWidget {
       color: AppColors.primary,
       backgroundColor: AppColors.cardBackground,
       onRefresh: () async {
-        context.read<ServicesBloc>().add(const LoadInvoicesHistory());
+        context.read<ServicesBloc>().add(const LoadServicesHistory());
         await Future.delayed(const Duration(milliseconds: 600));
       },
       child: invoicesList.isEmpty

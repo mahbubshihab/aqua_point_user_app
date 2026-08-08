@@ -5,6 +5,8 @@ import '../../domain/entities/product_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../orders/presentation/bloc/cart_bloc.dart';
 import '../../../orders/presentation/pages/cart_page.dart';
+import '../bloc/products_bloc.dart';
+import '../bloc/products_event.dart';
 import '../widgets/shop_product_card.dart';
 
 class CategoryShopPage extends StatefulWidget {
