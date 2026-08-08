@@ -219,44 +219,50 @@ class _EmptyStateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: AppColors.cardBackground,
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.divider),
-              ),
-              child: Icon(
-                icon,
-                size: 48,
-                color: AppColors.textSecondary,
-              ),
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.65,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: AppColors.cardBackground,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.divider),
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 48,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const Gap(20),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Gap(6),
+                Text(
+                  subtitle,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 11.5,
+                  ),
+                ),
+              ],
             ),
-            const Gap(20),
-            Text(
-              title,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const Gap(6),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 11.5,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -270,39 +276,44 @@ class _ServicesTabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (servicesList.isEmpty) {
-      return const _EmptyStateView(
-        title: 'No history found',
-        subtitle: 'You have not submitted any service requests yet.',
-        icon: Icons.build_circle_outlined,
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 90),
-      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-      cacheExtent: 800,
-      itemCount: servicesList.length,
-      itemBuilder: (context, index) {
-        final item = servicesList[index];
-        return RepaintBoundary(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: AppCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      item.id,
-                      style: const TextStyle(
-                        color: AppColors.secondary,
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+    return RefreshIndicator(
+      color: AppColors.primary,
+      backgroundColor: AppColors.cardBackground,
+      onRefresh: () async {
+        context.read<ServicesBloc>().add(const LoadServicesHistory());
+        await Future.delayed(const Duration(milliseconds: 600));
+      },
+      child: servicesList.isEmpty
+          ? const _EmptyStateView(
+              title: 'No history found',
+              subtitle: 'You have not submitted any service requests yet.',
+              icon: Icons.build_circle_outlined,
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 90),
+              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+              cacheExtent: 800,
+              itemCount: servicesList.length,
+              itemBuilder: (context, index) {
+                final item = servicesList[index];
+                return RepaintBoundary(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: AppCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              item.id,
+                              style: const TextStyle(
+                                color: AppColors.secondary,
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                     _buildStatusBadge(item.status),
                   ],
                 ),
@@ -426,90 +437,73 @@ class _OrdersTabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (ordersList.isEmpty) {
-      return const _EmptyStateView(
-        title: 'No history found',
-        subtitle: 'You have no product or component order records.',
-        icon: Icons.shopping_bag_outlined,
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 90),
-      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-      cacheExtent: 800,
-      itemCount: ordersList.length,
-      itemBuilder: (context, index) {
-        final item = ordersList[index];
-        return RepaintBoundary(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: AppCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      item.id,
-                      style: const TextStyle(
-                        color: AppColors.secondary,
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    StatBadge.excellent(
-                      text: item.status,
-                    ),
-                  ],
-                ),
-                const Gap(8),
-                Text(
-                  item.title,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Gap(10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
+    return RefreshIndicator(
+      color: AppColors.primary,
+      backgroundColor: AppColors.cardBackground,
+      onRefresh: () async {
+        context.read<ServicesBloc>().add(const LoadOrdersHistory());
+        await Future.delayed(const Duration(milliseconds: 600));
+      },
+      child: ordersList.isEmpty
+          ? const _EmptyStateView(
+              title: 'No history found',
+              subtitle: 'You have no product or component order records.',
+              icon: Icons.shopping_bag_outlined,
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 90),
+              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+              cacheExtent: 800,
+              itemCount: ordersList.length,
+              itemBuilder: (context, index) {
+                final item = ordersList[index];
+                return RepaintBoundary(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: AppCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(
-                          Icons.calendar_month_outlined,
-                          size: 14,
-                          color: AppColors.textSecondary,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              item.id,
+                              style: const TextStyle(
+                                color: AppColors.secondary,
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            StatBadge.excellent(
+                              text: item.status,
+                            ),
+                          ],
                         ),
-                        const Gap(6),
+                        const Gap(8),
                         Text(
-                          item.date,
+                          item.title,
+                          style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Gap(4),
+                        Text(
+                          '${item.date} • \$${item.totalAmount.toStringAsFixed(2)}',
                           style: const TextStyle(
                             color: AppColors.textSecondary,
-                            fontSize: 11.5,
+                            fontSize: 12,
                           ),
                         ),
                       ],
                     ),
-                    Text(
-                      '\$${item.amount.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        color: AppColors.primary,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ],
-            ),
+              );
+            },
           ),
-        ),
-      );
-    },
     );
   }
 }
@@ -521,86 +515,92 @@ class _InvoicesTabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (invoicesList.isEmpty) {
-      return const _EmptyStateView(
-        title: 'No history found',
-        subtitle: 'You have no billing or invoice records.',
-        icon: Icons.receipt_long_outlined,
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 90),
-      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-      cacheExtent: 800,
-      itemCount: invoicesList.length,
-      itemBuilder: (context, index) {
-        final item = invoicesList[index];
-        return RepaintBoundary(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: AppCard(
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    Icons.description_outlined,
-                    color: AppColors.primary,
-                    size: 20,
-                  ),
-                ),
-                const Gap(14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.invoiceNumber,
-                        style: const TextStyle(
-                          color: AppColors.textPrimary,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
+    return RefreshIndicator(
+      color: AppColors.primary,
+      backgroundColor: AppColors.cardBackground,
+      onRefresh: () async {
+        context.read<ServicesBloc>().add(const LoadInvoicesHistory());
+        await Future.delayed(const Duration(milliseconds: 600));
+      },
+      child: invoicesList.isEmpty
+          ? const _EmptyStateView(
+              title: 'No history found',
+              subtitle: 'You have no billing or invoice records.',
+              icon: Icons.receipt_long_outlined,
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 90),
+              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+              cacheExtent: 800,
+              itemCount: invoicesList.length,
+              itemBuilder: (context, index) {
+                final item = invoicesList[index];
+                return RepaintBoundary(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: AppCard(
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(
+                            Icons.receipt_long_rounded,
+                            color: AppColors.primary,
+                            size: 24,
+                          ),
                         ),
-                      ),
-                      const Gap(4),
-                      Text(
-                        item.date,
-                        style: const TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 11.5,
+                        const Gap(12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                item.id,
+                                style: const TextStyle(
+                                  color: AppColors.textPrimary,
+                                  fontSize: 13.5,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Gap(4),
+                              Text(
+                                item.date,
+                                style: const TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 11.5,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              '\$${item.amount.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                color: AppColors.textPrimary,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const Gap(4),
+                            StatBadge.excellent(
+                              text: item.status,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      '\$${item.amount.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Gap(4),
-                    StatBadge.excellent(
-                      text: item.status,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              );
+            },
           ),
-        ),
-      );
-    },
     );
   }
 }

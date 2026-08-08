@@ -342,9 +342,17 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
+          : RefreshIndicator(
+              color: AppColors.primary,
+              backgroundColor: AppColors.cardBackground,
+              onRefresh: () async {
+                await _loadProfile();
+                await _loadAddresses();
+              },
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // Avatar

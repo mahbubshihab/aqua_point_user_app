@@ -230,36 +230,51 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
             const Gap(12),
             // Product Grid Layout
             Expanded(
-              child: filtered.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.search_off_rounded, size: 48, color: AppColors.textSecondary),
-                          const Gap(12),
-                          Text(
-                            'No products found in ${widget.categoryName}',
-                            style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+              child: RefreshIndicator(
+                color: AppColors.primary,
+                backgroundColor: AppColors.cardBackground,
+                onRefresh: () async {
+                  context.read<ProductsBloc>().add(const LoadProducts());
+                  await Future.delayed(const Duration(milliseconds: 600));
+                },
+                child: filtered.isEmpty
+                    ? SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.search_off_rounded, size: 48, color: AppColors.textSecondary),
+                                const Gap(12),
+                                Text(
+                                  'No products found in ${widget.categoryName}',
+                                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
+                        ),
+                      )
+                    : GridView.builder(
+                        padding: const EdgeInsets.all(16),
+                        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.57,
+                          crossAxisSpacing: 14,
+                          mainAxisSpacing: 14,
+                        ),
+                        itemCount: filtered.length,
+                        itemBuilder: (context, index) {
+                          return ShopProductCard(
+                            product: filtered[index],
+                            isHorizontal: false,
+                          );
+                        },
                       ),
-                    )
-                  : GridView.builder(
-                      padding: const EdgeInsets.all(16),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.57,
-                        crossAxisSpacing: 14,
-                        mainAxisSpacing: 14,
-                      ),
-                      itemCount: filtered.length,
-                      itemBuilder: (context, index) {
-                        return ShopProductCard(
-                          product: filtered[index],
-                          isHorizontal: false,
-                        );
-                      },
-                    ),
+              ),
             ),
           ],
         ),

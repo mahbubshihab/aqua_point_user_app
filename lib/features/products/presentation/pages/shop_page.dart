@@ -194,8 +194,10 @@ class _ShopPageState extends State<ShopPage> {
                   Expanded(
                     child: RefreshIndicator(
                       color: AppColors.primary,
+                      backgroundColor: AppColors.cardBackground,
                       onRefresh: () async {
                         context.read<ProductsBloc>().add(const LoadProducts());
+                        await Future.delayed(const Duration(milliseconds: 600));
                       },
                       child: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),

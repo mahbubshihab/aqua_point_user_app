@@ -71,9 +71,16 @@ class HomePage extends StatelessWidget {
             }
 
             if (state is HomeLoaded) {
-              return SingleChildScrollView(
-                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                child: Column(
+              return RefreshIndicator(
+                color: AppColors.primary,
+                backgroundColor: AppColors.cardBackground,
+                onRefresh: () async {
+                  context.read<HomeBloc>().add(const LoadHomeData());
+                  await Future.delayed(const Duration(milliseconds: 600));
+                },
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                  child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     HomeHeaderBanner(
@@ -288,7 +295,6 @@ class HomePage extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ],
                 ),
               );
             }
