@@ -22,6 +22,20 @@ class ProductDetailPage extends StatefulWidget {
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
   int _quantity = 1;
+  late PageController _pageController;
+  int _selectedImageIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   void _onAddToCart(BuildContext context) {
     final cartItem = CartItem(
@@ -90,6 +104,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final images = widget.product.allImages;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -163,20 +179,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Product Banner Container
-                  Container(
-                    width: double.infinity,
-                    height: 240,
-                    decoration: BoxDecoration(
-                      color: AppColors.cardBackground,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.divider),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: _buildImage(),
-                    ),
-                  ),
+                  // Product Swipeable Gallery Container
+                  _buildGallerySection(images),
                   const Gap(20),
 
                   // Product Title and Price Tag
@@ -398,6 +402,175 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
+  Widget _buildGallerySection(List<String> images) {
+    if (images.isEmpty) {
+      return Container(
+        width: double.infinity,
+        height: 260,
+        decoration: BoxDecoration(
+          color: AppColors.cardBackground,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.divider),
+        ),
+        child: _buildFallback(),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Swipeable Main Carousel
+        Container(
+          width: double.infinity,
+          height: 260,
+          decoration: BoxDecoration(
+            color: AppColors.cardBackground,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: AppColors.divider),
+          ),
+          child: Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: images.length,
+                  onPageChanged: (index) {
+                    setState(() {
+                      _selectedImageIndex = index;
+                    });
+                  },
+                  itemBuilder: (context, index) {
+                    final imgUrl = images[index];
+                    if (imgUrl.startsWith('http')) {
+                      return Image.network(
+                        imgUrl,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                        errorBuilder: (context, error, stackTrace) => _buildFallback(),
+                      );
+                    }
+                    return _buildFallback();
+                  },
+                ),
+              ),
+              if (images.length > 1) ...[
+                // Index Indicator Badge
+                Positioned(
+                  bottom: 12,
+                  right: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.65),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+                    ),
+                    child: Text(
+                      '${_selectedImageIndex + 1}/${images.length}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                // Smooth Dot Indicators
+                Positioned(
+                  bottom: 12,
+                  left: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      images.length,
+                      (index) => AnimatedContainer(
+                        duration: const Duration(milliseconds: 250),
+                        margin: const EdgeInsets.symmetric(horizontal: 3),
+                        width: _selectedImageIndex == index ? 18 : 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: _selectedImageIndex == index
+                              ? AppColors.primary
+                              : Colors.white.withValues(alpha: 0.4),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+
+        // Thumbnail Selector Strip
+        if (images.length > 1) ...[
+          const Gap(12),
+          SizedBox(
+            height: 64,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              itemCount: images.length,
+              separatorBuilder: (context, index) => const Gap(10),
+              itemBuilder: (context, index) {
+                final isSelected = index == _selectedImageIndex;
+                final imgUrl = images[index];
+
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedImageIndex = index;
+                    });
+                    _pageController.animateToPage(
+                      index,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isSelected ? AppColors.primary : AppColors.divider,
+                        width: isSelected ? 2.5 : 1.0,
+                      ),
+                      boxShadow: isSelected
+                          ? [
+                              BoxShadow(
+                                color: AppColors.primary.withValues(alpha: 0.35),
+                                blurRadius: 8,
+                                spreadRadius: 1,
+                              ),
+                            ]
+                          : null,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: imgUrl.startsWith('http')
+                          ? Image.network(
+                              imgUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => _buildFallbackThumbnail(),
+                            )
+                          : _buildFallbackThumbnail(),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
   Widget _buildFeatureRow(IconData icon, String title, String subtitle) {
     return Row(
       children: [
@@ -423,18 +596,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget _buildImage() {
-    if (widget.product.photoUrl != null && widget.product.photoUrl!.isNotEmpty) {
-      if (widget.product.photoUrl!.startsWith('http')) {
-        return Image.network(
-          widget.product.photoUrl!,
-          fit: BoxFit.cover,
-          width: double.infinity,
-          errorBuilder: (context, error, stackTrace) => _buildFallback(),
-        );
-      }
-    }
-    return _buildFallback();
+  Widget _buildFallbackThumbnail() {
+    return Container(
+      color: AppColors.cardBackground,
+      child: const Icon(
+        Icons.water_drop_rounded,
+        size: 24,
+        color: AppColors.primary,
+      ),
+    );
   }
 
   Widget _buildFallback() {

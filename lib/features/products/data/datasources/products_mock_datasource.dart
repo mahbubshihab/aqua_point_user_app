@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/product_entity.dart';
+import '../models/product_model.dart';
 
 class ProductsMockDatasource {
   final List<ProductEntity> _customProducts = [];
@@ -43,6 +44,12 @@ class ProductsMockDatasource {
       id: 'p1',
       name: 'Aqua Point Pro Max RO+UV+UF',
       photoUrl: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4e?w=600&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1548839140-29a749e1cf4e?w=600&q=80',
+        'https://images.unsplash.com/photo-1585837575652-267c041d77d4?w=600&q=80',
+        'https://images.unsplash.com/photo-1617155093730-a8bf47be792d?w=600&q=80',
+        'https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=600&q=80',
+      ],
       warrantyDetails: '2 Years Official Warranty',
       purchaseDate: 'Available',
       price: 14500.0,
@@ -56,6 +63,11 @@ class ProductsMockDatasource {
       id: 'p2',
       name: 'Aqua Pure Smart Alkaline RO',
       photoUrl: 'https://images.unsplash.com/photo-1585837575652-267c041d77d4?w=600&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1585837575652-267c041d77d4?w=600&q=80',
+        'https://images.unsplash.com/photo-1548839140-29a749e1cf4e?w=600&q=80',
+        'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&q=80',
+      ],
       warrantyDetails: '2 Years Official Warranty',
       purchaseDate: 'Available',
       price: 18900.0,
@@ -69,6 +81,10 @@ class ProductsMockDatasource {
       id: 'p3',
       name: 'Aqua Shield Countertop RO',
       photoUrl: 'https://images.unsplash.com/photo-1617155093730-a8bf47be792d?w=600&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1617155093730-a8bf47be792d?w=600&q=80',
+        'https://images.unsplash.com/photo-1548839140-29a749e1cf4e?w=600&q=80',
+      ],
       warrantyDetails: '1 Year Official Warranty',
       purchaseDate: 'Available',
       price: 11200.0,
@@ -82,6 +98,11 @@ class ProductsMockDatasource {
       id: 'p4',
       name: '5-Stage Pre-Filter Cartridge Set',
       photoUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&q=80',
+        'https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=600&q=80',
+        'https://images.unsplash.com/photo-1585837575652-267c041d77d4?w=600&q=80',
+      ],
       warrantyDetails: '6 Months Replacement Warranty',
       purchaseDate: 'Available',
       price: 1200.0,
@@ -95,6 +116,10 @@ class ProductsMockDatasource {
       id: 'p5',
       name: 'Dual Sediment & Carbon Filter',
       photoUrl: 'https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=600&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=600&q=80',
+        'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&q=80',
+      ],
       warrantyDetails: '6 Months Warranty',
       purchaseDate: 'Available',
       price: 650.0,
@@ -108,6 +133,10 @@ class ProductsMockDatasource {
       id: 'p6',
       name: 'Post Carbon Taste Enhancer Filter',
       photoUrl: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4e?w=600&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1548839140-29a749e1cf4e?w=600&q=80',
+        'https://images.unsplash.com/photo-1585837575652-267c041d77d4?w=600&q=80',
+      ],
       warrantyDetails: '6 Months Warranty',
       purchaseDate: 'Available',
       price: 450.0,
@@ -121,6 +150,10 @@ class ProductsMockDatasource {
       id: 'p7',
       name: 'Hi-Tech 100 GPD RO Membrane',
       photoUrl: 'https://images.unsplash.com/photo-1585837575652-267c041d77d4?w=600&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1585837575652-267c041d77d4?w=600&q=80',
+        'https://images.unsplash.com/photo-1617155093730-a8bf47be792d?w=600&q=80',
+      ],
       warrantyDetails: '1 Year Warranty',
       purchaseDate: 'Available',
       price: 1850.0,
@@ -134,6 +167,10 @@ class ProductsMockDatasource {
       id: 'p8',
       name: 'Vontron 75 GPD High Recovery Membrane',
       photoUrl: 'https://images.unsplash.com/photo-1617155093730-a8bf47be792d?w=600&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1617155093730-a8bf47be792d?w=600&q=80',
+        'https://images.unsplash.com/photo-1548839140-29a749e1cf4e?w=600&q=80',
+      ],
       warrantyDetails: '1 Year Warranty',
       purchaseDate: 'Available',
       price: 1600.0,
@@ -147,6 +184,10 @@ class ProductsMockDatasource {
       id: 'p9',
       name: 'Stainless Steel UV Disinfection Chamber 11W',
       photoUrl: 'https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=600&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=600&q=80',
+        'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&q=80',
+      ],
       warrantyDetails: '1 Year Warranty',
       purchaseDate: 'Available',
       price: 2400.0,
@@ -160,6 +201,10 @@ class ProductsMockDatasource {
       id: 'p10',
       name: 'Hollow Fiber UF Ultrafiltration Membrane',
       photoUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&q=80',
+        'https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=600&q=80',
+      ],
       warrantyDetails: '1 Year Warranty',
       purchaseDate: 'Available',
       price: 950.0,
@@ -173,6 +218,10 @@ class ProductsMockDatasource {
       id: 'p11',
       name: 'High Pressure Booster Pump 24V DC',
       photoUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&q=80',
+        'https://images.unsplash.com/photo-1585837575652-267c041d77d4?w=600&q=80',
+      ],
       warrantyDetails: '1 Year Warranty',
       purchaseDate: 'Available',
       price: 2100.0,
@@ -186,6 +235,10 @@ class ProductsMockDatasource {
       id: 'p12',
       name: 'Automatic Solenoid Valve & High Cut-off Switch',
       photoUrl: 'https://images.unsplash.com/photo-1585837575652-267c041d77d4?w=600&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1585837575652-267c041d77d4?w=600&q=80',
+        'https://images.unsplash.com/photo-1548839140-29a749e1cf4e?w=600&q=80',
+      ],
       warrantyDetails: '6 Months Warranty',
       purchaseDate: 'Available',
       price: 480.0,
@@ -199,6 +252,10 @@ class ProductsMockDatasource {
       id: 'p13',
       name: 'Digital TDS Testing Meter Pen',
       photoUrl: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4e?w=600&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1548839140-29a749e1cf4e?w=600&q=80',
+        'https://images.unsplash.com/photo-1617155093730-a8bf47be792d?w=600&q=80',
+      ],
       warrantyDetails: '1 Year Replacement Warranty',
       purchaseDate: 'Available',
       price: 350.0,
@@ -215,29 +272,7 @@ class ProductsMockDatasource {
     try {
       final snapshot = await FirebaseFirestore.instance.collection('products').get();
       if (snapshot.docs.isNotEmpty) {
-        firestoreProducts = snapshot.docs.map((docSnap) {
-          final data = docSnap.data();
-          final rawPrice = data['price'];
-          final rawOrigPrice = data['originalPrice'] ?? data['oldPrice'];
-          final rawRating = data['rating'];
-          final rawReviews = data['reviewsCount'];
-
-          return ProductEntity(
-            id: docSnap.id,
-            name: data['name'] ?? data['title'] ?? 'RO Water Purifier',
-            photoUrl: data['imageUrl'] ?? data['cloudinary_url'] ?? data['photoUrl'],
-            warrantyDetails: data['warranty'] ?? data['warrantyDetails'] ?? '1 Year Official Warranty',
-            purchaseDate: data['createdAt'] != null ? data['createdAt'].toString() : 'Available',
-            isCustom: data['isCustom'] ?? false,
-            price: rawPrice != null ? (rawPrice as num).toDouble() : 1999.0,
-            originalPrice: rawOrigPrice != null ? (rawOrigPrice as num).toDouble() : null,
-            category: data['category'] ?? data['categoryName'] ?? 'RO Water Purifiers',
-            rating: rawRating != null ? (rawRating as num).toDouble() : 4.8,
-            reviewsCount: rawReviews != null ? (rawReviews as num).toInt() : 42,
-            description: data['description'] ?? 'High quality water purification system and parts.',
-            inStock: data['inStock'] ?? true,
-          );
-        }).toList();
+        firestoreProducts = snapshot.docs.map((docSnap) => ProductModel.fromFirestore(docSnap)).toList();
       }
     } catch (e) {
       // Fallback if offline or Firestore error

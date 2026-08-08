@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/product_entity.dart';
+import '../models/product_model.dart';
 
 abstract class ProductsRemoteDatasource {
   Future<List<ProductEntity>> fetchProducts({String? targetCategory});
@@ -34,30 +35,7 @@ class ProductsRemoteDatasourceImpl implements ProductsRemoteDatasource {
     }
     final snapshot = await query.get();
 
-    return snapshot.docs.map((docSnap) {
-      final data = docSnap.data();
-      final rawPrice = data['price'];
-      final rawOrigPrice = data['originalPrice'] ?? data['oldPrice'];
-      final rawRating = data['rating'];
-      final rawReviews = data['reviewsCount'];
-
-      return ProductEntity(
-        id: docSnap.id,
-        name: data['name'] ?? data['title'] ?? 'RO Water Purifier',
-        photoUrl: data['imageUrl'] ?? data['cloudinary_url'] ?? data['photoUrl'],
-        warrantyDetails: data['warranty'] ?? data['warrantyDetails'] ?? '1 Year Official Warranty',
-        purchaseDate: data['createdAt'] != null ? data['createdAt'].toString() : 'Available',
-        isCustom: data['isCustom'] ?? false,
-        price: rawPrice != null ? (rawPrice as num).toDouble() : 0.0,
-        originalPrice: rawOrigPrice != null ? (rawOrigPrice as num).toDouble() : null,
-        category: data['category'] ?? data['categoryId'] ?? 'RO Water Purifiers',
-        type: data['type'],
-        rating: rawRating != null ? (rawRating as num).toDouble() : 4.8,
-        reviewsCount: rawReviews != null ? (rawReviews as num).toInt() : 0,
-        description: data['description'] ?? 'High quality water purification system and parts.',
-        inStock: data['inStock'] ?? true,
-      );
-    }).toList();
+    return snapshot.docs.map((docSnap) => ProductModel.fromFirestore(docSnap)).toList();
   }
 
   @override
@@ -68,30 +46,7 @@ class ProductsRemoteDatasourceImpl implements ProductsRemoteDatasource {
         .limit(limit);
     final snapshot = await query.get();
 
-    return snapshot.docs.map((docSnap) {
-      final data = docSnap.data();
-      final rawPrice = data['price'];
-      final rawOrigPrice = data['originalPrice'] ?? data['oldPrice'];
-      final rawRating = data['rating'];
-      final rawReviews = data['reviewsCount'];
-
-      return ProductEntity(
-        id: docSnap.id,
-        name: data['name'] ?? data['title'] ?? 'RO Water Purifier',
-        photoUrl: data['imageUrl'] ?? data['cloudinary_url'] ?? data['photoUrl'],
-        warrantyDetails: data['warranty'] ?? data['warrantyDetails'] ?? '1 Year Official Warranty',
-        purchaseDate: data['createdAt'] != null ? data['createdAt'].toString() : 'Available',
-        isCustom: data['isCustom'] ?? false,
-        price: rawPrice != null ? (rawPrice as num).toDouble() : 0.0,
-        originalPrice: rawOrigPrice != null ? (rawOrigPrice as num).toDouble() : null,
-        category: data['category'] ?? data['categoryId'] ?? 'RO Water Purifiers',
-        type: data['type'],
-        rating: rawRating != null ? (rawRating as num).toDouble() : 4.8,
-        reviewsCount: rawReviews != null ? (rawReviews as num).toInt() : 0,
-        description: data['description'] ?? 'High quality water purification system and parts.',
-        inStock: data['inStock'] ?? true,
-      );
-    }).toList();
+    return snapshot.docs.map((docSnap) => ProductModel.fromFirestore(docSnap)).toList();
   }
 
   @override
@@ -115,27 +70,7 @@ class ProductsRemoteDatasourceImpl implements ProductsRemoteDatasource {
           .get();
     }
 
-    return snapshot.docs.map((docSnap) {
-      final data = docSnap.data();
-      final rawPrice = data['price'];
-      final rawRating = data['rating'];
-      final rawReviews = data['reviewsCount'];
-
-      return ProductEntity(
-        id: docSnap.id,
-        name: data['name'] ?? 'Custom Product',
-        photoUrl: data['photoUrl'] ?? data['imageUrl'],
-        warrantyDetails: data['warrantyDetails'] ?? data['warranty'] ?? '1 Year Warranty',
-        purchaseDate: data['purchaseDate'] ?? 'Available',
-        isCustom: true,
-        price: rawPrice != null ? (rawPrice as num).toDouble() : 0.0,
-        category: data['category'] ?? 'Custom Product',
-        rating: rawRating != null ? (rawRating as num).toDouble() : 5.0,
-        reviewsCount: rawReviews != null ? (rawReviews as num).toInt() : 0,
-        description: data['description'] ?? '',
-        inStock: true,
-      );
-    }).toList();
+    return snapshot.docs.map((docSnap) => ProductModel.fromFirestore(docSnap)).toList();
   }
 
   @override

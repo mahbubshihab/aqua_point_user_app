@@ -4,6 +4,7 @@ class ProductEntity extends Equatable {
   final String id;
   final String name;
   final String? photoUrl;
+  final List<String> images;
   final String warrantyDetails;
   final String purchaseDate;
   final bool isCustom;
@@ -20,6 +21,7 @@ class ProductEntity extends Equatable {
     required this.id,
     required this.name,
     this.photoUrl,
+    this.images = const [],
     this.warrantyDetails = '1 Year Warranty',
     this.purchaseDate = 'Active',
     this.isCustom = false,
@@ -33,10 +35,17 @@ class ProductEntity extends Equatable {
     this.inStock = true,
   });
 
+  List<String> get allImages {
+    if (images.isNotEmpty) return images;
+    if (photoUrl != null && photoUrl!.isNotEmpty) return [photoUrl!];
+    return [];
+  }
+
   ProductEntity copyWith({
     String? id,
     String? name,
     String? photoUrl,
+    List<String>? images,
     String? warrantyDetails,
     String? purchaseDate,
     bool? isCustom,
@@ -53,6 +62,7 @@ class ProductEntity extends Equatable {
       id: id ?? this.id,
       name: name ?? this.name,
       photoUrl: photoUrl ?? this.photoUrl,
+      images: images ?? this.images,
       warrantyDetails: warrantyDetails ?? this.warrantyDetails,
       purchaseDate: purchaseDate ?? this.purchaseDate,
       isCustom: isCustom ?? this.isCustom,
@@ -72,6 +82,7 @@ class ProductEntity extends Equatable {
         id,
         name,
         photoUrl,
+        images,
         warrantyDetails,
         purchaseDate,
         isCustom,
