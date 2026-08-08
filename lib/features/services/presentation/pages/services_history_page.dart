@@ -404,6 +404,7 @@ class _ServicesTabContent extends StatelessWidget {
         ),
       );
     },
+    ),
     );
   }
 
