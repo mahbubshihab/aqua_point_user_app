@@ -104,7 +104,7 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
                           animation: _glowController,
                           builder: (context, child) {
                             return Container(
-                              margin: const EdgeInsets.top(2),
+                              margin: const EdgeInsets.only(top: 2),
                               height: 1.5,
                               width: 30 + (_glowController.value * 20),
                               decoration: BoxDecoration(
