@@ -33,8 +33,4 @@ class InboxSupportRepositoryImpl implements InboxSupportRepository {
     );
   }
 
-  @override
-  Future<String> getReferralCode() async {
-    return await datasource.fetchReferralCode();
-  }
 }

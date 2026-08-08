@@ -47,24 +47,6 @@ class StatBadge extends StatelessWidget {
     );
   }
 
-  /// Preset for Reward Points badge (Yellow / Star)
-  factory StatBadge.reward({
-    Key? key,
-    required String text,
-    IconData? icon = Icons.star_rounded,
-  }) {
-    return StatBadge(
-      key: key,
-      text: text,
-      backgroundColor: AppColors.accentYellow.withValues(alpha: 0.15),
-      textColor: AppColors.accentYellow,
-      icon: icon,
-      border: Border.all(
-        color: AppColors.accentYellow.withValues(alpha: 0.3),
-        width: 1,
-      ),
-    );
-  }
 
   /// Preset for Hydration or Info badge (Blue)
   factory StatBadge.info({

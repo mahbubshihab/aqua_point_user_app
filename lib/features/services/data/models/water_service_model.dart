@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/entities/water_service_entity.dart';
 
 class WaterServiceModel extends WaterServiceEntity {
+  final String? customerName;
+  final String? phone;
+
   const WaterServiceModel({
     required super.id,
     required super.address,
@@ -9,8 +12,8 @@ class WaterServiceModel extends WaterServiceEntity {
     required super.timeSlot,
     required super.description,
     required super.status,
-    super.customerName,
-    super.phone,
+    this.customerName,
+    this.phone,
   });
 
   factory WaterServiceModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
@@ -35,8 +38,6 @@ class WaterServiceModel extends WaterServiceEntity {
       timeSlot: entity.timeSlot,
       description: entity.description,
       status: entity.status,
-      customerName: entity.customerName,
-      phone: entity.phone,
     );
   }
 

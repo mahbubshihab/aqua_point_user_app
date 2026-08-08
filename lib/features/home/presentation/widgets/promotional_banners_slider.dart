@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../inbox_support/presentation/pages/help_support_page.dart';
 import '../../../products/presentation/pages/shop_page.dart';
-import '../../../profile_rewards/presentation/pages/reward_points_page.dart';
+
 import '../../../services/presentation/bloc/services_bloc.dart';
 import '../../../services/presentation/pages/create_service_request_page.dart';
 import '../../../tools/presentation/pages/tds_meter_page.dart';
@@ -99,12 +99,7 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
             ),
           );
           return;
-        } else if (route.contains('point') || route.contains('reward')) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const RewardPointsPage()),
-          );
-          return;
+
         } else if (route.contains('help') || route.contains('support')) {
           Navigator.push(
             context,

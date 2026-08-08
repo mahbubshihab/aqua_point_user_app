@@ -36,7 +36,3 @@ class SubmitSupportInquiry extends InboxSupportEvent {
   @override
   List<Object?> get props => [fullName, phoneNumber, subject, message];
 }
-
-class CopyReferralCode extends InboxSupportEvent {
-  const CopyReferralCode();
-}

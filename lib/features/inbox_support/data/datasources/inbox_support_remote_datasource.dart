@@ -30,9 +30,4 @@ class InboxSupportRemoteDatasource {
       // Ignored
     }
   }
-
-  Future<String> fetchReferralCode() async {
-    return '';
-  }
 }
-

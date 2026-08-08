@@ -21,26 +21,23 @@ class InboxSupportLoaded extends InboxSupportState {
   final int selectedTabIndex;
   final List<AppNotificationEntity> notifications;
   final List<ChatMessageEntity> chatMessages;
-  final String referralCode;
+
 
   const InboxSupportLoaded({
     this.selectedTabIndex = 0,
     required this.notifications,
     required this.chatMessages,
-    this.referralCode = 'YVI3B4W',
   });
 
   InboxSupportLoaded copyWith({
     int? selectedTabIndex,
     List<AppNotificationEntity>? notifications,
     List<ChatMessageEntity>? chatMessages,
-    String? referralCode,
   }) {
     return InboxSupportLoaded(
       selectedTabIndex: selectedTabIndex ?? this.selectedTabIndex,
       notifications: notifications ?? this.notifications,
       chatMessages: chatMessages ?? this.chatMessages,
-      referralCode: referralCode ?? this.referralCode,
     );
   }
 
@@ -49,7 +46,6 @@ class InboxSupportLoaded extends InboxSupportState {
         selectedTabIndex,
         notifications,
         chatMessages,
-        referralCode,
       ];
 }
 

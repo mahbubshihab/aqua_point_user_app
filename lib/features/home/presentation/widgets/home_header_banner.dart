@@ -6,16 +6,14 @@ import '../../../../core/theme/app_colors.dart';
 class HomeHeaderBanner extends StatefulWidget {
   final String title;
   final String subtitle;
-  final int points;
-  final VoidCallback? onPointsTap;
+
   final VoidCallback? onProfileTap;
 
   const HomeHeaderBanner({
     super.key,
     this.title = 'Salaam, Customer',
     this.subtitle = '',
-    this.points = 0,
-    this.onPointsTap,
+
     this.onProfileTap,
   });
 
@@ -236,7 +234,7 @@ class _HomeHeaderBannerState extends State<HomeHeaderBanner> with SingleTickerPr
 
                 const SizedBox(height: 18),
 
-                // Row 2: Left Glass Profile Chip & Right Minimal Points Chip
+                // Row 2: Left Glass Profile Chip
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -336,67 +334,7 @@ class _HomeHeaderBannerState extends State<HomeHeaderBanner> with SingleTickerPr
                         }
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    // Right: Minimal Points Chip (`⭐ 0 Points`)
-                    AnimatedBuilder(
-                      animation: _controller,
-                      builder: (context, child) {
-                        final pulse = math.sin(_controller.value * math.pi * 2 + math.pi) * 0.5 + 0.5; // Offset phase
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(30),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: widget.onPointsTap,
-                                borderRadius: BorderRadius.circular(30),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0x1F1A2236),
-                                    borderRadius: BorderRadius.circular(30),
-                                    border: Border.all(
-                                      color: AppColors.accentGold.withValues(alpha: 0.4 + pulse * 0.3),
-                                      width: 1,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: AppColors.accentGold.withValues(alpha: 0.15 + pulse * 0.15),
-                                        blurRadius: 10 + pulse * 5,
-                                        spreadRadius: 0,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Text(
-                                        '⭐',
-                                        style: TextStyle(fontSize: 12),
-                                      ),
-                                      const SizedBox(width: 5),
-                                      Text(
-                                        '${widget.points} Points',
-                                        style: const TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w700,
-                                          color: AppColors.accentGold,
-                                          letterSpacing: 0.2,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      }
-                    ),
+
                   ],
                 ),
               ],

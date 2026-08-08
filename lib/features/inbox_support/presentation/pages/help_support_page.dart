@@ -251,35 +251,43 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
 
                   final data = snapshot.data?.data() as Map<String, dynamic>? ?? {};
 
-                  final phone1 = data['phone1'] as String? ?? '01780-885841';
-                  final phone2 = data['phone2'] as String? ?? '09613 700 750';
-                  final whatsapp = data['whatsapp'] as String? ??
-                      data['whatsappLink'] as String? ??
-                      '01780885841';
+                  final phone1 = data['helpline'] as String? ?? data['phone1'] as String? ?? '01780-885841';
+                  final phone2 = data['phone2'] as String? ?? '';
+                  final whatsapp = data['whatsapp'] as String? ?? '01780885841';
                   final email = data['email'] as String? ?? 'info@aquapointbd.com';
-                  final address = data['address'] as String? ??
-                      'House 12, Road 5, Block D, Banani, Dhaka';
-                  final workingHours = data['workingHours'] as String? ??
-                      'Sat - Thu: 9:00 AM - 8:00 PM';
+                  final address = data['address'] as String? ?? 'House 12, Road 5, Block D, Banani, Dhaka';
+                  final aboutUs = data['aboutUs'] as String? ?? '';
+                  final workingHours = data['workingHours'] as String? ?? 'Sat - Thu: 9:00 AM - 8:00 PM';
 
-                  final facebook = data['facebook'] as String? ??
-                      data['facebookUrl'] as String? ??
-                      'https://facebook.com/aquapointbd';
-                  final youtube = data['youtube'] as String? ??
-                      data['youtubeUrl'] as String? ??
-                      'https://youtube.com/@aquapointbd';
-                  final instagram = data['instagram'] as String? ??
-                      data['instagramUrl'] as String? ??
-                      'https://instagram.com/aquapointbd';
-                  final linkedin = data['linkedin'] as String? ??
-                      data['linkedinUrl'] as String? ??
-                      'https://linkedin.com/company/aquapointbd';
-                  final website = data['website'] as String? ??
-                      data['googleMapsUrl'] as String? ??
-                      'https://aquapointbd.com';
+                  final facebook = data['facebookUrl'] as String? ?? data['facebook'] as String? ?? 'https://facebook.com/aquapointbd';
+                  final youtube = data['youtubeUrl'] as String? ?? data['youtube'] as String? ?? 'https://youtube.com/@aquapointbd';
+                  final instagram = data['instagramUrl'] as String? ?? data['instagram'] as String? ?? 'https://instagram.com/aquapointbd';
+                  final linkedin = data['linkedinUrl'] as String? ?? data['linkedin'] as String? ?? 'https://linkedin.com/company/aquapointbd';
+                  final website = data['website'] as String? ?? 'https://aquapointbd.com';
 
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if (aboutUs.isNotEmpty) ...[
+                        const Text(
+                          'About Us',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          aboutUs,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: AppColors.textSecondary,
+                            height: 1.5,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                      ],
                       // Hotline 1 & 2 Cards
                       _buildContactCard(
                         icon: Icons.phone_in_talk_rounded,

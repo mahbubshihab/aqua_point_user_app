@@ -9,8 +9,6 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../auth/presentation/pages/login_page.dart';
-import '../../../profile_rewards/presentation/bloc/profile_rewards_bloc.dart';
-import '../../../profile_rewards/presentation/bloc/profile_rewards_state.dart';
 import '../../domain/entities/product_entity.dart';
 
 class ProductReviewsSection extends StatefulWidget {
@@ -66,11 +64,8 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
       String userName = currentUser?.displayName ?? '';
       if (userName.isEmpty) {
         try {
-          final profileState = context.read<ProfileRewardsBloc>().state;
-          if (profileState is ProfileRewardsLoaded &&
-              profileState.userProfile.name.isNotEmpty) {
-            userName = profileState.userProfile.name;
-          }
+          // Default name
+          userName = 'Customer';
         } catch (_) {}
       }
       if (userName.isEmpty && authState is Authenticated) {

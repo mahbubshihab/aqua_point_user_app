@@ -10,7 +10,6 @@ class InboxSupportBloc extends Bloc<InboxSupportEvent, InboxSupportState> {
     on<LoadInboxData>(_onLoadInboxData);
     on<SelectInboxTab>(_onSelectInboxTab);
     on<SubmitSupportInquiry>(_onSubmitSupportInquiry);
-    on<CopyReferralCode>(_onCopyReferralCode);
   }
 
   Future<void> _onLoadInboxData(
@@ -21,12 +20,10 @@ class InboxSupportBloc extends Bloc<InboxSupportEvent, InboxSupportState> {
     try {
       final notifications = await repository.getNotifications();
       final chatMessages = await repository.getChatMessages();
-      final referralCode = await repository.getReferralCode();
       emit(InboxSupportLoaded(
         selectedTabIndex: 0,
         notifications: notifications,
         chatMessages: chatMessages,
-        referralCode: referralCode,
       ));
     } catch (e) {
       emit(InboxSupportError(e.toString()));
@@ -64,16 +61,6 @@ class InboxSupportBloc extends Bloc<InboxSupportEvent, InboxSupportState> {
       }
     } catch (e) {
       emit(InboxSupportError(e.toString()));
-    }
-  }
-
-  Future<void> _onCopyReferralCode(
-    CopyReferralCode event,
-    Emitter<InboxSupportState> emit,
-  ) async {
-    if (state is InboxSupportLoaded) {
-      final currentState = state as InboxSupportLoaded;
-      emit(currentState.copyWith());
     }
   }
 }

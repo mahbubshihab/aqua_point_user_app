@@ -10,5 +10,4 @@ abstract class InboxSupportRepository {
     required String subject,
     required String message,
   });
-  Future<String> getReferralCode();
 }

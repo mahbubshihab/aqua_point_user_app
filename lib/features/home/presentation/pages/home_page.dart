@@ -4,8 +4,6 @@ import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../inbox_support/presentation/pages/help_support_page.dart';
 import '../../../products/presentation/pages/shop_page.dart';
-import '../../../profile_rewards/presentation/pages/profile_page.dart';
-import '../../../profile_rewards/presentation/pages/reward_points_page.dart';
 import '../../../services/presentation/bloc/services_bloc.dart';
 import '../../../services/presentation/pages/create_service_request_page.dart';
 import '../../../services/presentation/pages/services_history_page.dart';
@@ -78,18 +76,7 @@ class HomePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     HomeHeaderBanner(
-                      onProfileTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const ProfilePage()),
-                        );
-                      },
-                      onPointsTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const RewardPointsPage()),
-                        );
-                      },
+                      onProfileTap: () {},
                     ),
                     const Gap(14),
                     Padding(
