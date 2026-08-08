@@ -17,7 +17,7 @@ import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
 import '../widgets/blogs_news_section.dart';
 import '../widgets/categories_section.dart';
-import '../widgets/home_footer_widget.dart';
+
 import '../widgets/home_header_banner.dart';
 import '../widgets/hydration_tracker_widget.dart';
 import '../widgets/my_products_section.dart';
@@ -284,9 +284,7 @@ class HomePage extends StatelessWidget {
                               );
                             },
                           ),
-                          const Gap(14),
-                          HomeFooterWidget(companyInfo: state.companyInfo),
-                          const Gap(14),
+                          const Gap(80),
                         ],
                       ),
                     ),
