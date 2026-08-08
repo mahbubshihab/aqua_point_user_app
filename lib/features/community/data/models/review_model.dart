@@ -20,7 +20,7 @@ class ReviewModel extends ReviewEntity {
     }
     return ReviewModel(
       id: doc.id,
-      customerName: data['customerName'] as String? ?? data['name'] as String? ?? 'Customer',
+      customerName: data['customerName'] as String? ?? data['userName'] as String? ?? data['name'] as String? ?? 'Customer',
       location: data['location'] as String? ?? 'Dhaka',
       rating: (data['rating'] as num?)?.toDouble() ?? 5.0,
       comment: data['comment'] as String? ?? '',

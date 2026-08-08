@@ -7,6 +7,7 @@ import '../../../orders/presentation/bloc/cart_bloc.dart';
 import '../../../orders/presentation/pages/cart_page.dart';
 import '../../../orders/presentation/pages/checkout_page.dart';
 import '../../domain/entities/product_entity.dart';
+import '../widgets/product_reviews_section.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final ProductEntity product;
@@ -327,6 +328,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       ),
                     ],
                   ),
+                  const Gap(24),
+                  const Divider(color: AppColors.divider),
+                  const Gap(20),
+
+                  // Customer Reviews & Submission Section
+                  ProductReviewsSection(product: widget.product),
                   const Gap(30),
                 ],
               ),
