@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../inbox_support/presentation/pages/help_support_page.dart';
+import '../../../inbox_support/presentation/pages/chat_conversation_page.dart';
 import '../../../products/presentation/pages/shop_page.dart';
 import '../../../services/presentation/bloc/services_bloc.dart';
 import '../../../services/presentation/pages/create_service_request_page.dart';
@@ -165,7 +165,7 @@ class HomePage extends StatelessWidget {
                                 onTap: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (_) => const HelpSupportPage()),
+                                    MaterialPageRoute(builder: (_) => const ChatConversationPage()),
                                   );
                                 },
                               ),

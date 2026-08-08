@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../inbox_support/presentation/pages/inbox_page.dart';
+import '../../../inbox_support/presentation/pages/chat_conversation_page.dart';
 import '../../../products/presentation/pages/products_page.dart';
 import '../../../services/presentation/pages/services_history_page.dart';
 import '../bloc/home_bloc.dart';
@@ -27,7 +27,7 @@ class MainShellPage extends StatelessWidget {
               HomePage(),
               ServicesHistoryPage(),
               ProductsPage(),
-              InboxPage(),
+              ChatConversationPage(),
             ],
           ),
           bottomNavigationBar: ClipRRect(
@@ -76,9 +76,9 @@ class MainShellPage extends StatelessWidget {
                         _NavBarItem(
                           index: 3,
                           currentIndex: currentIndex,
-                          icon: Icons.inbox_outlined,
-                          activeIcon: Icons.inbox_rounded,
-                          label: 'Inbox',
+                          icon: Icons.chat_bubble_outline_rounded,
+                          activeIcon: Icons.chat_bubble_rounded,
+                          label: 'Support',
                         ),
                       ],
                     ),
@@ -178,6 +178,3 @@ class _NavBarItem extends StatelessWidget {
     );
   }
 }
-
-
-

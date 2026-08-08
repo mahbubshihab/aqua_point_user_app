@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../inbox_support/presentation/pages/help_support_page.dart';
+import '../../../inbox_support/presentation/pages/chat_conversation_page.dart';
 import '../../../products/presentation/pages/shop_page.dart';
 
 import '../../../services/presentation/bloc/services_bloc.dart';
@@ -103,7 +103,7 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
         } else if (route.contains('help') || route.contains('support')) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const HelpSupportPage()),
+            MaterialPageRoute(builder: (_) => const ChatConversationPage()),
           );
           return;
         } else if (route.contains('water') || route.contains('reminder')) {
