@@ -70,7 +70,7 @@ class BulkSmsService {
     required String otpCode,
   }) async {
     final targetNumber = sanitizePhoneNumber(phoneNumber);
-    final message = 'Your AQUA POINT OTP is $otpCode';
+    final message = '$otpCode is your Aqua Point verification code. Valid for 5 minutes. Never share this with anyone.';
 
     final baseEndpoints = [
       'https://bulksmsbd.net/api/smsapi',
