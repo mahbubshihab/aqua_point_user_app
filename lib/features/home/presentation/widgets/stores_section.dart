@@ -14,7 +14,7 @@ class StoresSection extends StatelessWidget {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('stores')
-          .where('isActive', isEqualTo: true)
+          .orderBy('createdAt', descending: true)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError || !snapshot.hasData || snapshot.data!.docs.isEmpty) {

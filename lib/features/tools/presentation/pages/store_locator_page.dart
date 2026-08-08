@@ -147,7 +147,7 @@ class _StoreLocatorPageState extends State<StoreLocatorPage> {
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('stores')
-                  .where('isActive', isEqualTo: true)
+                  .orderBy('createdAt', descending: true)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
