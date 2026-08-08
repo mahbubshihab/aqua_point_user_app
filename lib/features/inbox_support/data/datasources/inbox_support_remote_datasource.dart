@@ -27,7 +27,6 @@ class InboxSupportRemoteDatasource {
             message: data['message'] ?? '',
             timestamp: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
             isRead: data['isRead'] ?? false,
-            type: data['type'] ?? 'general',
           ));
         }
       } catch (_) {}
@@ -51,7 +50,6 @@ class InboxSupportRemoteDatasource {
               message: 'Your service request status is currently: $status',
               timestamp: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
               isRead: status == 'Completed',
-              type: 'service',
             ));
           }
         } catch (_) {}

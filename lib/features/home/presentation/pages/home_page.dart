@@ -291,13 +291,14 @@ class HomePage extends StatelessWidget {
                               );
                             },
                           ),
-                          const Gap(80),
                         ],
                       ),
                     ),
+                  ],
                 ),
-              );
-            }
+              ),
+            );
+          }
 
             return const SizedBox.shrink();
           },
