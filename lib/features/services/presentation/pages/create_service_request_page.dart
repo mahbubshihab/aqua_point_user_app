@@ -55,7 +55,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
 
     try {
       final snapshot = await FirebaseFirestore.instance
-          .collection('users')
+          .collection('customers')
           .doc(userId)
           .collection('addresses')
           .orderBy('createdAt', descending: true)
@@ -80,7 +80,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
     if (userId == null) return;
     try {
       await FirebaseFirestore.instance
-          .collection('users')
+          .collection('customers')
           .doc(userId)
           .collection('addresses')
           .add({
@@ -99,7 +99,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
     if (userId == null) return;
     try {
       await FirebaseFirestore.instance
-          .collection('users')
+          .collection('customers')
           .doc(userId)
           .collection('addresses')
           .doc(docId)

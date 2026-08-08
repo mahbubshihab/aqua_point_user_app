@@ -50,19 +50,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _loadProfile() async {
     try {
-      // Try 'customers' collection first, then 'users'
-      DocumentSnapshot? doc;
-      doc = await FirebaseFirestore.instance
+      final doc = await FirebaseFirestore.instance
           .collection('customers')
           .doc(_userId)
           .get();
-
-      if (!doc.exists) {
-        doc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(_userId)
-            .get();
-      }
 
       if (doc.exists) {
         final data = doc.data() as Map<String, dynamic>;
@@ -105,13 +96,9 @@ class _ProfilePageState extends State<ProfilePage> {
         setState(() {
           _avatarUrl = url;
         });
-        // Save avatar immediately to both collections
+        // Save avatar immediately
         await FirebaseFirestore.instance
             .collection('customers')
-            .doc(_userId)
-            .set({'avatarUrl': url}, SetOptions(merge: true));
-        await FirebaseFirestore.instance
-            .collection('users')
             .doc(_userId)
             .set({'avatarUrl': url}, SetOptions(merge: true));
 
@@ -150,13 +137,8 @@ class _ProfilePageState extends State<ProfilePage> {
         'updatedAt': FieldValue.serverTimestamp(),
       };
 
-      // Save to both collections
       await FirebaseFirestore.instance
           .collection('customers')
-          .doc(_userId)
-          .set(profileData, SetOptions(merge: true));
-      await FirebaseFirestore.instance
-          .collection('users')
           .doc(_userId)
           .set(profileData, SetOptions(merge: true));
 
