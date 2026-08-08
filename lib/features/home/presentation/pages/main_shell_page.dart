@@ -118,7 +118,14 @@ class _NavBarItem extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            context.read<HomeBloc>().add(SelectTab(index));
+            if (index == 3) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ChatConversationPage()),
+              );
+            } else {
+              context.read<HomeBloc>().add(SelectTab(index));
+            }
           },
           splashColor: activeColor.withValues(alpha: 0.1),
           highlightColor: activeColor.withValues(alpha: 0.05),
