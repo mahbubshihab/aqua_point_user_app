@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../bloc/cart_bloc.dart';
+import '../../products/presentation/pages/shop_page.dart';
 import 'checkout_page.dart';
 
 class CartPage extends StatelessWidget {
@@ -101,7 +102,12 @@ class CartPage extends StatelessWidget {
                     ),
                     const Gap(24),
                     ElevatedButton.icon(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => const ShopPage()),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         padding: const EdgeInsets.symmetric(
