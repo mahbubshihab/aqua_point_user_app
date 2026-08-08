@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../../products/domain/entities/category_entity.dart';
+import '../../../products/domain/entities/product_entity.dart';
 import '../../domain/entities/banner_entity.dart';
 import '../../domain/entities/blog_entity.dart';
 import '../../domain/entities/company_info_entity.dart';
@@ -29,6 +30,10 @@ class HomeLoaded extends HomeState {
   final WaterQualityEntity waterQuality;
   final List<BlogEntity> blogs;
   final List<CategoryEntity> categories;
+  final List<ProductEntity> openTypeProducts;
+  final List<ProductEntity> boxTypeProducts;
+  final List<ProductEntity> hotColdNormalProducts;
+  final List<ProductEntity> cabinetTypeProducts;
 
   const HomeLoaded({
     this.tabIndex = 0,
@@ -38,6 +43,10 @@ class HomeLoaded extends HomeState {
     required this.waterQuality,
     required this.blogs,
     this.categories = const [],
+    this.openTypeProducts = const [],
+    this.boxTypeProducts = const [],
+    this.hotColdNormalProducts = const [],
+    this.cabinetTypeProducts = const [],
   });
 
   HomeLoaded copyWith({
@@ -48,6 +57,10 @@ class HomeLoaded extends HomeState {
     WaterQualityEntity? waterQuality,
     List<BlogEntity>? blogs,
     List<CategoryEntity>? categories,
+    List<ProductEntity>? openTypeProducts,
+    List<ProductEntity>? boxTypeProducts,
+    List<ProductEntity>? hotColdNormalProducts,
+    List<ProductEntity>? cabinetTypeProducts,
   }) {
     return HomeLoaded(
       tabIndex: tabIndex ?? this.tabIndex,
@@ -57,6 +70,10 @@ class HomeLoaded extends HomeState {
       waterQuality: waterQuality ?? this.waterQuality,
       blogs: blogs ?? this.blogs,
       categories: categories ?? this.categories,
+      openTypeProducts: openTypeProducts ?? this.openTypeProducts,
+      boxTypeProducts: boxTypeProducts ?? this.boxTypeProducts,
+      hotColdNormalProducts: hotColdNormalProducts ?? this.hotColdNormalProducts,
+      cabinetTypeProducts: cabinetTypeProducts ?? this.cabinetTypeProducts,
     );
   }
 
@@ -69,6 +86,10 @@ class HomeLoaded extends HomeState {
         waterQuality,
         blogs,
         categories,
+        openTypeProducts,
+        boxTypeProducts,
+        hotColdNormalProducts,
+        cabinetTypeProducts,
       ];
 }
 

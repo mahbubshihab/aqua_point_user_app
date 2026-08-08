@@ -10,6 +10,7 @@ class ProductEntity extends Equatable {
   final double price;
   final double? originalPrice;
   final String? category;
+  final String? type;
   final double? rating;
   final int? reviewsCount;
   final String? description;
@@ -25,6 +26,7 @@ class ProductEntity extends Equatable {
     this.price = 1250.0,
     this.originalPrice,
     this.category,
+    this.type,
     this.rating,
     this.reviewsCount,
     this.description,
@@ -41,6 +43,7 @@ class ProductEntity extends Equatable {
     double? price,
     double? originalPrice,
     String? category,
+    String? type,
     double? rating,
     int? reviewsCount,
     String? description,
@@ -56,6 +59,7 @@ class ProductEntity extends Equatable {
       price: price ?? this.price,
       originalPrice: originalPrice ?? this.originalPrice,
       category: category ?? this.category,
+      type: type ?? this.type,
       rating: rating ?? this.rating,
       reviewsCount: reviewsCount ?? this.reviewsCount,
       description: description ?? this.description,
@@ -74,6 +78,7 @@ class ProductEntity extends Equatable {
         price,
         originalPrice,
         category,
+        type,
         rating,
         reviewsCount,
         description,

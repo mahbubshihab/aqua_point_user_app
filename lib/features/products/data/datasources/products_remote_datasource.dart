@@ -5,6 +5,7 @@ import '../../domain/entities/product_entity.dart';
 
 abstract class ProductsRemoteDatasource {
   Future<List<ProductEntity>> fetchProducts({String? targetCategory});
+  Future<List<ProductEntity>> fetchProductsByType(String type, {int limit = 10});
   Future<List<ProductEntity>> fetchCustomProducts({String? userId});
   Future<List<ProductEntity>> fetchPurchasedProducts({String? userId});
   Future<List<CategoryEntity>> fetchCategories();
@@ -50,6 +51,41 @@ class ProductsRemoteDatasourceImpl implements ProductsRemoteDatasource {
         price: rawPrice != null ? (rawPrice as num).toDouble() : 0.0,
         originalPrice: rawOrigPrice != null ? (rawOrigPrice as num).toDouble() : null,
         category: data['category'] ?? data['categoryId'] ?? 'RO Water Purifiers',
+        type: data['type'],
+        rating: rawRating != null ? (rawRating as num).toDouble() : 4.8,
+        reviewsCount: rawReviews != null ? (rawReviews as num).toInt() : 0,
+        description: data['description'] ?? 'High quality water purification system and parts.',
+        inStock: data['inStock'] ?? true,
+      );
+    }).toList();
+  }
+
+  @override
+  Future<List<ProductEntity>> fetchProductsByType(String type, {int limit = 10}) async {
+    Query<Map<String, dynamic>> query = firestore
+        .collection('products')
+        .where('type', isEqualTo: type)
+        .limit(limit);
+    final snapshot = await query.get();
+
+    return snapshot.docs.map((docSnap) {
+      final data = docSnap.data();
+      final rawPrice = data['price'];
+      final rawOrigPrice = data['originalPrice'] ?? data['oldPrice'];
+      final rawRating = data['rating'];
+      final rawReviews = data['reviewsCount'];
+
+      return ProductEntity(
+        id: docSnap.id,
+        name: data['name'] ?? data['title'] ?? 'RO Water Purifier',
+        photoUrl: data['imageUrl'] ?? data['cloudinary_url'] ?? data['photoUrl'],
+        warrantyDetails: data['warranty'] ?? data['warrantyDetails'] ?? '1 Year Official Warranty',
+        purchaseDate: data['createdAt'] != null ? data['createdAt'].toString() : 'Available',
+        isCustom: data['isCustom'] ?? false,
+        price: rawPrice != null ? (rawPrice as num).toDouble() : 0.0,
+        originalPrice: rawOrigPrice != null ? (rawOrigPrice as num).toDouble() : null,
+        category: data['category'] ?? data['categoryId'] ?? 'RO Water Purifiers',
+        type: data['type'],
         rating: rawRating != null ? (rawRating as num).toDouble() : 4.8,
         reviewsCount: rawReviews != null ? (rawReviews as num).toInt() : 0,
         description: data['description'] ?? 'High quality water purification system and parts.',

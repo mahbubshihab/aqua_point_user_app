@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../products/domain/entities/category_entity.dart';
+import '../../../products/domain/entities/product_entity.dart';
 import '../../domain/entities/banner_entity.dart';
 import '../../domain/entities/company_info_entity.dart';
 import '../../domain/repositories/home_repository.dart';
@@ -43,6 +44,34 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         categories = [];
       }
 
+      List<ProductEntity> openTypeProducts = [];
+      try {
+        openTypeProducts = await repository.getProductsByType('open_type', limit: 10);
+      } catch (_) {
+        openTypeProducts = [];
+      }
+
+      List<ProductEntity> boxTypeProducts = [];
+      try {
+        boxTypeProducts = await repository.getProductsByType('box_type', limit: 10);
+      } catch (_) {
+        boxTypeProducts = [];
+      }
+
+      List<ProductEntity> hotColdNormalProducts = [];
+      try {
+        hotColdNormalProducts = await repository.getProductsByType('hot_cold_normal', limit: 10);
+      } catch (_) {
+        hotColdNormalProducts = [];
+      }
+
+      List<ProductEntity> cabinetTypeProducts = [];
+      try {
+        cabinetTypeProducts = await repository.getProductsByType('cabinet_type', limit: 10);
+      } catch (_) {
+        cabinetTypeProducts = [];
+      }
+
       final hydration = await repository.getHydrationData();
       final waterQuality = await repository.getWaterQualityData();
       final blogs = await repository.getBlogs();
@@ -55,6 +84,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         waterQuality: waterQuality,
         blogs: blogs,
         categories: categories,
+        openTypeProducts: openTypeProducts,
+        boxTypeProducts: boxTypeProducts,
+        hotColdNormalProducts: hotColdNormalProducts,
+        cabinetTypeProducts: cabinetTypeProducts,
       ));
     } catch (e) {
       emit(HomeError(e.toString()));

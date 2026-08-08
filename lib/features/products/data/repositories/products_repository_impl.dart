@@ -23,6 +23,15 @@ class ProductsRepositoryImpl implements ProductsRepository {
   }
 
   @override
+  Future<List<ProductEntity>> getProductsByType(String type, {int limit = 10}) async {
+    try {
+      final remoteProducts = await remoteDatasource.fetchProductsByType(type, limit: limit);
+      if (remoteProducts.isNotEmpty) return remoteProducts;
+    } catch (_) {}
+    return [];
+  }
+
+  @override
   Future<List<ProductEntity>> getCustomProducts({String? userId}) async {
     try {
       final customProducts = await remoteDatasource.fetchCustomProducts(userId: userId);

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:user_app/core/services/firebase_service.dart';
 import '../../../products/domain/entities/category_entity.dart';
+import '../../../products/domain/entities/product_entity.dart';
 import '../../domain/entities/blog_entity.dart';
 import '../../domain/entities/hydration_entity.dart';
 import '../../domain/entities/water_quality_entity.dart';
@@ -12,6 +13,43 @@ class HomeRemoteDatasource {
 
   HomeRemoteDatasource({FirebaseFirestore? firestore})
       : _firestore = firestore ?? FirebaseService.firestore;
+
+  Future<List<ProductEntity>> fetchProductsByType(String type, {int limit = 10}) async {
+    try {
+      final snapshot = await _firestore
+          .collection('products')
+          .where('type', isEqualTo: type)
+          .limit(limit)
+          .get();
+
+      return snapshot.docs.map((docSnap) {
+        final data = docSnap.data();
+        final rawPrice = data['price'];
+        final rawOrigPrice = data['originalPrice'] ?? data['oldPrice'];
+        final rawRating = data['rating'];
+        final rawReviews = data['reviewsCount'];
+
+        return ProductEntity(
+          id: docSnap.id,
+          name: data['name'] ?? data['title'] ?? 'Water Purifier',
+          photoUrl: data['imageUrl'] ?? data['cloudinary_url'] ?? data['photoUrl'],
+          warrantyDetails: data['warranty'] ?? data['warrantyDetails'] ?? '1 Year Warranty',
+          purchaseDate: data['createdAt'] != null ? data['createdAt'].toString() : 'Available',
+          isCustom: data['isCustom'] ?? false,
+          price: rawPrice != null ? (rawPrice as num).toDouble() : 0.0,
+          originalPrice: rawOrigPrice != null ? (rawOrigPrice as num).toDouble() : null,
+          category: data['category'] ?? data['categoryId'] ?? 'RO Water Purifiers',
+          type: data['type'],
+          rating: rawRating != null ? (rawRating as num).toDouble() : 4.8,
+          reviewsCount: rawReviews != null ? (rawReviews as num).toInt() : 0,
+          description: data['description'] ?? 'High quality water purification system.',
+          inStock: data['inStock'] ?? true,
+        );
+      }).toList();
+    } catch (_) {
+      return [];
+    }
+  }
 
   Future<List<BannerModel>> fetchBanners() async {
     try {
