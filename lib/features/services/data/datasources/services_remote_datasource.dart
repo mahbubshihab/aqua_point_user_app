@@ -48,6 +48,37 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
     return 'guest_user';
   }
 
+  /// Generates a unique, sequential Service ID using a Firestore transaction (001, 002, 003...)
+  Future<String> _generateNextServiceId() async {
+    final counterRef = firestore.collection('counters').doc('service_requests');
+
+    try {
+      return await firestore.runTransaction<String>((transaction) async {
+        final snapshot = await transaction.get(counterRef);
+        int nextCount = 1;
+
+        if (snapshot.exists) {
+          final currentCount = snapshot.data()?['currentCount'] as int? ?? 0;
+          nextCount = currentCount + 1;
+        } else {
+          final existingDocs = await firestore.collection('service_requests').get();
+          if (existingDocs.docs.isNotEmpty) {
+            nextCount = existingDocs.docs.length + 1;
+          }
+        }
+
+        transaction.set(counterRef, {'currentCount': nextCount}, SetOptions(merge: true));
+
+        return nextCount.toString().padLeft(3, '0');
+      });
+    } catch (_) {
+      // Fallback if transaction fails
+      final existingDocs = await firestore.collection('service_requests').get();
+      final count = existingDocs.docs.length + 1;
+      return count.toString().padLeft(3, '0');
+    }
+  }
+
   @override
   Future<List<WaterServiceModel>> getServicesHistory() async {
     final userId = await _getCurrentUserId();
@@ -83,7 +114,6 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
       }
     }
 
-    // Fallback: If filtered by userId returned 0 results, try phone number matching or get all
     if (snapshot.docs.isEmpty && userId != 'guest_user') {
       try {
         final phoneSnapshot = await firestore
@@ -242,7 +272,11 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
       } catch (_) {}
     }
 
+    final serviceId = await _generateNextServiceId();
+
     final mapData = {
+      'serviceId': serviceId,
+      'requestId': serviceId,
       'customerName': customerName,
       'phone': phone,
       'address': request.address,

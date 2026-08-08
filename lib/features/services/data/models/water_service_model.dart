@@ -18,8 +18,14 @@ class WaterServiceModel extends WaterServiceEntity {
 
   factory WaterServiceModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
     final data = doc.data() ?? {};
+
+    String displayId = data['serviceId']?.toString() ?? data['requestId']?.toString() ?? '';
+    if (displayId.isEmpty) {
+      displayId = doc.id.length > 8 ? doc.id.substring(0, 8) : doc.id;
+    }
+
     return WaterServiceModel(
-      id: doc.id,
+      id: displayId,
       address: data['address'] ?? 'N/A',
       date: data['appointmentDate'] ?? data['preferredDate'] ?? data['date'] ?? '',
       timeSlot: data['appointmentTime'] ?? data['preferredSlot'] ?? data['timeSlot'] ?? '',
@@ -43,6 +49,8 @@ class WaterServiceModel extends WaterServiceEntity {
 
   Map<String, dynamic> toFirestore() {
     return {
+      'serviceId': id,
+      'requestId': id,
       'customerName': customerName ?? 'App User',
       'phone': phone ?? 'N/A',
       'address': address,
