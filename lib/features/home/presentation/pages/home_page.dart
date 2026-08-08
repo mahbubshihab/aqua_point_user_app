@@ -10,6 +10,7 @@ import '../../../services/presentation/pages/services_history_page.dart';
 import '../../../tools/presentation/pages/blogs_news_page.dart';
 import '../../../tools/presentation/pages/store_locator_page.dart';
 import '../../../tools/presentation/pages/tds_meter_page.dart';
+import '../../../profile/presentation/pages/profile_page.dart';
 import '../../../tools/presentation/pages/water_reminder_page.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
@@ -76,7 +77,14 @@ class HomePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     HomeHeaderBanner(
-                      onProfileTap: () {},
+                      onProfileTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ProfilePage(),
+                          ),
+                        );
+                      },
                     ),
                     const Gap(14),
                     Padding(
