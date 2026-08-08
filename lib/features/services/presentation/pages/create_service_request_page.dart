@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../domain/entities/service_request_entity.dart';
-import '../../domain/repositories/services_repository.dart';
 import '../bloc/services_bloc.dart';
 import '../bloc/services_event.dart';
 import '../bloc/services_state.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_state.dart';
 
 class CreateServiceRequestPage extends StatefulWidget {
   const CreateServiceRequestPage({super.key});
@@ -23,51 +25,230 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
   final _formKey = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
 
-  List<String> _machines = [];
-  bool _isLoadingMachines = true;
-  String? _selectedMachine;
+  String? _shippingAddress;
+  List<DocumentSnapshot> _addresses = [];
+  bool _isLoadingAddresses = true;
 
-  String _shippingAddress = 'House 12, Road 4, Block C, Banani, Dhaka';
-
-  DateTime _selectedDate = DateTime(2026, 8, 6);
-  String? _selectedTimeSlot;
-
-  final List<String> _timeSlots = [
-    '09:00 AM - 11:00 AM',
-    '10:00 AM - 12:00 PM',
-    '12:00 PM - 02:00 PM',
-    '02:00 PM - 04:00 PM',
-    '04:00 PM - 06:00 PM',
-  ];
+  DateTime _selectedDate = DateTime.now();
+  TimeOfDay? _selectedTime;
 
   @override
   void initState() {
     super.initState();
-    _loadInitialData();
+    _loadAddresses();
   }
 
-  Future<void> _loadInitialData() async {
-    final repository = context.read<ServicesRepository>();
+  String? get _userId {
+    final state = context.read<AuthBloc>().state;
+    if (state is Authenticated) {
+      return state.userId;
+    }
+    return null;
+  }
+
+  Future<void> _loadAddresses() async {
+    final userId = _userId;
+    if (userId == null) {
+      if (mounted) setState(() => _isLoadingAddresses = false);
+      return;
+    }
+
     try {
-      final machines = await repository.getAvailableMachines();
-      final address = await repository.getDefaultShippingAddress();
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('addresses')
+          .orderBy('createdAt', descending: true)
+          .get();
+
       if (mounted) {
         setState(() {
-          _machines = machines;
-          _isLoadingMachines = false;
-          if (_machines.isNotEmpty) {
-            _selectedMachine = _machines.first;
+          _addresses = snapshot.docs;
+          if (_addresses.isNotEmpty && _shippingAddress == null) {
+            _shippingAddress = _addresses.first['address'] as String;
           }
-          _shippingAddress = address.fullAddress;
+          _isLoadingAddresses = false;
         });
       }
     } catch (_) {
-      if (mounted) {
-        setState(() {
-          _isLoadingMachines = false;
-        });
-      }
+      if (mounted) setState(() => _isLoadingAddresses = false);
     }
+  }
+
+  Future<void> _addAddress(String newAddress) async {
+    final userId = _userId;
+    if (userId == null) return;
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('addresses')
+          .add({
+            'address': newAddress,
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+      setState(() {
+        _shippingAddress = newAddress;
+      });
+      await _loadAddresses();
+    } catch (_) {}
+  }
+
+  Future<void> _deleteAddress(String docId, String addressVal) async {
+    final userId = _userId;
+    if (userId == null) return;
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('addresses')
+          .doc(docId)
+          .delete();
+      if (_shippingAddress == addressVal) {
+        _shippingAddress = null;
+      }
+      await _loadAddresses();
+    } catch (_) {}
+  }
+
+  void _showAddAddressDialog() {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.cardBackground,
+        title: const Text(
+          'Add New Address',
+          style: TextStyle(color: AppColors.textPrimary),
+        ),
+        content: TextField(
+          controller: controller,
+          style: const TextStyle(color: AppColors.textPrimary),
+          decoration: InputDecoration(
+            hintText: 'Enter your address',
+            hintStyle: const TextStyle(color: AppColors.textSecondary),
+            filled: true,
+            fillColor: AppColors.inputFill,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              if (controller.text.trim().isNotEmpty) {
+                _addAddress(controller.text.trim());
+                Navigator.pop(context);
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(
+                    context,
+                  ); // close bottom sheet if opened from it
+                }
+              }
+            },
+            child: const Text(
+              'Save',
+              style: TextStyle(color: AppColors.primary),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddressBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.cardBackground,
+      isScrollControlled: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                height: 400,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Saved Addresses',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const Gap(16),
+                    Expanded(
+                      child: _addresses.isEmpty
+                          ? const Center(
+                              child: Text(
+                                'No addresses found.',
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            )
+                          : ListView.builder(
+                              itemCount: _addresses.length,
+                              itemBuilder: (context, index) {
+                                final doc = _addresses[index];
+                                final addressStr = doc['address'] as String;
+                                return ListTile(
+                                  title: Text(
+                                    addressStr,
+                                    style: const TextStyle(
+                                      color: AppColors.textPrimary,
+                                    ),
+                                  ),
+                                  leading: Radio<String>(
+                                    value: addressStr,
+                                    groupValue: _shippingAddress,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        _shippingAddress = val;
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                    activeColor: AppColors.primary,
+                                  ),
+                                  trailing: IconButton(
+                                    icon: const Icon(
+                                      Icons.delete_outline,
+                                      color: AppColors.accentRed,
+                                    ),
+                                    onPressed: () {
+                                      _deleteAddress(doc.id, addressStr);
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
+                    const Gap(16),
+                    AppButton(
+                      text: 'Add New Address',
+                      onPressed: _showAddAddressDialog,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -81,7 +262,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
       context: context,
       initialDate: _selectedDate,
       firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: 90)),
+      lastDate: DateTime.now().add(const Duration(days: 30)),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -106,25 +287,55 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
     }
   }
 
+  Future<void> _selectTime() async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime ?? TimeOfDay.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.dark(
+              primary: AppColors.primary,
+              onPrimary: Colors.white,
+              surface: AppColors.cardBackground,
+              onSurface: AppColors.textPrimary,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      setState(() {
+        _selectedTime = picked;
+      });
+    }
+  }
+
   String get _formattedDate {
     return DateFormat('dd MMM, yyyy (EEEE)').format(_selectedDate);
   }
 
+  String get _formattedTime {
+    if (_selectedTime == null) return 'Select a time';
+    return _selectedTime!.format(context);
+  }
+
   void _submitForm() {
-    if (_selectedMachine == null || _selectedMachine!.isEmpty) {
+    if (_shippingAddress == null || _shippingAddress!.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please select a water filter machine.'),
+          content: Text('Please select or add an address.'),
           backgroundColor: AppColors.accentRed,
         ),
       );
       return;
     }
 
-    if (_selectedTimeSlot == null || _selectedTimeSlot!.isEmpty) {
+    if (_selectedTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please select an appointment time slot.'),
+          content: Text('Please select an appointment time.'),
           backgroundColor: AppColors.accentRed,
         ),
       );
@@ -133,10 +344,9 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
 
     final newRequest = ServiceRequestEntity(
       id: 'REQ-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}',
-      machineName: _selectedMachine!,
-      address: _shippingAddress,
+      address: _shippingAddress!,
       date: DateFormat('dd MMM, yyyy').format(_selectedDate),
-      timeSlot: _selectedTimeSlot!,
+      timeSlot: _formattedTime,
       description: _descriptionController.text.trim().isEmpty
           ? 'Regular service and maintenance request.'
           : _descriptionController.text.trim(),
@@ -154,7 +364,10 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color: AppColors.textPrimary,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -188,7 +401,9 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
           }
         },
         child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
           padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
@@ -207,146 +422,83 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                 const Gap(6),
                 AppCard(
                   padding: const EdgeInsets.all(12),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.15),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.home_outlined,
-                          color: AppColors.primary,
-                          size: 18,
-                        ),
-                      ),
-                      const Gap(12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                  child: _isLoadingAddresses
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.primary,
+                          ),
+                        )
+                      : _shippingAddress == null
+                      ? Center(
+                          child: AppButton(
+                            text: 'Add Address',
+                            onPressed: _showAddAddressDialog,
+                            height: 36,
+                          ),
+                        )
+                      : Row(
                           children: [
-                            const Text(
-                              'Default Shipping Address',
-                              style: TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: 11,
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withValues(
+                                  alpha: 0.15,
+                                ),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.home_outlined,
+                                color: AppColors.primary,
+                                size: 18,
                               ),
                             ),
-                            const Gap(2),
-                            Text(
-                              _shippingAddress,
-                              style: const TextStyle(
-                                color: AppColors.textPrimary,
-                                fontSize: 12.5,
-                                fontWeight: FontWeight.w500,
+                            const Gap(12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Selected Address',
+                                    style: TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                  const Gap(2),
+                                  Text(
+                                    _shippingAddress!,
+                                    style: const TextStyle(
+                                      color: AppColors.textPrimary,
+                                      fontSize: 12.5,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Gap(6),
+                            TextButton.icon(
+                              onPressed: _showAddressBottomSheet,
+                              style: TextButton.styleFrom(
+                                foregroundColor: AppColors.secondary,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                              ),
+                              icon: const Text(
+                                '✏️',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              label: const Text(
+                                'Change',
+                                style: TextStyle(
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                      const Gap(6),
-                      TextButton.icon(
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Address change options coming soon.'),
-                              duration: Duration(seconds: 1),
-                            ),
-                          );
-                        },
-                        style: TextButton.styleFrom(
-                          foregroundColor: AppColors.secondary,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                        ),
-                        icon: const Text(
-                          '✏️',
-                          style: TextStyle(fontSize: 12),
-                        ),
-                        label: const Text(
-                          'Change',
-                          style: TextStyle(
-                            fontSize: 11.5,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const Gap(20),
-
-                // Water Filter Machine Name field
-                const Text(
-                  'Water Filter Machine Name',
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const Gap(6),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: AppColors.inputFill,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.divider),
-                  ),
-                  child: _isLoadingMachines
-                      ? Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          child: const Row(
-                            children: [
-                              SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppColors.primary,
-                                ),
-                              ),
-                              Gap(10),
-                              Text(
-                                'Loading products...',
-                                style: TextStyle(
-                                  color: AppColors.textSecondary,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            value: _selectedMachine,
-                            isExpanded: true,
-                            dropdownColor: AppColors.cardBackground,
-                            icon: const Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              color: AppColors.textSecondary,
-                            ),
-                            style: const TextStyle(
-                              color: AppColors.textPrimary,
-                              fontSize: 12.5,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            items: _machines.map((machine) {
-                              return DropdownMenuItem<String>(
-                                value: machine,
-                                child: Text(machine),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedMachine = value;
-                              });
-                            },
-                          ),
                         ),
                 ),
 
@@ -414,45 +566,42 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                   ),
                 ),
                 const Gap(6),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: AppColors.inputFill,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.divider),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: _selectedTimeSlot,
-                      hint: const Text(
-                        'Select a time slot',
-                        style: TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 12,
+                InkWell(
+                  onTap: _selectTime,
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.inputFill,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.divider),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.access_time_rounded,
+                          color: AppColors.secondary,
+                          size: 18,
                         ),
-                      ),
-                      isExpanded: true,
-                      dropdownColor: AppColors.cardBackground,
-                      icon: const Icon(
-                        Icons.access_time_rounded,
-                        color: AppColors.textSecondary,
-                      ),
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      items: _timeSlots.map((slot) {
-                        return DropdownMenuItem<String>(
-                          value: slot,
-                          child: Text(slot),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedTimeSlot = value;
-                        });
-                      },
+                        const Gap(10),
+                        Text(
+                          _formattedTime,
+                          style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const Spacer(),
+                        const Icon(
+                          Icons.edit_outlined,
+                          color: AppColors.textSecondary,
+                          size: 16,
+                        ),
+                      ],
                     ),
                   ),
                 ),

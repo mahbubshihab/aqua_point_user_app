@@ -167,6 +167,6 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
     final model = WaterServiceModel.fromEntity(request);
     final mapData = model.toFirestore();
     mapData['userId'] = _currentUserId;
-    await firestore.collection('services').add(mapData);
+    await firestore.collection('service_requests').add(mapData);
   }
 }

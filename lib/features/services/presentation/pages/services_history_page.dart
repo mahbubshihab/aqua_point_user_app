@@ -307,9 +307,9 @@ class _ServicesTabContent extends StatelessWidget {
                   ],
                 ),
                 const Gap(8),
-                Text(
-                  item.machineName,
-                  style: const TextStyle(
+                const Text(
+                  'Service Request',
+                  style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 14,
                     fontWeight: FontWeight.bold,

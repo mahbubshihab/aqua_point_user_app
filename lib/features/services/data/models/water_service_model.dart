@@ -4,7 +4,6 @@ import '../../domain/entities/water_service_entity.dart';
 class WaterServiceModel extends WaterServiceEntity {
   const WaterServiceModel({
     required super.id,
-    required super.machineName,
     required super.address,
     required super.date,
     required super.timeSlot,
@@ -18,7 +17,6 @@ class WaterServiceModel extends WaterServiceEntity {
     final data = doc.data() ?? {};
     return WaterServiceModel(
       id: doc.id,
-      machineName: data['machineModel'] ?? data['machineType'] ?? data['title'] ?? 'RO Water Purifier',
       address: data['address'] ?? 'N/A',
       date: data['appointmentDate'] ?? data['preferredDate'] ?? data['date'] ?? '',
       timeSlot: data['appointmentTime'] ?? data['preferredSlot'] ?? data['timeSlot'] ?? '',
@@ -32,7 +30,6 @@ class WaterServiceModel extends WaterServiceEntity {
   factory WaterServiceModel.fromEntity(WaterServiceEntity entity) {
     return WaterServiceModel(
       id: entity.id,
-      machineName: entity.machineName,
       address: entity.address,
       date: entity.date,
       timeSlot: entity.timeSlot,
@@ -45,7 +42,6 @@ class WaterServiceModel extends WaterServiceEntity {
 
   Map<String, dynamic> toFirestore() {
     return {
-      'machineModel': machineName,
       'customerName': customerName ?? 'App User',
       'phone': phone ?? 'N/A',
       'address': address,

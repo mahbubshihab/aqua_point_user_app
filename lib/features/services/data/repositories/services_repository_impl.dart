@@ -20,7 +20,6 @@ class ServicesRepositoryImpl implements ServicesRepository {
       if (remoteList.isNotEmpty) {
         return remoteList.map((m) => ServiceRequestEntity(
           id: m.id,
-          machineName: m.machineName,
           address: m.address,
           date: m.date,
           timeSlot: m.timeSlot,
@@ -77,7 +76,6 @@ class ServicesRepositoryImpl implements ServicesRepository {
   Future<void> submitServiceRequest(ServiceRequestEntity request) async {
     final waterEntity = WaterServiceEntity(
       id: request.id,
-      machineName: request.machineName,
       address: request.address,
       date: request.date,
       timeSlot: request.timeSlot,
