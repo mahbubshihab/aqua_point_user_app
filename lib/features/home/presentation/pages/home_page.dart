@@ -19,13 +19,12 @@ import '../widgets/blogs_news_section.dart';
 import '../widgets/categories_section.dart';
 
 import '../widgets/home_header_banner.dart';
-import '../widgets/hydration_tracker_widget.dart';
 import '../widgets/my_products_section.dart';
 import '../widgets/product_type_section.dart';
 import '../widgets/promotional_banners_slider.dart';
 import '../widgets/quick_action_grid.dart';
 import '../widgets/services_grid.dart';
-import '../widgets/water_quality_card.dart';
+import '../widgets/stores_section.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -180,35 +179,7 @@ class HomePage extends StatelessWidget {
                             },
                           ),
 
-                          const Gap(14),
-                          HydrationTrackerWidget(
-                            hydration: state.hydration,
-                            onIncrement: () {
-                              context.read<HomeBloc>().add(const IncrementHydration());
-                            },
-                            onDecrement: () {
-                              context.read<HomeBloc>().add(const DecrementHydration());
-                            },
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (_) => const WaterReminderPage()),
-                              );
-                            },
-                          ),
-                          const Gap(14),
-                          WaterQualityCard(
-                            waterQuality: state.waterQuality,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => TdsMeterPage(waterQuality: state.waterQuality),
-                                ),
-                              );
-                            },
-                          ),
-                          const Gap(14),
+                           const Gap(14),
                           ServicesGrid(
                             services: [
                               ServiceTileData(
@@ -229,18 +200,6 @@ class HomePage extends StatelessWidget {
                                 },
                               ),
                               ServiceTileData(
-                                title: 'Water Reminder',
-                                description: 'Stay hydrated with alerts',
-                                icon: Icons.alarm_rounded,
-                                color: AppColors.accentGreen,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (_) => const WaterReminderPage()),
-                                  );
-                                },
-                              ),
-                              ServiceTileData(
                                 title: 'Store Locator',
                                 description: 'Find nearest Aqua Point branch',
                                 icon: Icons.location_on_outlined,
@@ -252,25 +211,10 @@ class HomePage extends StatelessWidget {
                                   );
                                 },
                               ),
-                              ServiceTileData(
-                                title: 'Transaction History',
-                                description: 'View orders and bills',
-                                icon: Icons.history_edu_rounded,
-                                color: const Color(0xFFA855F7),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => BlocProvider.value(
-                                        value: context.read<ServicesBloc>(),
-                                        child: const ServicesHistoryPage(initialTabIndex: 1),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
                             ],
                           ),
+                          const Gap(14),
+                          const StoresSection(),
                           const Gap(14),
                           BlogsNewsSection(
                             blogs: state.blogs,
