@@ -93,8 +93,24 @@ class QuickActionTile extends StatefulWidget {
   State<QuickActionTile> createState() => _QuickActionTileState();
 }
 
-class _QuickActionTileState extends State<QuickActionTile> {
+class _QuickActionTileState extends State<QuickActionTile> with SingleTickerProviderStateMixin {
   bool _isPressed = false;
+  late AnimationController _pulseController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,18 +152,25 @@ class _QuickActionTileState extends State<QuickActionTile> {
           }
         },
         onTapCancel: () => setState(() => _isPressed = false),
-        child: GlassCard(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-          borderRadius: 14,
-          fillColor: const Color(0x1F141A2D),
-          borderGradient: const LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0x3300E5FF),
-              Color(0x0500E5FF),
-            ],
-          ),
+        child: AnimatedBuilder(
+          animation: _pulseController,
+          builder: (context, child) {
+            final pulse = _pulseController.value;
+            return GlassCard(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+              borderRadius: 14,
+              fillColor: const Color(0x1F141A2D),
+              borderGradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color(0xFF00E5FF).withValues(alpha: 0.15 + pulse * 0.15),
+                  Color(0xFF00E5FF).withValues(alpha: 0.05 + pulse * 0.05),
+                ],
+              ),
+              child: child!,
+            );
+          },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,

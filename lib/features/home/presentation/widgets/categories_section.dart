@@ -196,20 +196,7 @@ class _CategoryCard extends StatelessWidget {
                             fit: BoxFit.cover,
                             loadingBuilder: (context, child, loadingProgress) {
                               if (loadingProgress == null) return child;
-                              return Center(
-                                child: SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: AppColors.primary,
-                                    value: loadingProgress.expectedTotalBytes != null
-                                        ? loadingProgress.cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
-                                        : null,
-                                  ),
-                                ),
-                              );
+                              return const _ShimmerImage();
                             },
                             errorBuilder: (context, error, stackTrace) {
                               return Icon(
@@ -256,6 +243,55 @@ class _CategoryCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ShimmerImage extends StatefulWidget {
+  const _ShimmerImage();
+
+  @override
+  State<_ShimmerImage> createState() => _ShimmerImageState();
+}
+
+class _ShimmerImageState extends State<_ShimmerImage> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.white.withValues(alpha: 0.05),
+                Colors.white.withValues(alpha: 0.15),
+                Colors.white.withValues(alpha: 0.05),
+              ],
+              stops: const [0.1, 0.5, 0.9],
+              begin: Alignment(-1.0 + _controller.value * 2, -0.3),
+              end: Alignment(1.0 + _controller.value * 2, 0.3),
+            ),
+          ),
+        );
+      },
     );
   }
 }

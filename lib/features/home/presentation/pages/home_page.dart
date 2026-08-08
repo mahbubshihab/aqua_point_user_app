@@ -35,11 +35,14 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        top: false,
-        child: BlocBuilder<HomeBloc, HomeState>(
-          builder: (context, state) {
-            if (state is HomeLoading || state is HomeInitial) {
+      body: Stack(
+        children: [
+          const _AnimatedAuroraBackground(),
+          SafeArea(
+            top: false,
+            child: BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                if (state is HomeLoading || state is HomeInitial) {
               return const Center(
                 child: CircularProgressIndicator(color: AppColors.primary),
               );
@@ -338,6 +341,55 @@ class HomePage extends StatelessWidget {
           },
         ),
       ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AnimatedAuroraBackground extends StatefulWidget {
+  const _AnimatedAuroraBackground();
+
+  @override
+  State<_AnimatedAuroraBackground> createState() => _AnimatedAuroraBackgroundState();
+}
+
+class _AnimatedAuroraBackgroundState extends State<_AnimatedAuroraBackground> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 15),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Container(
+          decoration: BoxDecoration(
+            gradient: RadialGradient(
+              center: Alignment(0, -0.8 + _controller.value * 0.4),
+              radius: 1.5 + _controller.value * 0.2,
+              colors: [
+                AppColors.primary.withValues(alpha: 0.08 + _controller.value * 0.04),
+                AppColors.background,
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
