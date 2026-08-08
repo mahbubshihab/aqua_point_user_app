@@ -42,18 +42,13 @@ class _CustomSplashPageState extends State<CustomSplashPage>
     );
 
     _controller.forward();
-
-    _navigateToNext();
   }
 
-  void _navigateToNext() async {
-    await Future.delayed(const Duration(milliseconds: 1000));
-    if (!mounted) return;
+  bool _navigated = false;
 
-    final authState = context.read<AuthBloc>().state;
-    final Widget targetPage = (authState is Authenticated)
-        ? const MainShellPage()
-        : const LoginPage();
+  void _navigateToPage(Widget targetPage) {
+    if (_navigated || !mounted) return;
+    _navigated = true;
 
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
@@ -77,7 +72,20 @@ class _CustomSplashPageState extends State<CustomSplashPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is Authenticated) {
+          // Small delay for splash animation to play
+          Future.delayed(const Duration(milliseconds: 800), () {
+            _navigateToPage(const MainShellPage());
+          });
+        } else if (state is Unauthenticated) {
+          Future.delayed(const Duration(milliseconds: 800), () {
+            _navigateToPage(const LoginPage());
+          });
+        }
+      },
+      child: Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
         children: [
@@ -171,6 +179,7 @@ class _CustomSplashPageState extends State<CustomSplashPage>
           ),
         ],
       ),
+    ),
     );
   }
 }
