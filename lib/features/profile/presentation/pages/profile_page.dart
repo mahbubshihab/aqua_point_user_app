@@ -21,11 +21,13 @@ class _ProfilePageState extends State<ProfilePage> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _addressController = TextEditingController();
-  
+
   String? _avatarUrl;
   bool _isLoading = true;
   bool _isSaving = false;
-  
+  bool _isEditing = false;
+  bool _isUploadingAvatar = false;
+
   late String _userId;
   late String _phoneNumber;
 
@@ -34,7 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     _initUserData();
   }
-  
+
   void _initUserData() {
     final authState = context.read<AuthBloc>().state;
     if (authState is Authenticated) {
@@ -48,7 +50,20 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _loadProfile() async {
     try {
-      final doc = await FirebaseFirestore.instance.collection('users').doc(_userId).get();
+      // Try 'customers' collection first, then 'users'
+      DocumentSnapshot? doc;
+      doc = await FirebaseFirestore.instance
+          .collection('customers')
+          .doc(_userId)
+          .get();
+
+      if (!doc.exists) {
+        doc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(_userId)
+            .get();
+      }
+
       if (doc.exists) {
         final data = doc.data() as Map<String, dynamic>;
         _nameController.text = data['name'] ?? '';
@@ -68,26 +83,44 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _pickAndUploadImage() async {
+    if (!_isEditing) return;
+
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 512,
+      maxHeight: 512,
+      imageQuality: 80,
+    );
     if (pickedFile == null) return;
 
-    setState(() => _isLoading = true);
-    
+    setState(() => _isUploadingAvatar = true);
+
     try {
+      final bytes = await pickedFile.readAsBytes();
+      final filename = pickedFile.name;
       final cloudinary = CloudinaryService();
-      final url = await cloudinary.uploadImage(File(pickedFile.path));
+      final url = await cloudinary.uploadImageBytes(bytes, filename);
       if (url != null) {
         setState(() {
           _avatarUrl = url;
         });
-        await FirebaseFirestore.instance.collection('users').doc(_userId).set({
-          'avatarUrl': url,
-        }, SetOptions(merge: true));
-        
+        // Save avatar immediately to both collections
+        await FirebaseFirestore.instance
+            .collection('customers')
+            .doc(_userId)
+            .set({'avatarUrl': url}, SetOptions(merge: true));
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(_userId)
+            .set({'avatarUrl': url}, SetOptions(merge: true));
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Avatar updated successfully')),
+            const SnackBar(
+              content: Text('Avatar updated'),
+              backgroundColor: AppColors.primary,
+            ),
           );
         }
       }
@@ -95,33 +128,56 @@ class _ProfilePageState extends State<ProfilePage> {
       debugPrint('Error uploading image: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to upload image: $e')),
+          SnackBar(
+            content: Text('Upload failed: $e'),
+            backgroundColor: AppColors.accentRed,
+          ),
         );
       }
     } finally {
-      setState(() => _isLoading = false);
+      setState(() => _isUploadingAvatar = false);
     }
   }
 
   Future<void> _saveProfile() async {
     setState(() => _isSaving = true);
     try {
-      await FirebaseFirestore.instance.collection('users').doc(_userId).set({
+      final profileData = {
         'name': _nameController.text.trim(),
         'email': _emailController.text.trim(),
         'address': _addressController.text.trim(),
-      }, SetOptions(merge: true));
-      
+        'phone': _phoneNumber,
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
+
+      // Save to both collections
+      await FirebaseFirestore.instance
+          .collection('customers')
+          .doc(_userId)
+          .set(profileData, SetOptions(merge: true));
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_userId)
+          .set(profileData, SetOptions(merge: true));
+
+      setState(() => _isEditing = false);
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile saved successfully')),
+          const SnackBar(
+            content: Text('Profile saved'),
+            backgroundColor: AppColors.primary,
+          ),
         );
       }
     } catch (e) {
       debugPrint('Error saving profile: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to save profile')),
+          const SnackBar(
+            content: Text('Failed to save'),
+            backgroundColor: AppColors.accentRed,
+          ),
         );
       }
     } finally {
@@ -149,47 +205,83 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Personal Info', style: TextStyle(color: AppColors.textPrimary)),
+        title: const Text(
+          'Personal Info',
+          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+        ),
         iconTheme: const IconThemeData(color: AppColors.textPrimary),
       ),
-      body: _isLoading 
+      body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
           : SingleChildScrollView(
               padding: const EdgeInsets.all(24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  // Avatar
                   Center(
                     child: GestureDetector(
-                      onTap: _pickAndUploadImage,
+                      onTap: _isEditing ? _pickAndUploadImage : null,
                       child: Stack(
                         children: [
                           CircleAvatar(
                             radius: 50,
                             backgroundColor: AppColors.cardBackground,
-                            backgroundImage: _avatarUrl != null ? NetworkImage(_avatarUrl!) : null,
+                            backgroundImage:
+                                _avatarUrl != null ? NetworkImage(_avatarUrl!) : null,
                             child: _avatarUrl == null
-                                ? const Icon(Icons.person, size: 50, color: AppColors.textSecondary)
+                                ? Text(
+                                    _nameController.text.isNotEmpty
+                                        ? _nameController.text[0].toUpperCase()
+                                        : '?',
+                                    style: const TextStyle(
+                                      fontSize: 36,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.primary,
+                                    ),
+                                  )
                                 : null,
                           ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: const BoxDecoration(
-                                color: AppColors.primary,
-                                shape: BoxShape.circle,
+                          if (_isUploadingAvatar)
+                            Positioned.fill(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black54,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Center(
+                                  child: SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      color: AppColors.primary,
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                ),
                               ),
-                              child: const Icon(Icons.camera_alt, color: Colors.white, size: 16),
                             ),
-                          ),
+                          if (_isEditing && !_isUploadingAvatar)
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: const BoxDecoration(
+                                  color: AppColors.primary,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(Icons.camera_alt,
+                                    color: Colors.white, size: 16),
+                              ),
+                            ),
                         ],
                       ),
                     ),
                   ),
                   const Gap(32),
-                  
+
+                  // Phone Number (always read-only)
                   _buildTextField(
                     label: 'Phone Number',
                     initialValue: _phoneNumber,
@@ -197,64 +289,109 @@ class _ProfilePageState extends State<ProfilePage> {
                     icon: Icons.lock_outline,
                   ),
                   const Gap(16),
-                  
+
+                  // Name
                   _buildTextField(
                     label: 'Full Name',
                     controller: _nameController,
+                    readOnly: !_isEditing,
+                    hintText: 'Enter your name',
                   ),
                   const Gap(16),
-                  
+
+                  // Email
                   _buildTextField(
                     label: 'Email',
                     controller: _emailController,
+                    readOnly: !_isEditing,
+                    hintText: 'Enter your email',
                     keyboardType: TextInputType.emailAddress,
                   ),
                   const Gap(16),
-                  
+
+                  // Address
                   _buildTextField(
                     label: 'Address',
                     controller: _addressController,
-                    maxLines: 3,
+                    readOnly: !_isEditing,
+                    hintText: 'Enter your address',
+                    maxLines: 2,
                   ),
-                  
+
                   const Gap(32),
-                  
-                  ElevatedButton(
-                    onPressed: _isSaving ? null : _saveProfile,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: AppColors.textPrimary,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: _isSaving
+
+                  // Edit / Save Button
+                  ElevatedButton.icon(
+                    onPressed: _isSaving
+                        ? null
+                        : _isEditing
+                            ? _saveProfile
+                            : () => setState(() => _isEditing = true),
+                    icon: _isSaving
                         ? const SizedBox(
-                            width: 20,
-                            height: 20,
+                            width: 18,
+                            height: 18,
                             child: CircularProgressIndicator(
-                              color: AppColors.textPrimary,
+                              color: Colors.white,
                               strokeWidth: 2,
                             ),
                           )
-                        : const Text(
-                            'Save Changes',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        : Icon(
+                            _isEditing ? Icons.save_rounded : Icons.edit_rounded,
+                            size: 18,
                           ),
+                    label: Text(
+                      _isSaving
+                          ? 'Saving...'
+                          : _isEditing
+                              ? 'Save Profile'
+                              : 'Edit Profile',
+                      style: const TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          _isEditing ? AppColors.primary : AppColors.cardBackground,
+                      foregroundColor:
+                          _isEditing ? Colors.black : AppColors.textPrimary,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        side: _isEditing
+                            ? BorderSide.none
+                            : const BorderSide(
+                                color: AppColors.primary, width: 1),
+                      ),
+                    ),
                   ),
-                  
+
+                  if (_isEditing) ...[
+                    const Gap(12),
+                    TextButton(
+                      onPressed: () {
+                        setState(() => _isEditing = false);
+                        _loadProfile(); // Reset to saved values
+                      },
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(color: AppColors.textSecondary),
+                      ),
+                    ),
+                  ],
+
                   const Gap(24),
-                  
+
+                  // Logout
                   OutlinedButton.icon(
                     onPressed: _logout,
                     icon: const Icon(Icons.logout, color: AppColors.accentRed),
-                    label: const Text('Logout', style: TextStyle(color: AppColors.accentRed)),
+                    label: const Text('Logout',
+                        style: TextStyle(color: AppColors.accentRed)),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: AppColors.accentRed),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(14),
                       ),
                     ),
                   ),
@@ -272,6 +409,7 @@ class _ProfilePageState extends State<ProfilePage> {
     IconData? icon,
     int maxLines = 1,
     TextInputType? keyboardType,
+    String? hintText,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,11 +418,11 @@ class _ProfilePageState extends State<ProfilePage> {
           label,
           style: const TextStyle(
             color: AppColors.textSecondary,
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
           ),
         ),
-        const Gap(8),
+        const Gap(6),
         TextFormField(
           controller: controller,
           initialValue: initialValue,
@@ -293,22 +431,36 @@ class _ProfilePageState extends State<ProfilePage> {
           keyboardType: keyboardType,
           style: TextStyle(
             color: readOnly ? AppColors.textSecondary : AppColors.textPrimary,
+            fontSize: 15,
           ),
           decoration: InputDecoration(
             filled: true,
-            fillColor: AppColors.inputFill,
-            suffixIcon: icon != null ? Icon(icon, color: AppColors.textSecondary) : null,
+            fillColor: readOnly
+                ? AppColors.inputFill.withValues(alpha: 0.5)
+                : AppColors.inputFill,
+            hintText: readOnly ? null : hintText,
+            hintStyle: const TextStyle(
+                color: AppColors.textSecondary, fontSize: 14),
+            suffixIcon: icon != null
+                ? Icon(icon, color: AppColors.textSecondary, size: 18)
+                : null,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
+              borderSide: readOnly
+                  ? BorderSide.none
+                  : const BorderSide(
+                      color: AppColors.cardBorder, width: 0.5),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.primary, width: 1),
+              borderSide:
+                  const BorderSide(color: AppColors.primary, width: 1),
             ),
           ),
         ),
