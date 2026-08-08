@@ -4,16 +4,13 @@ import '../../domain/entities/service_request_entity.dart';
 import '../../domain/entities/shipping_address_entity.dart';
 import '../../domain/entities/water_service_entity.dart';
 import '../../domain/repositories/services_repository.dart';
-import '../datasources/services_mock_datasource.dart';
 import '../datasources/services_remote_datasource.dart';
 
 class ServicesRepositoryImpl implements ServicesRepository {
   final ServicesRemoteDatasource remoteDatasource;
-  final ServicesMockDatasource? mockDatasource;
 
   ServicesRepositoryImpl({
     ServicesRemoteDatasource? remoteDatasource,
-    this.mockDatasource,
   }) : remoteDatasource = remoteDatasource ?? ServicesRemoteDatasourceImpl();
 
   @override
@@ -32,7 +29,7 @@ class ServicesRepositoryImpl implements ServicesRepository {
         )).toList();
       }
     } catch (_) {}
-    return mockDatasource?.getServicesHistory() ?? Future.value([]);
+    return Future.value([]);
   }
 
   @override
@@ -41,7 +38,7 @@ class ServicesRepositoryImpl implements ServicesRepository {
       final remoteOrders = await remoteDatasource.getOrdersHistory();
       if (remoteOrders.isNotEmpty) return remoteOrders;
     } catch (_) {}
-    return mockDatasource?.getOrdersHistory() ?? Future.value([]);
+    return Future.value([]);
   }
 
   @override
@@ -50,7 +47,7 @@ class ServicesRepositoryImpl implements ServicesRepository {
       final remoteInvoices = await remoteDatasource.getInvoicesHistory();
       if (remoteInvoices.isNotEmpty) return remoteInvoices;
     } catch (_) {}
-    return mockDatasource?.getInvoicesHistory() ?? Future.value([]);
+    return Future.value([]);
   }
 
   @override
@@ -58,13 +55,12 @@ class ServicesRepositoryImpl implements ServicesRepository {
     try {
       return await remoteDatasource.getDefaultShippingAddress();
     } catch (_) {
-      return mockDatasource?.getDefaultShippingAddress() ??
-          Future.value(const ShippingAddressEntity(
-            id: 'ADDR-1',
-            addressLine: 'House 12, Road 4, Block C',
-            city: 'Banani, Dhaka',
-            isDefault: true,
-          ));
+      return Future.value(const ShippingAddressEntity(
+        id: '',
+        addressLine: '',
+        city: '',
+        isDefault: true,
+      ));
     }
   }
 
@@ -74,12 +70,7 @@ class ServicesRepositoryImpl implements ServicesRepository {
       final machines = await remoteDatasource.getAvailableMachines();
       if (machines.isNotEmpty) return machines;
     } catch (_) {}
-    return mockDatasource?.getAvailableMachines() ??
-        Future.value([
-          'Aqua Pure RO System (Model X1)',
-          'Aqua Clean UV Filter (Model V2)',
-          'Aqua Smart Alkaline Purifier (Model S3)',
-        ]);
+    return Future.value([]);
   }
 
   @override
@@ -96,3 +87,4 @@ class ServicesRepositoryImpl implements ServicesRepository {
     await remoteDatasource.submitServiceRequest(waterEntity);
   }
 }
+

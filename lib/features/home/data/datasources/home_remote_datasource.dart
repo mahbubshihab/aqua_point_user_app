@@ -123,37 +123,11 @@ class HomeRemoteDatasource {
         }
         return categories;
       }
-      return _fallbackCategories;
+      return [];
     } catch (_) {
-      return _fallbackCategories;
+      return [];
     }
   }
 
-  static const List<CategoryEntity> _fallbackCategories = [
-    CategoryEntity(
-      id: 'cat_1',
-      name: 'RO Purifiers',
-      imageUrl: 'https://images.unsplash.com/photo-1548839140-29a749e1bc4e?w=500&auto=format&fit=crop&q=60',
-      productCount: 12,
-    ),
-    CategoryEntity(
-      id: 'cat_2',
-      name: 'Filter Cartridges',
-      imageUrl: 'https://images.unsplash.com/photo-1628102491629-778571d893a3?w=500&auto=format&fit=crop&q=60',
-      productCount: 8,
-    ),
-    CategoryEntity(
-      id: 'cat_3',
-      name: 'Spare Parts',
-      imageUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500&auto=format&fit=crop&q=60',
-      productCount: 15,
-    ),
-    CategoryEntity(
-      id: 'cat_4',
-      name: 'Water Softeners',
-      imageUrl: 'https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=500&auto=format&fit=crop&q=60',
-      productCount: 6,
-    ),
-  ];
 }
 

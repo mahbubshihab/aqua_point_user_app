@@ -2,14 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/entities/app_notification_entity.dart';
 import '../../domain/entities/chat_message_entity.dart';
 
-class InboxSupportMockDatasource {
+class InboxSupportRemoteDatasource {
   Future<List<AppNotificationEntity>> fetchNotifications() async {
-    await Future.delayed(const Duration(milliseconds: 300));
     return [];
   }
 
   Future<List<ChatMessageEntity>> fetchChatMessages() async {
-    await Future.delayed(const Duration(milliseconds: 300));
     return [];
   }
 
@@ -29,12 +27,11 @@ class InboxSupportMockDatasource {
         'createdAt': FieldValue.serverTimestamp(),
       });
     } catch (e) {
-      // Fallback
+      // Ignored
     }
   }
 
   Future<String> fetchReferralCode() async {
-    await Future.delayed(const Duration(milliseconds: 200));
     return '';
   }
 }

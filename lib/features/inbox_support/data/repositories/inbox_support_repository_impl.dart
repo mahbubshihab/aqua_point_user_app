@@ -1,10 +1,10 @@
 import '../../domain/entities/app_notification_entity.dart';
 import '../../domain/entities/chat_message_entity.dart';
 import '../../domain/repositories/inbox_support_repository.dart';
-import '../datasources/inbox_support_mock_datasource.dart';
+import '../datasources/inbox_support_remote_datasource.dart';
 
 class InboxSupportRepositoryImpl implements InboxSupportRepository {
-  final InboxSupportMockDatasource datasource;
+  final InboxSupportRemoteDatasource datasource;
 
   InboxSupportRepositoryImpl({required this.datasource});
 

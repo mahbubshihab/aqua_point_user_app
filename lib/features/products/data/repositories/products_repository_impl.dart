@@ -1,34 +1,33 @@
 import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/product_entity.dart';
 import '../../domain/repositories/products_repository.dart';
-import '../datasources/products_mock_datasource.dart';
 import '../datasources/products_remote_datasource.dart';
 
 class ProductsRepositoryImpl implements ProductsRepository {
   final ProductsRemoteDatasource remoteDatasource;
-  final ProductsMockDatasource? mockDatasource;
 
   ProductsRepositoryImpl({
     ProductsRemoteDatasource? remoteDatasource,
-    this.mockDatasource,
   }) : remoteDatasource = remoteDatasource ?? ProductsRemoteDatasourceImpl();
 
   @override
   Future<List<ProductEntity>> getProducts({String? targetCategory}) async {
     try {
       final remoteProducts = await remoteDatasource.fetchProducts(targetCategory: targetCategory);
-      if (remoteProducts.isNotEmpty) return remoteProducts;
-    } catch (_) {}
-    return mockDatasource?.fetchProducts() ?? ProductsMockDatasource.defaultProducts;
+      return remoteProducts;
+    } catch (_) {
+      return [];
+    }
   }
 
   @override
   Future<List<ProductEntity>> getProductsByType(String type, {int limit = 10}) async {
     try {
       final remoteProducts = await remoteDatasource.fetchProductsByType(type, limit: limit);
-      if (remoteProducts.isNotEmpty) return remoteProducts;
-    } catch (_) {}
-    return [];
+      return remoteProducts;
+    } catch (_) {
+      return [];
+    }
   }
 
   @override
@@ -55,9 +54,10 @@ class ProductsRepositoryImpl implements ProductsRepository {
   Future<List<CategoryEntity>> getCategories() async {
     try {
       final categories = await remoteDatasource.fetchCategories();
-      if (categories.isNotEmpty) return categories;
-    } catch (_) {}
-    return mockDatasource?.fetchCategories() ?? ProductsMockDatasource.defaultCategories;
+      return categories;
+    } catch (_) {
+      return [];
+    }
   }
 
   @override
@@ -65,3 +65,4 @@ class ProductsRepositoryImpl implements ProductsRepository {
     await remoteDatasource.addCustomProduct(product, userId: userId);
   }
 }
+

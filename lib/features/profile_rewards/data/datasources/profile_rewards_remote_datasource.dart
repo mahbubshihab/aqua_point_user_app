@@ -3,10 +3,10 @@ import '../models/user_profile_model.dart';
 import '../models/reward_rule_model.dart';
 import '../models/faq_model.dart';
 
-class ProfileRewardsMockDatasource {
+class ProfileRewardsRemoteDatasource {
   UserProfileModel _userProfile = const UserProfileModel(
-    id: '1',
-    name: 'Customer',
+    id: '',
+    name: '',
     phone: '',
     email: '',
     address: '',
@@ -15,18 +15,15 @@ class ProfileRewardsMockDatasource {
   );
 
   Future<UserProfileModel> getUserProfile() async {
-    await Future.delayed(const Duration(milliseconds: 300));
     return _userProfile;
   }
 
   Future<UserProfileModel> updateProfile(UserProfileModel profile) async {
-    await Future.delayed(const Duration(milliseconds: 400));
     _userProfile = profile;
     return _userProfile;
   }
 
   Future<List<RewardRuleModel>> getRewardRules() async {
-    await Future.delayed(const Duration(milliseconds: 300));
     return const [];
   }
 
@@ -43,9 +40,10 @@ class ProfileRewardsMockDatasource {
         }).toList();
       }
     } catch (e) {
-      // Fallback
+      // Ignored
     }
     return const [];
   }
 }
+
 
