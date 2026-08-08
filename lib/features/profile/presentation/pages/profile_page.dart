@@ -63,7 +63,15 @@ class _ProfilePageState extends State<ProfilePage> {
         final data = doc.data() as Map<String, dynamic>;
         _nameController.text = data['name'] ?? '';
         _emailController.text = data['email'] ?? '';
-        _addressController.text = data['address'] ?? '';
+        
+        // Cleanup old root address field if present
+        if (data.containsKey('address')) {
+          await FirebaseFirestore.instance
+              .collection('customers')
+              .doc(_userId)
+              .update({'address': FieldValue.delete()}).catchError((_) {});
+        }
+
         setState(() {
           _avatarUrl = data['avatarUrl'];
         });
@@ -89,7 +97,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
       setState(() {
         _addresses = snapshot.docs;
-        if (_addresses.isNotEmpty && _addressController.text.isEmpty) {
+        if (_addresses.isNotEmpty) {
           _addressController.text = _addresses.first['address'] as String;
         }
       });
@@ -112,15 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      // Update primary address doc field if empty
-      if (_addressController.text.isEmpty) {
-        _addressController.text = newAddressStr.trim();
-        await FirebaseFirestore.instance
-            .collection('customers')
-            .doc(_userId)
-            .set({'address': newAddressStr.trim()}, SetOptions(merge: true));
-      }
-
+      _addressController.text = newAddressStr.trim();
       await _loadAddresses();
 
       if (mounted) {
@@ -262,9 +262,9 @@ class _ProfilePageState extends State<ProfilePage> {
       final profileData = {
         'name': _nameController.text.trim(),
         'email': _emailController.text.trim(),
-        'address': _addressController.text.trim(),
         'phone': _phoneNumber,
         'updatedAt': FieldValue.serverTimestamp(),
+        'address': FieldValue.delete(),
       };
 
       await FirebaseFirestore.instance
@@ -272,7 +272,7 @@ class _ProfilePageState extends State<ProfilePage> {
           .doc(_userId)
           .set(profileData, SetOptions(merge: true));
 
-      // Also ensure main address is in sub-collection if typed directly
+      // Save typed address in addresses sub-collection
       if (_addressController.text.trim().isNotEmpty) {
         final existing = _addresses.any(
             (doc) => (doc['address'] as String).trim() == _addressController.text.trim());
