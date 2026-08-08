@@ -95,10 +95,20 @@ class _ProfilePageState extends State<ProfilePage> {
           .orderBy('createdAt', descending: true)
           .get();
 
+      final docs = List<DocumentSnapshot>.from(snapshot.docs);
+      docs.sort((a, b) {
+        final aData = a.data() as Map<String, dynamic>? ?? {};
+        final bData = b.data() as Map<String, dynamic>? ?? {};
+        final aPrimary = aData['isPrimary'] == true ? 1 : 0;
+        final bPrimary = bData['isPrimary'] == true ? 1 : 0;
+        return bPrimary.compareTo(aPrimary);
+      });
+
       setState(() {
-        _addresses = snapshot.docs;
+        _addresses = docs;
         if (_addresses.isNotEmpty) {
-          _addressController.text = _addresses.first['address'] as String;
+          final firstData = _addresses.first.data() as Map<String, dynamic>? ?? {};
+          _addressController.text = firstData['address'] as String? ?? '';
         }
       });
     } catch (e) {
@@ -108,15 +118,52 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future<void> _setPrimaryAddress(String targetDocId, String addressStr) async {
+    try {
+      final batch = FirebaseFirestore.instance.batch();
+      for (var doc in _addresses) {
+        final ref = FirebaseFirestore.instance
+            .collection('customers')
+            .doc(_userId)
+            .collection('addresses')
+            .doc(doc.id);
+
+        if (doc.id == targetDocId) {
+          batch.update(ref, {'isPrimary': true});
+        } else {
+          batch.update(ref, {'isPrimary': false});
+        }
+      }
+      await batch.commit();
+
+      _addressController.text = addressStr;
+      await _loadAddresses();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Primary address updated'),
+            backgroundColor: AppColors.primary,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('Error setting primary address: $e');
+    }
+  }
+
   Future<void> _addAddress(String newAddressStr) async {
     if (newAddressStr.trim().isEmpty) return;
     try {
+      final isFirst = _addresses.isEmpty;
       await FirebaseFirestore.instance
           .collection('customers')
           .doc(_userId)
           .collection('addresses')
           .add({
         'address': newAddressStr.trim(),
+        'isPrimary': isFirst,
         'createdAt': FieldValue.serverTimestamp(),
       });
 
@@ -518,92 +565,102 @@ class _ProfilePageState extends State<ProfilePage> {
                   else
                     Column(
                       children: _addresses.map((doc) {
-                        final addressStr = doc['address'] as String;
-                        final isPrimary = _addressController.text == addressStr;
+                        final data = doc.data() as Map<String, dynamic>? ?? {};
+                        final addressStr = data['address'] as String? ?? '';
+                        final isPrimary = data['isPrimary'] == true || _addressController.text == addressStr;
 
                         return Container(
                           margin: const EdgeInsets.only(bottom: 8),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 12),
                           decoration: BoxDecoration(
                             color: isPrimary
-                                ? AppColors.primary.withValues(alpha: 0.1)
+                                ? AppColors.primary.withValues(alpha: 0.12)
                                 : AppColors.inputFill,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: isPrimary
                                   ? AppColors.primary
                                   : AppColors.cardBorder,
-                              width: isPrimary ? 1.2 : 0.5,
+                              width: isPrimary ? 1.5 : 0.5,
                             ),
                           ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                isPrimary
-                                    ? Icons.location_on_rounded
-                                    : Icons.location_on_outlined,
-                                color: isPrimary
-                                    ? AppColors.primary
-                                    : AppColors.textSecondary,
-                                size: 20,
-                              ),
-                              const Gap(10),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(12),
+                              onTap: () {
+                                if (!isPrimary) {
+                                  _setPrimaryAddress(doc.id, addressStr);
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 8),
+                                child: Row(
                                   children: [
-                                    Text(
-                                      addressStr,
-                                      style: TextStyle(
-                                        color: AppColors.textPrimary,
-                                        fontSize: 14,
-                                        fontWeight: isPrimary
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
+                                    Radio<bool>(
+                                      value: true,
+                                      groupValue: isPrimary,
+                                      activeColor: AppColors.primary,
+                                      onChanged: (_) {
+                                        if (!isPrimary) {
+                                          _setPrimaryAddress(doc.id, addressStr);
+                                        }
+                                      },
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            addressStr,
+                                            style: TextStyle(
+                                              color: AppColors.textPrimary,
+                                              fontSize: 13.5,
+                                              fontWeight: isPrimary
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal,
+                                            ),
+                                          ),
+                                          if (isPrimary) ...[
+                                            const Gap(2),
+                                            const Text(
+                                              'Primary Address',
+                                              style: TextStyle(
+                                                color: AppColors.primary,
+                                                fontSize: 10.5,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ],
                                       ),
                                     ),
-                                    if (isPrimary)
-                                      const Text(
-                                        'Primary Address',
-                                        style: TextStyle(
-                                          color: AppColors.primary,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
+                                    if (!isPrimary)
+                                      TextButton(
+                                        onPressed: () =>
+                                            _setPrimaryAddress(doc.id, addressStr),
+                                        child: const Text(
+                                          'Set Primary',
+                                          style: TextStyle(
+                                            color: AppColors.primary,
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.delete_outline,
+                                        color: AppColors.accentRed,
+                                        size: 20,
+                                      ),
+                                      onPressed: () =>
+                                          _deleteAddress(doc.id, addressStr),
+                                    ),
                                   ],
                                 ),
                               ),
-                              if (!isPrimary && _isEditing)
-                                InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      _addressController.text = addressStr;
-                                    });
-                                  },
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(4.0),
-                                    child: Text(
-                                      'Set Primary',
-                                      style: TextStyle(
-                                        color: AppColors.primary,
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.delete_outline,
-                                  color: AppColors.accentRed,
-                                  size: 20,
-                                ),
-                                onPressed: () =>
-                                    _deleteAddress(doc.id, addressStr),
-                              ),
-                            ],
+                            ),
                           ),
                         );
                       }).toList(),
