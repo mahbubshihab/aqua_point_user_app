@@ -22,6 +22,9 @@ class ProductItemCard extends StatelessWidget {
   });
 
   void _onAddToCart(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     final cartItem = CartItem(
       id: product.id,
       name: product.name,
@@ -44,7 +47,7 @@ class ProductItemCard extends StatelessWidget {
               child: Text(
                 '${product.name} added to cart!',
                 style: GoogleFonts.inter(
-                  color: AppColors.textPrimary,
+                  color: isDark ? Colors.white : const Color(0xFF0F172A),
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -52,11 +55,11 @@ class ProductItemCard extends StatelessWidget {
           ],
         ),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: AppColors.surface,
+        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
         duration: const Duration(seconds: 3),
         action: SnackBarAction(
           label: 'View Cart',
-          textColor: const Color(0xFF00E5FF),
+          textColor: const Color(0xFF00BCE1),
           onPressed: () {
             Navigator.push(
               context,
@@ -88,6 +91,14 @@ class ProductItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+    final thumbBg = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
+    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
+    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -109,13 +120,13 @@ class ProductItemCard extends StatelessWidget {
                   width: 72,
                   height: 72,
                   decoration: BoxDecoration(
-                    color: AppColors.background,
+                    color: thumbBg,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.divider),
+                    border: Border.all(color: borderColor),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: _buildThumbnail(),
+                    child: _buildThumbnail(accentColor),
                   ),
                 ),
                 const Gap(14),
@@ -130,7 +141,7 @@ class ProductItemCard extends StatelessWidget {
                             child: Text(
                               product.name,
                               style: GoogleFonts.inter(
-                                color: AppColors.textPrimary,
+                                color: textColorPrimary,
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -155,7 +166,7 @@ class ProductItemCard extends StatelessWidget {
                       Text(
                         '৳${product.price.toStringAsFixed(0)}',
                         style: GoogleFonts.inter(
-                          color: AppColors.primary,
+                          color: accentColor,
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
@@ -189,7 +200,7 @@ class ProductItemCard extends StatelessWidget {
               ],
             ),
             const Gap(12),
-            const Divider(color: AppColors.divider, height: 1),
+            Divider(color: borderColor, height: 1),
             const Gap(10),
 
             // Functional Action Buttons
@@ -202,20 +213,20 @@ class ProductItemCard extends StatelessWidget {
                       onPressed: () => _onAddToCart(context),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
-                        side: const BorderSide(color: AppColors.primary, width: 1),
+                        side: BorderSide(color: accentColor, width: 1),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.add_shopping_cart_rounded,
-                        color: AppColors.primary,
+                        color: accentColor,
                         size: 15,
                       ),
                       label: Text(
                         'Add to Cart',
                         style: GoogleFonts.inter(
-                          color: AppColors.primary,
+                          color: accentColor,
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
@@ -231,20 +242,21 @@ class ProductItemCard extends StatelessWidget {
                       onPressed: () => _onBuyNow(context),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: accentColor,
+                        foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.flash_on_rounded,
-                        color: Colors.white,
+                        color: isDark ? const Color(0xFF020810) : Colors.white,
                         size: 15,
                       ),
                       label: Text(
                         'Buy Now',
                         style: GoogleFonts.inter(
-                          color: Colors.white,
+                          color: isDark ? const Color(0xFF020810) : Colors.white,
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
@@ -260,7 +272,7 @@ class ProductItemCard extends StatelessWidget {
     );
   }
 
-  Widget _buildThumbnail() {
+  Widget _buildThumbnail(Color fallbackColor) {
     if (product.photoUrl != null && product.photoUrl!.isNotEmpty) {
       if (product.photoUrl!.startsWith('http')) {
         return Image.network(
@@ -268,18 +280,18 @@ class ProductItemCard extends StatelessWidget {
           fit: BoxFit.cover,
           cacheWidth: 600,
           cacheHeight: 600,
-          errorBuilder: (context, error, stackTrace) => _buildFallbackIcon(),
+          errorBuilder: (context, error, stackTrace) => _buildFallbackIcon(fallbackColor),
         );
       }
     }
-    return _buildFallbackIcon();
+    return _buildFallbackIcon(fallbackColor);
   }
 
-  Widget _buildFallbackIcon() {
-    return const Center(
+  Widget _buildFallbackIcon(Color fallbackColor) {
+    return Center(
       child: Icon(
         Icons.water_drop_rounded,
-        color: AppColors.primary,
+        color: fallbackColor,
         size: 30,
       ),
     );

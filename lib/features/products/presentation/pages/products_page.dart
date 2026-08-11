@@ -32,18 +32,27 @@ class _ProductsPageState extends State<ProductsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textColorSecondary = isDark
+        ? Colors.white.withValues(alpha: 0.65)
+        : const Color(0xFF64748B);
+    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         centerTitle: false,
         title: Text(
           'My Products',
           style: GoogleFonts.outfit(
-            color: AppColors.textPrimary,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
+            color: textColorPrimary,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
         ),
         actions: [
@@ -53,7 +62,7 @@ class _ProductsPageState extends State<ProductsPage> {
                 alignment: Alignment.center,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.shopping_cart_outlined, color: AppColors.textPrimary),
+                    icon: Icon(Icons.shopping_cart_outlined, color: textColorPrimary),
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -67,8 +76,8 @@ class _ProductsPageState extends State<ProductsPage> {
                       right: 8,
                       child: Container(
                         padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: AppColors.primary,
+                        decoration: BoxDecoration(
+                          color: accentColor,
                           shape: BoxShape.circle,
                         ),
                         constraints: const BoxConstraints(
@@ -78,7 +87,7 @@ class _ProductsPageState extends State<ProductsPage> {
                         child: Text(
                           '${cartState.totalItemCount}',
                           style: GoogleFonts.inter(
-                            color: Colors.white,
+                            color: isDark ? const Color(0xFF020810) : Colors.white,
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
                           ),
@@ -100,7 +109,7 @@ class _ProductsPageState extends State<ProductsPage> {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF8B5CF6).withValues(alpha: 0.3),
+                  color: const Color(0xFF8B5CF6).withValues(alpha: 0.35),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -116,8 +125,8 @@ class _ProductsPageState extends State<ProductsPage> {
                   padding: EdgeInsets.all(8.0),
                   child: Icon(
                     Icons.add_rounded,
-                    color: AppColors.textPrimary,
-                    size: 24,
+                    color: Colors.white,
+                    size: 22,
                   ),
                 ),
               ),
@@ -128,9 +137,9 @@ class _ProductsPageState extends State<ProductsPage> {
       body: BlocBuilder<ProductsBloc, ProductsState>(
         builder: (context, state) {
           if (state is ProductsLoading || state is ProductsInitial) {
-            return const Center(
+            return Center(
               child: CircularProgressIndicator(
-                color: AppColors.primary,
+                color: accentColor,
               ),
             );
           }
@@ -149,7 +158,7 @@ class _ProductsPageState extends State<ProductsPage> {
                   Text(
                     state.message,
                     style: GoogleFonts.inter(
-                      color: AppColors.textSecondary,
+                      color: textColorSecondary,
                       fontSize: 15,
                     ),
                   ),
@@ -158,6 +167,10 @@ class _ProductsPageState extends State<ProductsPage> {
                     onPressed: () {
                       context.read<ProductsBloc>().add(const LoadProducts());
                     },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: accentColor,
+                      foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
+                    ),
                     child: const Text('Retry'),
                   ),
                 ],
@@ -169,8 +182,8 @@ class _ProductsPageState extends State<ProductsPage> {
             final myProducts = state.myProducts;
 
             return RefreshIndicator(
-              color: AppColors.primary,
-              backgroundColor: AppColors.surface,
+              color: accentColor,
+              backgroundColor: theme.cardColor,
               onRefresh: () async {
                 context.read<ProductsBloc>().add(const LoadProducts());
                 await Future.delayed(const Duration(milliseconds: 600));
@@ -189,22 +202,24 @@ class _ProductsPageState extends State<ProductsPage> {
                                 Container(
                                   padding: const EdgeInsets.all(24),
                                   decoration: BoxDecoration(
-                                    color: AppColors.surface,
+                                    color: isDark ? const Color(0xFF1E293B) : Colors.white,
                                     shape: BoxShape.circle,
-                                    border: Border.all(color: AppColors.divider),
+                                    border: Border.all(
+                                      color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                                    ),
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.inventory_2_outlined,
                                     size: 48,
-                                    color: AppColors.textSecondary,
+                                    color: textColorSecondary,
                                   ),
                                 ),
                                 const Gap(20),
                                 Text(
                                   'No Products Yet',
                                   style: GoogleFonts.outfit(
-                                    color: AppColors.textPrimary,
-                                    fontSize: 16,
+                                    color: textColorPrimary,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -213,8 +228,8 @@ class _ProductsPageState extends State<ProductsPage> {
                                   'Add your device or shop from our store.',
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.inter(
-                                    color: AppColors.textSecondary,
-                                    fontSize: 12.5,
+                                    color: textColorSecondary,
+                                    fontSize: 13,
                                   ),
                                 ),
                                 const Gap(24),
@@ -228,17 +243,21 @@ class _ProductsPageState extends State<ProductsPage> {
                                       );
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.primary,
+                                      backgroundColor: accentColor,
+                                      foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
                                       padding: const EdgeInsets.symmetric(vertical: 14),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                     ),
-                                    icon: const Icon(Icons.shopping_bag_outlined, color: Colors.white, size: 18),
+                                    icon: Icon(
+                                      Icons.shopping_bag_outlined,
+                                      color: isDark ? const Color(0xFF020810) : Colors.white,
+                                      size: 18,
+                                    ),
                                     label: Text(
                                       'Shop Now',
                                       style: GoogleFonts.inter(
-                                        color: Colors.white,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 13,
                                       ),
@@ -253,17 +272,17 @@ class _ProductsPageState extends State<ProductsPage> {
                                       AddProductModal.show(context);
                                     },
                                     style: OutlinedButton.styleFrom(
-                                      side: const BorderSide(color: AppColors.primary),
+                                      side: BorderSide(color: accentColor),
                                       padding: const EdgeInsets.symmetric(vertical: 14),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                     ),
-                                    icon: const Icon(Icons.add_rounded, color: AppColors.primary, size: 18),
+                                    icon: Icon(Icons.add_rounded, color: accentColor, size: 18),
                                     label: Text(
                                       'Add Device',
                                       style: GoogleFonts.inter(
-                                        color: AppColors.primary,
+                                        color: accentColor,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 13,
                                       ),
@@ -277,7 +296,7 @@ class _ProductsPageState extends State<ProductsPage> {
                       ),
                     )
                   : ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(12, 16, 12, 80),
+                      padding: const EdgeInsets.fromLTRB(12, 16, 12, 90),
                       physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                       cacheExtent: 800,
                       itemCount: myProducts.length,

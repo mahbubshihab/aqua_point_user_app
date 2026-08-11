@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_shadows.dart';
 
-/// Clean light-themed card container.
-/// Uses white background with soft shadow — no blur effects.
+/// Dynamic theme-aware card container.
+/// Supports both Dark Mode (deep slate #1E293B) and Light Mode (#FFFFFF).
 class AppCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
@@ -32,18 +32,35 @@ class AppCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final defaultBg = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final defaultBorder = isDark
+        ? const Color(0xFF334155).withValues(alpha: 0.6)
+        : const Color(0xFFE2E8F0);
+    final defaultShadow = isDark
+        ? [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ]
+        : AppShadows.soft;
+
     Widget content = Container(
       width: width,
       height: height,
       padding: padding,
       decoration: BoxDecoration(
-        color: backgroundColor ?? AppColors.surface,
+        color: backgroundColor ?? defaultBg,
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(
-          color: borderColor ?? AppColors.border.withValues(alpha: 0.5),
+          color: borderColor ?? defaultBorder,
           width: 1,
         ),
-        boxShadow: boxShadow ?? AppShadows.soft,
+        boxShadow: boxShadow ?? defaultShadow,
       ),
       child: child,
     );
@@ -55,8 +72,9 @@ class AppCard extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(borderRadius),
-          splashColor: AppColors.primary.withValues(alpha: 0.08),
-          highlightColor: AppColors.primary.withValues(alpha: 0.04),
+          splashColor: (isDark ? const Color(0xFF00BCE1) : AppColors.primary)
+              .withValues(alpha: 0.12),
+          highlightColor: Colors.transparent,
           child: content,
         ),
       );
