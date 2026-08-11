@@ -18,6 +18,8 @@ class ProductModel extends ProductEntity {
     super.reviewsCount,
     super.description,
     super.inStock = true,
+    super.specSections = const [],
+    super.features = const [],
   });
 
   factory ProductModel.fromMap(Map<String, dynamic> map, String id) {
@@ -38,6 +40,41 @@ class ProductModel extends ProductEntity {
       parsedImages = [singlePhoto.toString()];
     }
 
+    // Parse Dynamic Spec Sections
+    List<SpecSectionEntity> parsedSpecSections = [];
+    if (map['specSections'] is List) {
+      for (final sec in (map['specSections'] as List)) {
+        if (sec is Map) {
+          final title = sec['title']?.toString() ?? '';
+          final itemsList = sec['items'];
+          List<SpecItemEntity> items = [];
+          if (itemsList is List) {
+            for (final it in itemsList) {
+              if (it is Map) {
+                items.add(SpecItemEntity(
+                  label: it['label']?.toString() ?? '',
+                  value: it['value']?.toString() ?? '',
+                ));
+              }
+            }
+          }
+          parsedSpecSections.add(SpecSectionEntity(
+            title: title,
+            items: items,
+          ));
+        }
+      }
+    }
+
+    // Parse Features
+    List<String> parsedFeatures = [];
+    if (map['features'] is List) {
+      parsedFeatures = (map['features'] as List)
+          .map((e) => e.toString())
+          .where((e) => e.isNotEmpty)
+          .toList();
+    }
+
     return ProductModel(
       id: id,
       name: map['name'] ?? map['title'] ?? 'Water Purifier',
@@ -56,6 +93,8 @@ class ProductModel extends ProductEntity {
       reviewsCount: rawReviews != null ? (rawReviews as num).toInt() : 0,
       description: map['description'] ?? '',
       inStock: map['inStock'] ?? true,
+      specSections: parsedSpecSections,
+      features: parsedFeatures,
     );
   }
 
@@ -81,6 +120,8 @@ class ProductModel extends ProductEntity {
       reviewsCount: entity.reviewsCount,
       description: entity.description,
       inStock: entity.inStock,
+      specSections: entity.specSections,
+      features: entity.features,
     );
   }
 
@@ -102,6 +143,18 @@ class ProductModel extends ProductEntity {
       'reviewsCount': reviewsCount,
       'description': description,
       'inStock': inStock,
+      'specSections': specSections
+          .map((sec) => {
+                'title': sec.title,
+                'items': sec.items
+                    .map((it) => {
+                          'label': it.label,
+                          'value': it.value,
+                        })
+                    .toList(),
+              })
+          .toList(),
+      'features': features,
     };
   }
 }

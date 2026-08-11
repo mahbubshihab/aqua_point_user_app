@@ -40,6 +40,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   void _onAddToCart(BuildContext context) {
+    final theme = Theme.of(context);
     final cartItem = CartItem(
       id: widget.product.id,
       name: widget.product.name,
@@ -62,7 +63,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               child: Text(
                 '${widget.product.name} added to cart!',
                 style: GoogleFonts.inter(
-                  color: AppColors.textPrimary,
+                  color: theme.colorScheme.onSurface,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -70,7 +71,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           ],
         ),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: AppColors.surface,
+        backgroundColor: theme.colorScheme.surface,
         duration: const Duration(seconds: 3),
         action: SnackBarAction(
           label: 'View Cart',
@@ -106,21 +107,25 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final images = widget.product.allImages;
+    final specSections = widget.product.specSections;
+    final features = widget.product.features;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textPrimary, size: 20),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, color: theme.colorScheme.onSurface, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Product Details',
           style: GoogleFonts.outfit(
-            color: AppColors.textPrimary,
+            color: theme.colorScheme.onSurface,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -132,7 +137,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 alignment: Alignment.center,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.shopping_cart_outlined, color: AppColors.textPrimary),
+                    icon: Icon(Icons.shopping_cart_outlined, color: theme.colorScheme.onSurface),
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -146,8 +151,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       right: 8,
                       child: Container(
                         padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: AppColors.primary,
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primary,
                           shape: BoxShape.circle,
                         ),
                         constraints: const BoxConstraints(
@@ -182,7 +187,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Product Swipeable Gallery Container
-                  _buildGallerySection(images),
+                  _buildGallerySection(images, theme, isDark),
                   const Gap(20),
 
                   // Product Title and Price Tag
@@ -193,7 +198,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         child: Text(
                           widget.product.name,
                           style: GoogleFonts.outfit(
-                            color: AppColors.textPrimary,
+                            color: theme.colorScheme.onSurface,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             height: 1.3,
@@ -205,7 +210,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [Color(0xFF00E5FF), Color(0xFF00BCE1)],
+                            colors: [Color(0xFF00E5FF), Color(0xFF0088FF)],
                           ),
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: const [
@@ -247,38 +252,56 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   ),
                   const Gap(20),
 
-                  const Divider(color: AppColors.divider),
+                  Divider(color: isDark ? AppColors.darkDivider : AppColors.divider),
                   const Gap(16),
 
-                  // Specifications / Description
-                  Text(
-                    'Overview & Specifications',
-                    style: GoogleFonts.inter(
-                      color: AppColors.textPrimary,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
+                  // Dynamic Specification Tables (From Firestore)
+                  if (specSections.isNotEmpty) ...[
+                    ...specSections.map((sec) => _buildSpecTableSection(sec, theme, isDark)),
+                  ] else ...[
+                    // Legacy Fallback Table
+                    _buildLegacyOverviewSection(theme, isDark),
+                  ],
+
+                  // Product Features / Bullet Points Section
+                  if (features.isNotEmpty) ...[
+                    const Gap(24),
+                    _buildFeaturesSection(features, theme, isDark),
+                  ],
+
+                  // Overview Description Text
+                  if (widget.product.description != null && widget.product.description!.isNotEmpty) ...[
+                    const Gap(24),
+                    Text(
+                      'Overview',
+                      style: GoogleFonts.outfit(
+                        color: theme.colorScheme.onSurface,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const Gap(10),
-                  Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: AppColors.background,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: AppColors.divider),
+                    const Gap(8),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surface,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: isDark ? AppColors.darkBorder : AppColors.border,
+                        ),
+                      ),
+                      child: Text(
+                        widget.product.description!,
+                        style: GoogleFonts.inter(
+                          color: isDark ? AppColors.darkTextSecondary : AppColors.textSecondary,
+                          fontSize: 13,
+                          height: 1.5,
+                        ),
+                      ),
                     ),
-                    child: Column(
-                      children: [
-                        _buildFeatureRow(Icons.verified_user_outlined, 'Warranty', widget.product.warrantyDetails),
-                        const Divider(color: AppColors.divider, height: 20),
-                        _buildFeatureRow(Icons.local_shipping_outlined, 'Delivery', 'Standard Express (৳60)'),
-                        const Divider(color: AppColors.divider, height: 20),
-                        _buildFeatureRow(Icons.build_circle_outlined, 'Installation', 'Free Expert On-site Setup'),
-                        const Divider(color: AppColors.divider, height: 20),
-                        _buildFeatureRow(Icons.water_drop_outlined, 'Compatibility', 'Universal 10" Water Systems'),
-                      ],
-                    ),
-                  ),
+                  ],
+
                   const Gap(24),
 
                   // Quantity Selector
@@ -288,16 +311,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       Text(
                         'Select Quantity',
                         style: GoogleFonts.inter(
-                          color: AppColors.textPrimary,
+                          color: theme.colorScheme.onSurface,
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: AppColors.surface,
+                          color: theme.colorScheme.surface,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: AppColors.divider),
+                          border: Border.all(
+                            color: isDark ? AppColors.darkBorder : AppColors.border,
+                          ),
                         ),
                         child: Row(
                           children: [
@@ -306,14 +331,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   ? () => setState(() => _quantity--)
                                   : null,
                               icon: const Icon(Icons.remove_rounded, size: 18),
-                              color: AppColors.textPrimary,
+                              color: theme.colorScheme.onSurface,
                             ),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 12),
                               child: Text(
                                 '$_quantity',
                                 style: GoogleFonts.outfit(
-                                  color: AppColors.textPrimary,
+                                  color: theme.colorScheme.onSurface,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -322,7 +347,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             IconButton(
                               onPressed: () => setState(() => _quantity++),
                               icon: const Icon(Icons.add_rounded, size: 18),
-                              color: AppColors.primary,
+                              color: theme.colorScheme.primary,
                             ),
                           ],
                         ),
@@ -330,7 +355,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     ],
                   ),
                   const Gap(24),
-                  const Divider(color: AppColors.divider),
+                  Divider(color: isDark ? AppColors.darkDivider : AppColors.divider),
                   const Gap(20),
 
                   // Customer Reviews & Submission Section
@@ -344,10 +369,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           // Bottom Action Bar
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              border: Border(top: BorderSide(color: AppColors.divider)),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+              border: Border(
+                top: BorderSide(
+                  color: isDark ? AppColors.darkBorder : AppColors.border,
+                ),
+              ),
             ),
             child: SafeArea(
               top: false,
@@ -359,16 +388,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       onPressed: () => _onAddToCart(context),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        side: const BorderSide(color: AppColors.primary, width: 1.5),
+                        side: BorderSide(color: theme.colorScheme.primary, width: 1.5),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      icon: const Icon(Icons.add_shopping_cart_rounded, color: AppColors.primary, size: 18),
+                      icon: Icon(Icons.add_shopping_cart_rounded, color: theme.colorScheme.primary, size: 18),
                       label: Text(
                         'Add to Cart',
                         style: GoogleFonts.inter(
-                          color: AppColors.primary,
+                          color: theme.colorScheme.primary,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
@@ -383,9 +412,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       onPressed: () => _onBuyNow(context),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: theme.colorScheme.primary,
                         elevation: 4,
-                        shadowColor: AppColors.primary.withValues(alpha: 0.4),
+                        shadowColor: theme.colorScheme.primary.withValues(alpha: 0.4),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -410,31 +439,235 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget _buildGallerySection(List<String> images) {
+  /// Builds a dynamic specification table matching the website screenshot style!
+  Widget _buildSpecTableSection(SpecSectionEntity sec, ThemeData theme, bool isDark) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDark ? AppColors.darkBorder : const Color(0xFFB0E2FF),
+          width: 1,
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Section Header Bar (Solid Aqua/Blue header like screenshot)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF0091EA), Color(0xFF00BCE1)],
+                ),
+              ),
+              child: Text(
+                sec.title.toUpperCase(),
+                style: GoogleFonts.outfit(
+                  color: Colors.white,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.0,
+                ),
+              ),
+            ),
+
+            // Rows Table
+            Column(
+              children: List.generate(sec.items.length, (index) {
+                final item = sec.items[index];
+                final isEven = index % 2 == 0;
+                final rowBg = isEven
+                    ? (isDark ? AppColors.darkSurfaceVariant.withValues(alpha: 0.3) : const Color(0xFFF4FBFF))
+                    : theme.colorScheme.surface;
+
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  color: rowBg,
+                  decoration: index < sec.items.length - 1
+                      ? BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: isDark ? AppColors.darkDivider : const Color(0xFFE1F5FE),
+                            ),
+                          ),
+                        )
+                      : null,
+                  child: Row(
+                    children: [
+                      // Label / Key Cell
+                      SizedBox(
+                        width: 140,
+                        child: Text(
+                          '${item.label} :',
+                          style: GoogleFonts.inter(
+                            color: theme.colorScheme.primary,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      // Value Cell
+                      Expanded(
+                        child: Text(
+                          item.value,
+                          style: GoogleFonts.inter(
+                            color: theme.colorScheme.onSurface,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Builds features bullet points section ("PRODUCT DESCRIPTION")
+  Widget _buildFeaturesSection(List<String> features, ThemeData theme, bool isDark) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Center(
+          child: Column(
+            children: [
+              Text(
+                'PRODUCT DESCRIPTION',
+                style: GoogleFonts.outfit(
+                  color: const Color(0xFF0091EA),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.5,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Container(
+                width: 60,
+                height: 3,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF00BCE1),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const Gap(16),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: isDark ? AppColors.darkBorder : const Color(0xFF00BCE1).withValues(alpha: 0.3),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: features.map((ft) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(
+                      Icons.check_box_rounded,
+                      color: Color(0xFF10B981),
+                      size: 20,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        ft,
+                        style: GoogleFonts.inter(
+                          color: theme.colorScheme.onSurface,
+                          fontSize: 12,
+                          height: 1.4,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLegacyOverviewSection(ThemeData theme, bool isDark) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Overview & Specifications',
+          style: GoogleFonts.inter(
+            color: theme.colorScheme.onSurface,
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const Gap(10),
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.border),
+          ),
+          child: Column(
+            children: [
+              _buildFeatureRow(Icons.verified_user_outlined, 'Warranty', widget.product.warrantyDetails, theme),
+              Divider(color: isDark ? AppColors.darkDivider : AppColors.divider, height: 20),
+              _buildFeatureRow(Icons.local_shipping_outlined, 'Delivery', 'Standard Express (৳60)', theme),
+              Divider(color: isDark ? AppColors.darkDivider : AppColors.divider, height: 20),
+              _buildFeatureRow(Icons.build_circle_outlined, 'Installation', 'Free Expert On-site Setup', theme),
+              Divider(color: isDark ? AppColors.darkDivider : AppColors.divider, height: 20),
+              _buildFeatureRow(Icons.water_drop_outlined, 'Compatibility', 'Universal 10" Water Systems', theme),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGallerySection(List<String> images, ThemeData theme, bool isDark) {
     if (images.isEmpty) {
       return Container(
         width: double.infinity,
         height: 260,
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.divider),
+          border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.border),
         ),
-        child: _buildFallback(),
+        child: _buildFallback(theme),
       );
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Swipeable Main Carousel
         Container(
           width: double.infinity,
           height: 260,
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.divider),
+            border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.border),
           ),
           child: Stack(
             children: [
@@ -456,36 +689,33 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: double.infinity,
-                        errorBuilder: (context, error, stackTrace) => _buildFallback(),
+                        errorBuilder: (context, error, stackTrace) => _buildFallback(theme),
                       );
                     }
-                    return _buildFallback();
+                    return _buildFallback(theme);
                   },
                 ),
               ),
               if (images.length > 1) ...[
-                // Index Indicator Badge
                 Positioned(
                   bottom: 12,
                   right: 12,
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.65),
+                      color: Colors.black.withValues(alpha: 0.6),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.textPrimary.withValues(alpha: 0.15)),
                     ),
                     child: Text(
                       '${_selectedImageIndex + 1}/${images.length}',
                       style: GoogleFonts.inter(
-                        color: AppColors.textPrimary,
+                        color: Colors.white,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
                 ),
-                // Smooth Dot Indicators
                 Positioned(
                   bottom: 12,
                   left: 0,
@@ -501,7 +731,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         height: 6,
                         decoration: BoxDecoration(
                           color: _selectedImageIndex == index
-                              ? AppColors.primary
+                              ? theme.colorScheme.primary
                               : Colors.white.withValues(alpha: 0.4),
                           borderRadius: BorderRadius.circular(3),
                         ),
@@ -513,8 +743,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             ],
           ),
         ),
-
-        // Thumbnail Selector Strip
         if (images.length > 1) ...[
           const Gap(12),
           SizedBox(
@@ -546,18 +774,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: isSelected ? AppColors.primary : AppColors.divider,
+                        color: isSelected ? theme.colorScheme.primary : (isDark ? AppColors.darkBorder : AppColors.border),
                         width: isSelected ? 2.5 : 1.0,
                       ),
-                      boxShadow: isSelected
-                          ? [
-                              BoxShadow(
-                                color: AppColors.primary.withValues(alpha: 0.35),
-                                blurRadius: 8,
-                                spreadRadius: 1,
-                              ),
-                            ]
-                          : null,
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
@@ -565,9 +784,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           ? Image.network(
                               imgUrl,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => _buildFallbackThumbnail(),
+                              errorBuilder: (context, error, stackTrace) => _buildFallback(theme),
                             )
-                          : _buildFallbackThumbnail(),
+                          : _buildFallback(theme),
                     ),
                   ),
                 );
@@ -579,15 +798,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget _buildFeatureRow(IconData icon, String title, String subtitle) {
+  Widget _buildFeatureRow(IconData icon, String title, String subtitle, ThemeData theme) {
     return Row(
       children: [
-        Icon(icon, color: AppColors.primary, size: 20),
+        Icon(icon, color: theme.colorScheme.primary, size: 20),
         const Gap(12),
         Text(
           title,
           style: GoogleFonts.inter(
-            color: AppColors.textSecondary,
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
             fontSize: 13,
           ),
         ),
@@ -595,7 +814,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         Text(
           subtitle,
           style: GoogleFonts.inter(
-            color: AppColors.textPrimary,
+            color: theme.colorScheme.onSurface,
             fontSize: 13,
             fontWeight: FontWeight.w600,
           ),
@@ -604,23 +823,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget _buildFallbackThumbnail() {
-    return Container(
-      color: AppColors.surface,
-      child: const Icon(
-        Icons.water_drop_rounded,
-        size: 24,
-        color: AppColors.primary,
-      ),
-    );
-  }
-
-  Widget _buildFallback() {
-    return const Center(
+  Widget _buildFallback(ThemeData theme) {
+    return Center(
       child: Icon(
         Icons.water_drop_rounded,
         size: 80,
-        color: AppColors.primary,
+        color: theme.colorScheme.primary,
       ),
     );
   }

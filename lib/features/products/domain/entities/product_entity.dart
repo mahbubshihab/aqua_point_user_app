@@ -1,5 +1,31 @@
 import 'package:equatable/equatable.dart';
 
+class SpecItemEntity extends Equatable {
+  final String label;
+  final String value;
+
+  const SpecItemEntity({
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  List<Object?> get props => [label, value];
+}
+
+class SpecSectionEntity extends Equatable {
+  final String title;
+  final List<SpecItemEntity> items;
+
+  const SpecSectionEntity({
+    required this.title,
+    this.items = const [],
+  });
+
+  @override
+  List<Object?> get props => [title, items];
+}
+
 class ProductEntity extends Equatable {
   final String id;
   final String name;
@@ -16,6 +42,8 @@ class ProductEntity extends Equatable {
   final int? reviewsCount;
   final String? description;
   final bool inStock;
+  final List<SpecSectionEntity> specSections;
+  final List<String> features;
 
   const ProductEntity({
     required this.id,
@@ -33,6 +61,8 @@ class ProductEntity extends Equatable {
     this.reviewsCount,
     this.description,
     this.inStock = true,
+    this.specSections = const [],
+    this.features = const [],
   });
 
   List<String> get allImages {
@@ -57,6 +87,8 @@ class ProductEntity extends Equatable {
     int? reviewsCount,
     String? description,
     bool? inStock,
+    List<SpecSectionEntity>? specSections,
+    List<String>? features,
   }) {
     return ProductEntity(
       id: id ?? this.id,
@@ -74,6 +106,8 @@ class ProductEntity extends Equatable {
       reviewsCount: reviewsCount ?? this.reviewsCount,
       description: description ?? this.description,
       inStock: inStock ?? this.inStock,
+      specSections: specSections ?? this.specSections,
+      features: features ?? this.features,
     );
   }
 
@@ -94,5 +128,7 @@ class ProductEntity extends Equatable {
         reviewsCount,
         description,
         inStock,
+        specSections,
+        features,
       ];
 }
