@@ -22,6 +22,9 @@ class ShopProductCard extends StatelessWidget {
   });
 
   void _onAddToCart(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     final cartItem = CartItem(
       id: product.id,
       name: product.name,
@@ -36,7 +39,7 @@ class ShopProductCard extends StatelessWidget {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: AppColors.surface,
+        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
         content: Row(
           children: [
             const Icon(Icons.check_circle_rounded, color: AppColors.accentGreen, size: 20),
@@ -44,7 +47,10 @@ class ShopProductCard extends StatelessWidget {
             Expanded(
               child: Text(
                 '${product.name} added to Cart',
-                style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 13),
+                style: GoogleFonts.inter(
+                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                  fontSize: 13,
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -105,13 +111,20 @@ class ShopProductCard extends StatelessWidget {
   }
 
   Widget _buildCardContent(BuildContext context, String priceStr, String? originalPriceStr) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textColorSecondary = isDark
+        ? Colors.white.withValues(alpha: 0.65)
+        : const Color(0xFF64748B);
+    final imgBg = isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9);
+    final badgeBg = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+
     return AppCard(
       padding: const EdgeInsets.all(10),
       borderRadius: 16,
-      
-      
-      
-      
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -131,12 +144,12 @@ class ShopProductCard extends StatelessWidget {
                       height: 110,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: AppColors.surface,
+                        color: imgBg,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12),
-                        child: _buildProductImage(),
+                        child: _buildProductImage(imgBg, accentColor),
                       ),
                     ),
                     if (product.rating != null)
@@ -146,9 +159,14 @@ class ShopProductCard extends StatelessWidget {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2.5),
                           decoration: BoxDecoration(
-                            color: AppColors.surface,
+                            color: badgeBg,
                             borderRadius: BorderRadius.circular(7),
-                            border: Border.all(color: const Color(0x6000BCE1), width: 0.8),
+                            border: Border.all(
+                              color: isDark
+                                  ? const Color(0xFF00BCE1).withValues(alpha: 0.4)
+                                  : const Color(0x6000BCE1),
+                              width: 0.8,
+                            ),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -158,7 +176,7 @@ class ShopProductCard extends StatelessWidget {
                               Text(
                                 '${product.rating}',
                                 style: GoogleFonts.inter(
-                                  color: AppColors.textPrimary,
+                                  color: textColorPrimary,
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -180,7 +198,7 @@ class ShopProductCard extends StatelessWidget {
                           child: Text(
                             '-${(((product.originalPrice! - product.price) / product.originalPrice!) * 100).round()}%',
                             style: GoogleFonts.inter(
-                              color: AppColors.textPrimary,
+                              color: Colors.white,
                               fontSize: 9,
                               fontWeight: FontWeight.bold,
                             ),
@@ -197,7 +215,7 @@ class ShopProductCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.inter(
-                    color: AppColors.textPrimary,
+                    color: textColorPrimary,
                     fontSize: 12.5,
                     fontWeight: FontWeight.bold,
                     height: 1.2,
@@ -224,7 +242,7 @@ class ShopProductCard extends StatelessWidget {
                     Text(
                       priceStr,
                       style: GoogleFonts.inter(
-                        color: AppColors.primary,
+                        color: accentColor,
                         fontSize: 14.5,
                         fontWeight: FontWeight.bold,
                       ),
@@ -234,7 +252,7 @@ class ShopProductCard extends StatelessWidget {
                       Text(
                         originalPriceStr,
                         style: GoogleFonts.inter(
-                          color: AppColors.textSecondary,
+                          color: textColorSecondary,
                           fontSize: 10.5,
                           decoration: TextDecoration.lineThrough,
                         ),
@@ -251,7 +269,9 @@ class ShopProductCard extends StatelessWidget {
             children: [
               // Add to Cart Icon Button
               Material(
-                color: const Color(0x2000BCE1),
+                color: isDark
+                    ? const Color(0xFF00BCE1).withValues(alpha: 0.15)
+                    : const Color(0x2000BCE1),
                 borderRadius: BorderRadius.circular(9),
                 child: InkWell(
                   onTap: () => _onAddToCart(context),
@@ -260,11 +280,15 @@ class ShopProductCard extends StatelessWidget {
                     padding: const EdgeInsets.all(7),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(9),
-                      border: Border.all(color: const Color(0x6000BCE1)),
+                      border: Border.all(
+                        color: isDark
+                            ? const Color(0xFF00BCE1).withValues(alpha: 0.3)
+                            : const Color(0x6000BCE1),
+                      ),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.add_shopping_cart_rounded,
-                      color: AppColors.primary,
+                      color: accentColor,
                       size: 16,
                     ),
                   ),
@@ -277,14 +301,20 @@ class ShopProductCard extends StatelessWidget {
                   height: 32,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(9),
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF00BCE1), Color(0xFF0089A8)],
-                    ),
-                    boxShadow: const [
+                    gradient: isDark
+                        ? const LinearGradient(
+                            colors: [Color(0xFF0088FF), Color(0xFF00BCE1)],
+                          )
+                        : const LinearGradient(
+                            colors: [Color(0xFF00BCE1), Color(0xFF0089A8)],
+                          ),
+                    boxShadow: [
                       BoxShadow(
-                        color: Color(0x4000BCE1),
+                        color: isDark
+                            ? const Color(0xFF00BCE1).withValues(alpha: 0.35)
+                            : const Color(0x4000BCE1),
                         blurRadius: 6,
-                        offset: Offset(0, 2),
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
@@ -297,7 +327,7 @@ class ShopProductCard extends StatelessWidget {
                         child: Text(
                           'Buy Now',
                           style: GoogleFonts.inter(
-                            color: AppColors.textPrimary,
+                            color: isDark ? const Color(0xFF020810) : Colors.white,
                             fontSize: 11.5,
                             fontWeight: FontWeight.bold,
                           ),
@@ -314,26 +344,26 @@ class ShopProductCard extends StatelessWidget {
     );
   }
 
-  Widget _buildProductImage() {
+  Widget _buildProductImage(Color imgBg, Color accentColor) {
     if (product.photoUrl != null && product.photoUrl!.isNotEmpty) {
       if (product.photoUrl!.startsWith('http')) {
         return Image.network(
           product.photoUrl!,
           fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => _buildFallbackImage(),
+          errorBuilder: (context, error, stackTrace) => _buildFallbackImage(imgBg, accentColor),
         );
       }
     }
-    return _buildFallbackImage();
+    return _buildFallbackImage(imgBg, accentColor);
   }
 
-  Widget _buildFallbackImage() {
+  Widget _buildFallbackImage(Color imgBg, Color accentColor) {
     return Container(
-      color: AppColors.surface,
-      child: const Center(
+      color: imgBg,
+      child: Center(
         child: Icon(
           Icons.water_drop_rounded,
-          color: AppColors.primary,
+          color: accentColor,
           size: 40,
         ),
       ),
