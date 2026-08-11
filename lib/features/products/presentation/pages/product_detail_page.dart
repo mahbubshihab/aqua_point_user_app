@@ -487,16 +487,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  color: rowBg,
-                  decoration: index < sec.items.length - 1
-                      ? BoxDecoration(
-                          border: Border(
+                  decoration: BoxDecoration(
+                    color: rowBg,
+                    border: index < sec.items.length - 1
+                        ? Border(
                             bottom: BorderSide(
                               color: isDark ? AppColors.darkDivider : const Color(0xFFE1F5FE),
                             ),
-                          ),
-                        )
-                      : null,
+                          )
+                        : null,
+                  ),
                   child: Row(
                     children: [
                       // Label / Key Cell
