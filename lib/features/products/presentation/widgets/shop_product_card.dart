@@ -99,7 +99,10 @@ class ShopProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final priceStr = '৳${product.price.toInt()}';
-    final originalPriceStr = product.originalPrice != null ? '৳${product.originalPrice!.toInt()}' : null;
+    final originalPriceStr =
+        (product.originalPrice != null && product.originalPrice! > product.price)
+            ? '৳${product.originalPrice!.toInt()}'
+            : null;
 
     if (isHorizontal) {
       return Container(
@@ -193,7 +196,7 @@ class ShopProductCard extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                if (!isMinimalView && originalPriceStr != null) ...[
+                if (originalPriceStr != null) ...[
                   const Gap(5),
                   Text(
                     originalPriceStr,

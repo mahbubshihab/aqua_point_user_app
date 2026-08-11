@@ -95,6 +95,9 @@ class ProductItemCard extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textColorSecondary = isDark
+        ? Colors.white.withValues(alpha: 0.65)
+        : const Color(0xFF64748B);
     final thumbBg = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
     final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
     final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
@@ -163,13 +166,31 @@ class ProductItemCard extends StatelessWidget {
                         ],
                       ),
                       const Gap(4),
-                      Text(
-                        '৳${product.price.toStringAsFixed(0)}',
-                        style: GoogleFonts.inter(
-                          color: accentColor,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
+                        children: [
+                          Text(
+                            '৳${product.price.toStringAsFixed(0)}',
+                            style: GoogleFonts.inter(
+                              color: accentColor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          if (product.originalPrice != null &&
+                              product.originalPrice! > product.price) ...[
+                            const Gap(6),
+                            Text(
+                              '৳${product.originalPrice!.toStringAsFixed(0)}',
+                              style: GoogleFonts.inter(
+                                color: textColorSecondary,
+                                fontSize: 11.5,
+                                decoration: TextDecoration.lineThrough,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                       const Gap(4),
                       Row(

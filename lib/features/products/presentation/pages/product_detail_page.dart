@@ -221,13 +221,33 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             ),
                           ],
                         ),
-                        child: Text(
-                          '৳${widget.product.price.toStringAsFixed(0)}',
-                          style: GoogleFonts.outfit(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(
+                              '৳${widget.product.price.toStringAsFixed(0)}',
+                              style: GoogleFonts.outfit(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            if (widget.product.originalPrice != null &&
+                                widget.product.originalPrice! > widget.product.price) ...[
+                              const Gap(6),
+                              Text(
+                                '৳${widget.product.originalPrice!.toStringAsFixed(0)}',
+                                style: GoogleFonts.outfit(
+                                  color: Colors.white.withValues(alpha: 0.7),
+                                  fontSize: 13,
+                                  decoration: TextDecoration.lineThrough,
+                                  decorationColor: Colors.white.withValues(alpha: 0.7),
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
                       ),
                     ],
