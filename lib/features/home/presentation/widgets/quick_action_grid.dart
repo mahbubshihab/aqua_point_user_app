@@ -6,7 +6,6 @@ import '../../../inbox_support/presentation/pages/chat_conversation_page.dart';
 import '../../../products/presentation/pages/shop_page.dart';
 import '../../../services/presentation/bloc/services_bloc.dart';
 import '../../../services/presentation/pages/create_service_request_page.dart';
-import '../../../tools/presentation/pages/water_reminder_page.dart';
 
 class QuickActionItem {
   final String label;
@@ -38,7 +37,7 @@ class QuickActionGrid extends StatelessWidget {
     final actionItems = items ??
         [
           QuickActionItem(
-            label: 'Book Service',
+            label: 'Request a Service',
             icon: Icons.home_repair_service_rounded,
             iconColor: isDark ? const Color(0xFF00BCE1) : AppColors.primary,
             onTap: () {
@@ -67,19 +66,6 @@ class QuickActionGrid extends StatelessWidget {
             },
           ),
           QuickActionItem(
-            label: 'Water Reminder',
-            icon: Icons.alarm_rounded,
-            iconColor: isDark ? const Color(0xFFF59E0B) : AppColors.warning,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const WaterReminderPage(),
-                ),
-              );
-            },
-          ),
-          QuickActionItem(
             label: 'Support',
             icon: Icons.support_agent_rounded,
             iconColor: isDark ? const Color(0xFF3B82F6) : AppColors.secondary,
@@ -95,12 +81,12 @@ class QuickActionGrid extends StatelessWidget {
         ];
 
     return GridView.count(
-      crossAxisCount: 4,
+      crossAxisCount: 3,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      crossAxisSpacing: 10,
-      mainAxisSpacing: 10,
-      childAspectRatio: 0.82,
+      crossAxisSpacing: 12,
+      mainAxisSpacing: 12,
+      childAspectRatio: 0.95,
       children: actionItems.map((item) {
         return QuickActionTile(item: item);
       }).toList(),
@@ -171,8 +157,8 @@ class _QuickActionTileState extends State<QuickActionTile> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 44,
-                height: 44,
+                width: 46,
+                height: 46,
                 decoration: BoxDecoration(
                   color: item.iconColor.withValues(alpha: isDark ? 0.18 : 0.12),
                   shape: BoxShape.circle,
@@ -180,19 +166,19 @@ class _QuickActionTileState extends State<QuickActionTile> {
                 child: Icon(
                   item.icon,
                   color: item.iconColor,
-                  size: 22,
+                  size: 24,
                 ),
               ),
               const SizedBox(height: 8),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 6),
                 child: Text(
                   item.label,
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.inter(
-                    fontSize: 11.5,
+                    fontSize: 12,
                     fontWeight: FontWeight.bold,
                     color: textColorPrimary,
                     height: 1.2,
