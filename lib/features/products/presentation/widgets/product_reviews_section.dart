@@ -107,24 +107,29 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
           _isFormExpanded = false;
         });
 
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final snackbarBg = isDark ? AppColors.darkSurface : AppColors.surface;
+        final snackbarText =
+            isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
               children: [
-                Icon(Icons.check_circle_rounded, color: Color(0xFF10B981)),
-                SizedBox(width: 10),
+                const Icon(Icons.check_circle_rounded, color: Color(0xFF10B981)),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     'Thank you! Your review has been submitted for approval.',
                     style: GoogleFonts.inter(
-                      color: AppColors.textPrimary,
+                      color: snackbarText,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
               ],
             ),
-            backgroundColor: AppColors.surface,
+            backgroundColor: snackbarBg,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -161,6 +166,17 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final cardBg = isDark ? AppColors.darkSurface : AppColors.surface;
+    final bgBox = isDark ? AppColors.darkBackground : AppColors.background;
+    final textPrimary =
+        isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
+    final textSecondary =
+        isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
+    final borderColor = isDark ? AppColors.darkBorder : AppColors.divider;
+
     final currentUser = FirebaseAuth.instance.currentUser;
     final authState = context.watch<AuthBloc>().state;
     final isLoggedIn = currentUser != null || authState is Authenticated;
@@ -235,7 +251,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                     Text(
                       'Customer Reviews',
                       style: GoogleFonts.outfit(
-                        color: AppColors.textPrimary,
+                        color: textPrimary,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -262,7 +278,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                             Text(
                               avgRating.toStringAsFixed(1),
                               style: GoogleFonts.inter(
-                                color: Color(0xFFFFB800),
+                                color: const Color(0xFFFFB800),
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12,
                               ),
@@ -270,7 +286,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                             Text(
                               ' (${reviews.length})',
                               style: GoogleFonts.inter(
-                                color: AppColors.textSecondary,
+                                color: textSecondary,
                                 fontSize: 12,
                               ),
                             ),
@@ -288,22 +304,22 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppColors.background,
+                      color: bgBox,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: AppColors.divider),
+                      border: Border.all(color: borderColor),
                     ),
                     child: Column(
                       children: [
                         Icon(
                           Icons.chat_bubble_outline_rounded,
-                          color: AppColors.textSecondary.withValues(alpha: 0.5),
+                          color: textSecondary.withValues(alpha: 0.5),
                           size: 36,
                         ),
                         const Gap(8),
                         Text(
                           'No approved reviews yet',
                           style: GoogleFonts.inter(
-                            color: AppColors.textPrimary,
+                            color: textPrimary,
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
@@ -312,7 +328,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                         Text(
                           'Be the first to share your experience with this product!',
                           style: GoogleFonts.inter(
-                            color: AppColors.textSecondary,
+                            color: textSecondary,
                             fontSize: 12,
                           ),
                           textAlign: TextAlign.center,
@@ -336,9 +352,9 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                       return Container(
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
-                          color: AppColors.surface,
+                          color: cardBg,
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: AppColors.divider),
+                          border: Border.all(color: borderColor),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -369,7 +385,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                                       Text(
                                         name,
                                         style: GoogleFonts.inter(
-                                          color: AppColors.textPrimary,
+                                          color: textPrimary,
                                           fontSize: 13,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -377,7 +393,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                                       Text(
                                         _formatDate(dateVal),
                                         style: GoogleFonts.inter(
-                                          color: AppColors.textSecondary,
+                                          color: textSecondary,
                                           fontSize: 11,
                                         ),
                                       ),
@@ -393,7 +409,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                                           : Icons.star_outline_rounded,
                                       color: starIdx < ratingVal.floor()
                                           ? const Color(0xFFFFB800)
-                                          : AppColors.textSecondary
+                                          : textSecondary
                                               .withValues(alpha: 0.3),
                                       size: 16,
                                     ),
@@ -406,7 +422,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                               Text(
                                 commentVal,
                                 style: GoogleFonts.inter(
-                                  color: AppColors.textSecondary,
+                                  color: textSecondary,
                                   fontSize: 13,
                                   height: 1.35,
                                 ),
@@ -429,14 +445,14 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: cardBg,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.divider),
-            boxShadow: const [
+            border: Border.all(color: borderColor),
+            boxShadow: [
               BoxShadow(
-                color: Color(0x1A000000),
+                color: isDark ? Colors.black26 : Colors.black12,
                 blurRadius: 10,
-                offset: Offset(0, 4),
+                offset: const Offset(0, 4),
               ),
             ],
           ),
@@ -467,7 +483,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                           Text(
                             'Have you used this product?',
                             style: GoogleFonts.inter(
-                              color: AppColors.textPrimary,
+                              color: textPrimary,
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
@@ -475,7 +491,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                           Text(
                             'Log in to submit your rating and review.',
                             style: GoogleFonts.inter(
-                              color: AppColors.textSecondary,
+                              color: textSecondary,
                               fontSize: 12,
                             ),
                           ),
@@ -534,7 +550,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                               child: Text(
                                 'Write a Product Review',
                                 style: GoogleFonts.inter(
-                                  color: AppColors.textPrimary,
+                                  color: textPrimary,
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -585,7 +601,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                       Text(
                         'Submit Product Review',
                         style: GoogleFonts.inter(
-                          color: AppColors.textPrimary,
+                          color: textPrimary,
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
@@ -596,22 +612,22 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                             _isFormExpanded = false;
                           });
                         },
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.close_rounded,
-                          color: AppColors.textSecondary,
+                          color: textSecondary,
                           size: 20,
                         ),
                       ),
                     ],
                   ),
-                  const Divider(color: AppColors.divider),
+                  Divider(color: borderColor),
                   const Gap(10),
 
                   // Rating Picker
                   Text(
                     'Your Rating:',
                     style: GoogleFonts.inter(
-                      color: AppColors.textSecondary,
+                      color: textSecondary,
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),
@@ -636,7 +652,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                                 : Icons.star_outline_rounded,
                             color: isFilled
                                 ? const Color(0xFFFFB800)
-                                : AppColors.textSecondary.withValues(alpha: 0.35),
+                                : textSecondary.withValues(alpha: 0.35),
                             size: 30,
                           ),
                         ),
@@ -649,7 +665,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                   Text(
                     'Your Comment:',
                     style: GoogleFonts.inter(
-                      color: AppColors.textSecondary,
+                      color: textSecondary,
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),
@@ -659,25 +675,25 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                     controller: _commentController,
                     maxLines: 3,
                     style: GoogleFonts.inter(
-                      color: AppColors.textPrimary,
+                      color: textPrimary,
                       fontSize: 13,
                     ),
                     decoration: InputDecoration(
                       hintText: 'Share details of your experience with this product...',
                       hintStyle: GoogleFonts.inter(
-                        color: AppColors.textSecondary.withValues(alpha: 0.6),
+                        color: textSecondary.withValues(alpha: 0.6),
                         fontSize: 13,
                       ),
                       filled: true,
-                      fillColor: AppColors.background,
+                      fillColor: bgBox,
                       contentPadding: const EdgeInsets.all(12),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: AppColors.divider),
+                        borderSide: BorderSide(color: borderColor),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: AppColors.divider),
+                        borderSide: BorderSide(color: borderColor),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
