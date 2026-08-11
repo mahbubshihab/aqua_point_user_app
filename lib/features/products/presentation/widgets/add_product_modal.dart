@@ -164,25 +164,11 @@ class _AddProductModalState extends State<AddProductModal> {
           decoration: BoxDecoration(
             color: surfaceColor,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-            border: Border(
-              top: BorderSide(
-                color: isDark
-                    ? const Color(0xFF00BCE1).withValues(alpha: 0.35)
-                    : const Color(0x2B00E5FF),
-                width: 1.5,
-              ),
-              left: BorderSide(
-                color: isDark
-                    ? const Color(0xFF00BCE1).withValues(alpha: 0.2)
-                    : const Color(0x2B00E5FF),
-                width: 1,
-              ),
-              right: BorderSide(
-                color: isDark
-                    ? const Color(0xFF00BCE1).withValues(alpha: 0.2)
-                    : const Color(0x2B00E5FF),
-                width: 1,
-              ),
+            border: Border.all(
+              color: isDark
+                  ? const Color(0xFF00BCE1).withValues(alpha: 0.3)
+                  : const Color(0x2B00E5FF),
+              width: 1,
             ),
           ),
           child: SingleChildScrollView(

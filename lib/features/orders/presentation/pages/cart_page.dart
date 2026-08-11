@@ -300,7 +300,7 @@ class CartPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: bottomBarBg,
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                  border: Border(top: BorderSide(color: borderColor)),
+                  border: Border.all(color: borderColor, width: 1),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
