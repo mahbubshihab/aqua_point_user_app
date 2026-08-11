@@ -228,10 +228,14 @@ class _HomePageState extends State<HomePage> {
                                   );
                                 },
                                 onBlogTap: (blog) {
+                                  final index = state.blogs.indexOf(blog);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) => BlogsNewsPage(initialBlogs: state.blogs),
+                                      builder: (_) => BlogsNewsPage(
+                                        initialBlogs: state.blogs,
+                                        initialIndex: index >= 0 ? index : 0,
+                                      ),
                                     ),
                                   );
                                 },

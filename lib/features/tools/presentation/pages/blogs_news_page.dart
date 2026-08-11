@@ -3,41 +3,34 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_shadows.dart';
 import '../../../home/domain/entities/blog_entity.dart';
 
 class BlogsNewsPage extends StatefulWidget {
+  final int initialIndex;
   final List<BlogEntity>? initialBlogs;
 
-  const BlogsNewsPage({super.key, this.initialBlogs});
+  const BlogsNewsPage({
+    super.key,
+    this.initialIndex = 0,
+    this.initialBlogs,
+  });
 
   @override
   State<BlogsNewsPage> createState() => _BlogsNewsPageState();
 }
 
 class _BlogsNewsPageState extends State<BlogsNewsPage> {
-  final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
-  String _selectedCategory = 'All';
-
-  final List<String> _categories = const [
-    'All',
-    'Purifier Guide',
-    'Health & Wellness',
-    'Leadership & Vision',
-    'Commercial & Industrial',
-    'TDS Guide',
-  ];
-
-  late final List<BlogEntity> _allBlogs;
+  late final List<BlogEntity> _blogs;
+  late final PageController _pageController;
+  late int _currentPage;
 
   @override
   void initState() {
     super.initState();
     if (widget.initialBlogs != null && widget.initialBlogs!.isNotEmpty) {
-      _allBlogs = widget.initialBlogs!;
+      _blogs = widget.initialBlogs!;
     } else {
-      _allBlogs = const [
+      _blogs = const [
         BlogEntity(
           id: 'blog-ro-uv-uf',
           title: 'RO, UV, or UF: How to Choose the Right Water Purifier for Your Home',
@@ -97,11 +90,19 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
         ),
       ];
     }
+
+    if (widget.initialIndex >= 0 && widget.initialIndex < _blogs.length) {
+      _currentPage = widget.initialIndex;
+    } else {
+      _currentPage = 0;
+    }
+
+    _pageController = PageController(initialPage: _currentPage);
   }
 
   @override
   void dispose() {
-    _searchController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -244,322 +245,292 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
     }
   }
 
-  void _openBlogDetail(BlogEntity blog) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final sheetBg = isDark ? AppColors.darkSurface : AppColors.surface;
+  Widget _buildArticleSlide(BlogEntity blog, bool isDark) {
     final textColor = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
     final textSecColor = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
     final borderCol = isDark ? AppColors.darkBorder : AppColors.border;
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: sheetBg,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.85,
-          maxChildSize: 0.95,
-          minChildSize: 0.5,
-          expand: false,
-          builder: (context, scrollController) {
-            return SingleChildScrollView(
-              controller: scrollController,
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Handle Bar
-                  Center(
-                    child: Container(
-                      width: 48,
-                      height: 5,
-                      decoration: BoxDecoration(
-                        color: borderCol,
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                    ),
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Featured Cover Image
+          _buildFeaturedCoverImage(blog.imageUrl, isDark),
+          const Gap(20),
+
+          // Category Badge & Read Time
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? AppColors.primary.withValues(alpha: 0.2)
+                      : AppColors.primaryLight,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  blog.category ?? 'Purifier Guide',
+                  style: GoogleFonts.inter(
+                    color: AppColors.primary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const Gap(24),
-
-                  // Header Badges
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isDark
-                              ? AppColors.primary.withValues(alpha: 0.2)
-                              : AppColors.primaryLight,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          blog.category ?? 'Purifier Guide',
-                          style: GoogleFonts.inter(
-                            color: AppColors.primary,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      const Spacer(),
-                      const Icon(
-                        Icons.access_time_rounded,
-                        size: 16,
-                        color: AppColors.primary,
-                      ),
-                      const Gap(6),
-                      Text(
-                        blog.readTime ?? '5 min read',
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: textSecColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Gap(16),
-
-                  // Title
-                  Text(
-                    blog.title,
-                    style: GoogleFonts.outfit(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
-                      height: 1.3,
-                    ),
-                  ),
-                  const Gap(12),
-
-                  // Published Date & Author
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.person_outline_rounded,
-                        size: 16,
-                        color: AppColors.primary,
-                      ),
-                      const Gap(6),
-                      Text(
-                        blog.author ?? 'Aqua Point BD',
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: textColor,
-                        ),
-                      ),
-                      const Gap(12),
-                      Text(
-                        '•  ${blog.date}',
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          color: textSecColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Gap(20),
-
-                  // Featured Image with Asset & Network Fallback
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: blog.imageUrl.startsWith('assets/')
-                        ? Image.asset(
-                            blog.imageUrl,
-                            height: 220,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => Container(
-                              height: 220,
-                              width: double.infinity,
-                              color: isDark ? AppColors.darkBackground : AppColors.background,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.article_rounded,
-                                    size: 48,
-                                    color: AppColors.primary,
-                                  ),
-                                  const Gap(8),
-                                  Text(
-                                    'Aqua Point Official Article',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 13,
-                                      color: textSecColor,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        : Image.network(
-                            blog.imageUrl,
-                            height: 220,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => Image.asset(
-                              'assets/images/blog_ro_header.png',
-                              height: 220,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                              errorBuilder: (c, e, s) => Container(
-                                height: 220,
-                                width: double.infinity,
-                                color: isDark ? AppColors.darkBackground : AppColors.background,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(
-                                      Icons.article_rounded,
-                                      size: 48,
-                                      color: AppColors.primary,
-                                    ),
-                                    const Gap(8),
-                                    Text(
-                                      'Aqua Point Official Article',
-                                      style: GoogleFonts.inter(
-                                        fontSize: 13,
-                                        color: textSecColor,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                  ),
-                  const Gap(24),
-
-                  // Rich Content Renderer
-                  _buildFormattedBlogContent(blog.content ?? '', isDark),
-
-                  const Gap(32),
-                  const Divider(height: 1),
-                  const Gap(24),
-
-                  // Bottom Expert CTA Card
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? AppColors.primary.withValues(alpha: 0.12)
-                          : AppColors.primaryLight,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: AppColors.primary.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Have Questions About Your Water Quality?',
-                          style: GoogleFonts.outfit(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: textColor,
-                          ),
-                        ),
-                        const Gap(6),
-                        Text(
-                          'Our certified water specialists provide free consultation and home TDS testing.',
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
-                            fontSize: 12.5,
-                            color: textSecColor,
-                          ),
-                        ),
-                        const Gap(16),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 48,
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              _showContactOptionsModal(context, isDark);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              elevation: 0,
-                            ),
-                            icon: const Icon(Icons.headset_mic_rounded, size: 20),
-                            label: Text(
-                              'Need Expert Water Advice? Contact Aqua Point',
-                              style: GoogleFonts.inter(
-                                fontSize: 13.5,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const Gap(24),
-
-                  // Share Article Action
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Article link shared successfully! 📲',
-                              style: GoogleFonts.inter(),
-                            ),
-                            backgroundColor: AppColors.success,
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: borderCol),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      icon: Icon(
-                        Icons.share_rounded,
-                        color: textColor,
-                        size: 18,
-                      ),
-                      label: Text(
-                        'Share Article',
-                        style: GoogleFonts.inter(
-                          color: textColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 15,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const Gap(24),
-                ],
+                ),
               ),
-            );
-          },
-        );
-      },
+              const Spacer(),
+              const Icon(
+                Icons.access_time_rounded,
+                size: 16,
+                color: AppColors.primary,
+              ),
+              const Gap(6),
+              Text(
+                blog.readTime ?? '5 min read',
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: textSecColor,
+                ),
+              ),
+            ],
+          ),
+          const Gap(14),
+
+          // Title
+          Text(
+            blog.title,
+            style: GoogleFonts.outfit(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: textColor,
+              height: 1.3,
+            ),
+          ),
+          const Gap(12),
+
+          // Published Date & Author
+          Row(
+            children: [
+              const Icon(
+                Icons.person_outline_rounded,
+                size: 16,
+                color: AppColors.primary,
+              ),
+              const Gap(6),
+              Text(
+                blog.author ?? 'Enjamamul Haque (Kiron)',
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: textColor,
+                ),
+              ),
+              const Gap(12),
+              Text(
+                '•  ${blog.date}',
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: textSecColor,
+                ),
+              ),
+            ],
+          ),
+          const Gap(20),
+          const Divider(height: 1),
+          const Gap(20),
+
+          // Rich Formatted Article Content
+          _buildFormattedBlogContent(blog.content ?? '', isDark),
+
+          const Gap(32),
+          const Divider(height: 1),
+          const Gap(24),
+
+          // Bottom Expert CTA Card
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: isDark
+                  ? AppColors.primary.withValues(alpha: 0.12)
+                  : AppColors.primaryLight,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: AppColors.primary.withValues(alpha: 0.3),
+              ),
+            ),
+            child: Column(
+              children: [
+                Text(
+                  'Have Questions About Your Water Quality?',
+                  style: GoogleFonts.outfit(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
+                  ),
+                ),
+                const Gap(6),
+                Text(
+                  'Our certified water specialists provide free consultation and home TDS testing.',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.inter(
+                    fontSize: 12.5,
+                    color: textSecColor,
+                  ),
+                ),
+                const Gap(16),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      _showContactOptionsModal(context, isDark);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 0,
+                    ),
+                    icon: const Icon(Icons.headset_mic_rounded, size: 20),
+                    label: Text(
+                      'Need Expert Water Advice? Contact Aqua Point',
+                      style: GoogleFonts.inter(
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const Gap(20),
+
+          // Share Article Action
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: OutlinedButton.icon(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Article link shared successfully! 📲',
+                      style: GoogleFonts.inter(),
+                    ),
+                    backgroundColor: AppColors.success,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: borderCol),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              icon: Icon(
+                Icons.share_rounded,
+                color: textColor,
+                size: 18,
+              ),
+              label: Text(
+                'Share Article',
+                style: GoogleFonts.inter(
+                  color: textColor,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+          ),
+
+          const Gap(40),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeaturedCoverImage(String imageUrl, bool isDark) {
+    final bgCol = isDark ? AppColors.darkSurfaceVariant : AppColors.surfaceVariant;
+    final secTextColor = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: imageUrl.startsWith('assets/')
+          ? Image.asset(
+              imageUrl,
+              height: 220,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                height: 220,
+                width: double.infinity,
+                color: bgCol,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.article_rounded,
+                      size: 48,
+                      color: AppColors.primary,
+                    ),
+                    const Gap(8),
+                    Text(
+                      'Aqua Point Official Article',
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        color: secTextColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : Image.network(
+              imageUrl,
+              height: 220,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Image.asset(
+                'assets/images/blog_ro_header.png',
+                height: 220,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (c, e, s) => Container(
+                  height: 220,
+                  width: double.infinity,
+                  color: bgCol,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.article_rounded,
+                        size: 48,
+                        color: AppColors.primary,
+                      ),
+                      const Gap(8),
+                      Text(
+                        'Aqua Point Official Article',
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          color: secTextColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
     );
   }
 
@@ -635,7 +606,13 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
                                       ? 'assets/images/blog_uv_diagram.png'
                                       : imagePath.contains('blog_uf_diagram')
                                           ? 'assets/images/blog_uf_diagram.jpg'
-                                          : 'assets/images/blog_ro_header.png';
+                                          : imagePath.contains('blog_boiled')
+                                              ? 'assets/images/blog_boiled_water.png'
+                                              : imagePath.contains('blog_ceo')
+                                                  ? 'assets/images/blog_ceo_desk.png'
+                                                  : imagePath.contains('blog_plant')
+                                                      ? 'assets/images/blog_plant_system.jpg'
+                                                      : 'assets/images/blog_ro_header.png';
                               return Image.asset(
                                 fallbackAsset,
                                 height: 220,
@@ -1017,6 +994,113 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
     );
   }
 
+  Widget _buildBottomNavigationBar(bool isDark) {
+    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.surface;
+    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
+    final borderColor = isDark ? AppColors.darkBorder : AppColors.border;
+    final isFirstSlide = _currentPage == 0;
+    final isLastSlide = _currentPage == _blogs.length - 1;
+
+    return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        margin: const EdgeInsets.only(left: 16, right: 16, bottom: 12),
+        decoration: BoxDecoration(
+          color: surfaceColor,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: borderColor),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
+              blurRadius: 16,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Previous Button
+            IconButton.filledTonal(
+              onPressed: isFirstSlide
+                  ? null
+                  : () {
+                      _pageController.previousPage(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+              style: IconButton.styleFrom(
+                backgroundColor: isDark
+                    ? AppColors.darkSurfaceVariant
+                    : AppColors.surfaceVariant,
+                disabledBackgroundColor: isDark
+                    ? AppColors.darkSurfaceVariant.withValues(alpha: 0.3)
+                    : AppColors.surfaceVariant.withValues(alpha: 0.4),
+              ),
+              icon: Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 18,
+                color: isFirstSlide
+                    ? (isDark ? AppColors.darkTextTertiary : AppColors.textTertiary)
+                    : textColor,
+              ),
+            ),
+
+            // Slide Dots / Indicator
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(_blogs.length, (index) {
+                final isSelected = index == _currentPage;
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  width: isSelected ? 20 : 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? AppColors.primary
+                        : (isDark
+                            ? AppColors.darkTextTertiary.withValues(alpha: 0.5)
+                            : AppColors.textTertiary.withValues(alpha: 0.4)),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                );
+              }),
+            ),
+
+            // Next Button
+            IconButton.filledTonal(
+              onPressed: isLastSlide
+                  ? null
+                  : () {
+                      _pageController.nextPage(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+              style: IconButton.styleFrom(
+                backgroundColor: isDark
+                    ? AppColors.darkSurfaceVariant
+                    : AppColors.surfaceVariant,
+                disabledBackgroundColor: isDark
+                    ? AppColors.darkSurfaceVariant.withValues(alpha: 0.3)
+                    : AppColors.surfaceVariant.withValues(alpha: 0.4),
+              ),
+              icon: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 18,
+                color: isLastSlide
+                    ? (isDark ? AppColors.darkTextTertiary : AppColors.textTertiary)
+                    : textColor,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -1025,35 +1109,24 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
     final backgroundColor = isDark ? AppColors.darkBackground : AppColors.background;
     final surfaceColor = isDark ? AppColors.darkSurface : AppColors.surface;
     final textColor = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
-    final textSecColor = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
-    final textTertiaryColor = isDark ? AppColors.darkTextTertiary : AppColors.textTertiary;
-    final borderColor = isDark ? AppColors.darkBorder : AppColors.border;
-
-    final filteredBlogs = _allBlogs.where((blog) {
-      final matchesQuery = blog.title.toLowerCase().contains(
-            _searchQuery.toLowerCase(),
-          ) ||
-          (blog.content?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false);
-      final matchesCategory =
-          _selectedCategory == 'All' || (blog.category == _selectedCategory);
-      return matchesQuery && matchesCategory;
-    }).toList();
+    final secTextColor = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
 
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: surfaceColor,
         elevation: 0,
+        scrolledUnderElevation: 0,
         leading: IconButton(
           icon: Icon(
-            Icons.arrow_back_ios_new_rounded,
+            Icons.arrow_back_rounded,
             color: textColor,
-            size: 20,
+            size: 22,
           ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Water Health Blogs & News',
+          'Water Knowledge & Guides',
           style: GoogleFonts.outfit(
             color: textColor,
             fontSize: 18,
@@ -1061,280 +1134,57 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
           ),
         ),
         centerTitle: false,
-      ),
-      body: Column(
-        children: [
-          // Search Field Bar
-          Container(
-            color: surfaceColor,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: TextField(
-              controller: _searchController,
-              onChanged: (val) => setState(() => _searchQuery = val),
-              style: GoogleFonts.inter(
-                color: textColor,
-                fontSize: 15,
-              ),
-              decoration: InputDecoration(
-                hintText: 'Search blogs, guides & water tips...',
-                hintStyle: GoogleFonts.inter(
-                  color: textTertiaryColor,
-                  fontSize: 14,
-                ),
-                prefixIcon: Icon(
-                  Icons.search_rounded,
-                  color: textSecColor,
-                  size: 22,
-                ),
-                suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
-                        icon: Icon(
-                          Icons.clear_rounded,
-                          color: textSecColor,
-                          size: 20,
-                        ),
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() => _searchQuery = '');
-                        },
-                      )
-                    : null,
-                filled: true,
-                fillColor: backgroundColor,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: borderColor),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: borderColor),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.primary),
-                ),
-              ),
-            ),
-          ),
-
-          // Horizontal Category Selector Chips
-          Container(
-            color: surfaceColor,
-            padding: const EdgeInsets.only(bottom: 12),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              physics: const BouncingScrollPhysics(),
-              child: Row(
-                children: _categories.map((cat) {
-                  final isSelected = _selectedCategory == cat;
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: FilterChip(
-                      label: Text(cat),
-                      selected: isSelected,
-                      onSelected: (selected) {
-                        setState(() => _selectedCategory = cat);
-                      },
-                      selectedColor: AppColors.primary,
-                      backgroundColor: backgroundColor,
-                      labelStyle: GoogleFonts.inter(
-                        color: isSelected
-                            ? Colors.white
-                            : textSecColor,
-                        fontSize: 13,
-                        fontWeight: isSelected
-                            ? FontWeight.w600
-                            : FontWeight.w500,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        side: BorderSide(
-                          color: isSelected
-                              ? AppColors.primary
-                              : borderColor,
-                        ),
-                      ),
-                      showCheckmark: false,
+        actions: [
+          if (_blogs.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? AppColors.primary.withValues(alpha: 0.2)
+                        : AppColors.primaryLight,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppColors.primary.withValues(alpha: 0.3),
                     ),
-                  );
-                }).toList(),
-              ),
-            ),
-          ),
-
-          Divider(height: 1, color: borderColor),
-
-          // Blogs List View
-          Expanded(
-            child: filteredBlogs.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.article_outlined,
-                          size: 48,
-                          color: textTertiaryColor,
-                        ),
-                        const Gap(12),
-                        Text(
-                          'No articles found matching your criteria.',
-                          style: GoogleFonts.inter(
-                            color: textSecColor,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: filteredBlogs.length,
-                    itemBuilder: (context, index) {
-                      final blog = filteredBlogs[index];
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          color: surfaceColor,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: isDark ? [] : AppShadows.soft,
-                          border: Border.all(color: borderColor),
-                        ),
-                        child: InkWell(
-                          onTap: () => _openBlogDetail(blog),
-                          borderRadius: BorderRadius.circular(16),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Blog Image
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Container(
-                                    width: 100,
-                                    height: 100,
-                                    color: backgroundColor,
-                                    child: Image.network(
-                                      blog.imageUrl,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
-                                              Center(
-                                                child: Icon(
-                                                  Icons.image_outlined,
-                                                  color: textTertiaryColor,
-                                                  size: 32,
-                                                ),
-                                              ),
-                                    ),
-                                  ),
-                                ),
-                                const Gap(16),
-
-                                // Blog Text Info
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 8,
-                                              vertical: 3,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: isDark
-                                                  ? AppColors.primary.withValues(alpha: 0.2)
-                                                  : AppColors.primaryLight,
-                                              borderRadius:
-                                                  BorderRadius.circular(6),
-                                            ),
-                                            child: Text(
-                                              blog.category ?? 'Purifier Guide',
-                                              style: GoogleFonts.inter(
-                                                fontSize: 10.5,
-                                                fontWeight: FontWeight.bold,
-                                                color: AppColors.primary,
-                                              ),
-                                            ),
-                                          ),
-                                          const Spacer(),
-                                          Text(
-                                            blog.date,
-                                            style: GoogleFonts.inter(
-                                              fontSize: 11,
-                                              color: textSecColor,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const Gap(8),
-                                      Text(
-                                        blog.title,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.outfit(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                          color: textColor,
-                                          height: 1.3,
-                                        ),
-                                      ),
-                                      const Gap(12),
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons.menu_book_rounded,
-                                            size: 14,
-                                            color: textSecColor,
-                                          ),
-                                          const Gap(4),
-                                          Text(
-                                            blog.readTime ?? '5 min read',
-                                            style: GoogleFonts.inter(
-                                              fontSize: 12,
-                                              color: textSecColor,
-                                            ),
-                                          ),
-                                          const Spacer(),
-                                          Text(
-                                            'Read More',
-                                            style: GoogleFonts.inter(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.primary,
-                                            ),
-                                          ),
-                                          const Icon(
-                                            Icons.chevron_right_rounded,
-                                            size: 16,
-                                            color: AppColors.primary,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
                   ),
-          ),
+                  child: Text(
+                    'Article ${_currentPage + 1} of ${_blogs.length}',
+                    style: GoogleFonts.inter(
+                      color: AppColors.primary,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
+      body: _blogs.isEmpty
+          ? Center(
+              child: Text(
+                'No articles available.',
+                style: GoogleFonts.inter(color: secTextColor),
+              ),
+            )
+          : PageView.builder(
+              controller: _pageController,
+              physics: const BouncingScrollPhysics(),
+              itemCount: _blogs.length,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentPage = index;
+                });
+              },
+              itemBuilder: (context, index) {
+                final blog = _blogs[index];
+                return _buildArticleSlide(blog, isDark);
+              },
+            ),
+      bottomNavigationBar: _blogs.isNotEmpty ? _buildBottomNavigationBar(isDark) : null,
     );
   }
 }
-
