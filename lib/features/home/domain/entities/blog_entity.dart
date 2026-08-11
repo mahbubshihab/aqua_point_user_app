@@ -8,6 +8,7 @@ class BlogEntity extends Equatable {
   final String? category;
   final String? readTime;
   final String? content;
+  final String? author;
 
   const BlogEntity({
     required this.id,
@@ -17,8 +18,10 @@ class BlogEntity extends Equatable {
     this.category,
     this.readTime,
     this.content,
+    this.author,
   });
 
   @override
-  List<Object?> get props => [id, title, date, imageUrl, category, readTime, content];
+  List<Object?> get props => [id, title, date, imageUrl, category, readTime, content, author];
 }
+

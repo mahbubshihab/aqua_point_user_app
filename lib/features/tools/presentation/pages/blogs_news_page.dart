@@ -41,12 +41,12 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
           id: 'blog-ro-uv-uf',
           title: 'RO, UV, or UF: How to Choose the Right Water Purifier for Your Home',
           category: 'Purifier Guide',
-          date: '22 Jul 2026',
-          readTime: '5 min read',
-          imageUrl:
-              'https://aquapointbd.com/wp-content/uploads/2026/07/WhatsApp-Image-2026-07-22-at-12.01.14-PM.webp',
+          date: 'July 23, 2026',
+          author: 'Kiron Ahmed | Aqua Point BD',
+          readTime: '6 min read',
+          imageUrl: 'assets/images/blog_ro_header.png',
           content:
-              'Choosing the right water purifier for your home in Bangladesh can be overwhelming given the vast array of purification technologies available today. The three most common technologies are Reverse Osmosis (RO), Ultra Violet (UV) purification, and Ultra Filtration (UF). Understanding how each technology works and matching it to your source water quality is key to making an informed investment for your family\'s health.\n\n## 1. Reverse Osmosis (RO) Purification\nReverse Osmosis is the gold standard of modern water purification. RO systems pass water under high pressure through a semi-permeable membrane with tiny pores (approx 0.0001 microns).\n\n• Best For: High TDS water (> 200 PPM), borewell/groundwater, saline/brackish water, and water contaminated with heavy metals (Arsenic, Lead, Iron).\n• Key Advantages: Eliminates up to 99% of Total Dissolved Solids, heavy metals, microplastics, viruses, and bacteria.\n• Essential Note: RO purifiers remove both harmful contaminants and minerals, so Aqua Point RO models include Mineral Booster technology to restore essential calcium and magnesium.\n\n## 2. Ultra Violet (UV) Purification\nUV water purifiers use high-intensity UV radiation to destroy the DNA of harmful micro-organisms, inactivating bacteria, viruses, and cysts without adding chemicals.\n\n• Best For: Low TDS tap water (< 200 PPM) supplied by municipal authorities that is free from heavy metals.\n• Key Advantages: Retains natural minerals, uses minimal electricity, works at high flow rates, and requires no water wastage.\n• Limitation: Does not change the chemical composition or lower high TDS levels in water.\n\n## 3. Ultra Filtration (UF) Technology\nUF utilizes a hollow fiber membrane to physically filter out suspended solids, rust, silt, and large bacteria without using electricity or chemical additives.\n\n• Best For: Areas with consistent clean supply where electrical power is unstable and water TDS is naturally safe (< 150 PPM).\n• Key Advantages: Zero electricity operation, zero water wastage, durable filter life.\n\n> "A common mistake in Bangladesh is buying an RO purifier for low-TDS municipal tap water, or a UV filter for iron-rich tubewell water. Always test your TDS before deciding!"\n\n## Recommended Decision Matrix\n1. TDS > 200 PPM or Iron/Arsenic Present: Choose RO or RO+UV+UF Combination.\n2. TDS < 200 PPM & Biological Risk Only: Choose UV+UF Purifier.\n3. Frequent Power Outages & Low TDS: Choose Gravity/UF Water Purifier.\n\nAt Aqua Point, we offer free home water testing across Dhaka and Bangladesh to help you select the precise purification system tailored to your water source.',
+              'Ensuring every drop your family drinks is safe and pure.\n\nChoosing the right water purifier for your home in Bangladesh can be overwhelming given the vast array of purification technologies available today. The three most common technologies are Reverse Osmosis (RO), Ultraviolet (UV) purification, and Ultrafiltration (UF). Understanding how each technology works and matching it to your source water quality is key to making an informed investment for your family\'s health.\n\n## 1. Reverse Osmosis (RO): The Heavy-Duty Purifier\n\n> "Best For: High TDS (Total Dissolved Solids) water, hard water, underground water, or water with a salty taste."\n\n![RO Membrane Pore Diagram](assets/images/blog_ro_diagram.png)\n\nReverse Osmosis is the gold standard of modern water purification. RO systems use a high-pressure pump to force water under pressure through a semi-permeable membrane with microscopic pores (approx 0.0001 microns).\n\n• Heavy-Duty Filtration: Eliminates up to 99% of Total Dissolved Solids (TDS), heavy metals (Arsenic, Lead, Iron), fluoride, microplastics, bacteria, and viruses.\n• Water Taste & Quality: Ideal for borewell/groundwater, saline/brackish water, or water with noticeable mineral deposits and hardness.\n• Essential Note: RO purifiers remove both harmful contaminants and minerals, so Aqua Point RO models feature Mineral Booster technology to restore essential calcium and magnesium.\n\n## 2. Ultraviolet (UV) Purification: The Germ Killer\n\n> "Best For: Municipal/Supply water that is visually clean and has a sweet taste (Low TDS) but may contain unseen bacteria or viruses."\n\n![UV Sterilization System](assets/images/blog_uv_diagram.png)\n\nUV water purifiers use high-intensity ultraviolet radiation to destroy the DNA of harmful micro-organisms, inactivating bacteria, viruses, and cysts without adding chemicals.\n\n• Pathogen Destruction: High-intensity UV lamps sterilize 99.99% of biological pathogens including E. coli, Cholera, and Typhoid.\n• Mineral Retention: Retains natural beneficial minerals in water without altering chemical composition or taste.\n• Operation: Uses minimal electricity, operates at high flow rates, and produces zero wastewater.\n• Limitation: Does not lower high TDS levels or remove dissolved chemical pollutants and heavy metals.\n\n## 3. Ultrafiltration (UF): The Electricity-Free Guard\n\n> "Best For: Areas with frequent power cuts and water that contains visible dirt or mud (Low TDS)."\n\n![UF System Filtration](assets/images/blog_uf_diagram.jpg)\n\nUltrafiltration utilizes hollow fiber membranes with pore sizes around 0.01 microns to physically filter out suspended solids, rust, silt, and large bacteria without using electricity or chemical additives.\n\n• Zero Electricity & Waste: Works on normal tap water pressure with zero water wastage and zero electricity consumption.\n• Durable Physical Barrier: Effective at blocking mud, rust, suspended particles, and cysts.\n• Limitation: Cannot remove dissolved chemicals, heavy metals, or dissolved salts (high TDS).\n\n## Quick Comparison Guide\n\nFeature | Reverse Osmosis (RO) | Ultraviolet (UV) | Ultrafiltration (UF)\nMechanism | 0.0001 µm Membrane | UV Light Sterilization | 0.01 µm Hollow Fiber\nRemoves Heavy Metals & TDS | Yes (Up to 99%) | No | No\nKills Bacteria & Viruses | Yes | Yes (99.99%) | Physical Trap Only\nElectricity Required | Yes (High Pressure Pump) | Yes (UV Lamp) | No (Zero Electricity)\nWater Wastage | Yes (Flushing Drain) | No (Zero Waste) | No (Zero Waste)\nIdeal Water Source | High TDS (> 200 PPM) | Low TDS (< 200 PPM) | Low TDS (< 150 PPM)\n\n## The Final Verdict & Next Steps\n\n1. High TDS (> 200 PPM) or Iron/Arsenic Present: Choose RO or RO+UV+UF Combination.\n2. Low TDS (< 200 PPM) & Visually Clean Water: Choose UV+UF Purifier.\n3. Frequent Power Outages & Low TDS with Mud/Rust: Choose Gravity/UF Water Purifier.\n\n## Ready to Secure Pure Drinking Water?\n\nAt Aqua Point BD, founder Kiron Ahmed and our certified water engineering team offer free home water TDS testing and consultation across Bangladesh. Contact our specialists today to select the perfect purification system for your family\'s health!',
         ),
         BlogEntity(
           id: 'blog-boiled-vs-purified',
@@ -322,7 +322,7 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
                       ),
                       const Gap(6),
                       Text(
-                        'Aqua Point Water Care Team',
+                        blog.author ?? 'Aqua Point Water Care Team',
                         style: GoogleFonts.inter(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
@@ -341,39 +341,76 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
                   ),
                   const Gap(20),
 
-                  // Featured Image with Network & Error Fallback Placeholder
+                  // Featured Image with Asset & Network Fallback
                   ClipRRect(
                     borderRadius: BorderRadius.circular(16),
-                    child: Image.network(
-                      blog.imageUrl,
-                      height: 220,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        height: 220,
-                        width: double.infinity,
-                        color: isDark ? AppColors.darkBackground : AppColors.background,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.article_rounded,
-                              size: 48,
-                              color: AppColors.primary,
-                            ),
-                            const Gap(8),
-                            Text(
-                              'Aqua Point Official Article',
-                              style: GoogleFonts.inter(
-                                fontSize: 13,
-                                color: textSecColor,
-                                fontWeight: FontWeight.w500,
+                    child: blog.imageUrl.startsWith('assets/')
+                        ? Image.asset(
+                            blog.imageUrl,
+                            height: 220,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Container(
+                              height: 220,
+                              width: double.infinity,
+                              color: isDark ? AppColors.darkBackground : AppColors.background,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.article_rounded,
+                                    size: 48,
+                                    color: AppColors.primary,
+                                  ),
+                                  const Gap(8),
+                                  Text(
+                                    'Aqua Point Official Article',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 13,
+                                      color: textSecColor,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
+                          )
+                        : Image.network(
+                            blog.imageUrl,
+                            height: 220,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Image.asset(
+                              'assets/images/blog_ro_header.png',
+                              height: 220,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              errorBuilder: (c, e, s) => Container(
+                                height: 220,
+                                width: double.infinity,
+                                color: isDark ? AppColors.darkBackground : AppColors.background,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.article_rounded,
+                                      size: 48,
+                                      color: AppColors.primary,
+                                    ),
+                                    const Gap(8),
+                                    Text(
+                                      'Aqua Point Official Article',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 13,
+                                        color: textSecColor,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
                   ),
                   const Gap(24),
 
@@ -521,6 +558,93 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
       final trimmed = block.trim();
       if (trimmed.isEmpty) continue;
 
+      // Inline Image Check: ![alt](path_or_url)
+      final imageMatch = RegExp(r'!\[(.*?)\]\((.*?)\)').firstMatch(trimmed);
+      if (imageMatch != null) {
+        final altText = imageMatch.group(1) ?? '';
+        final imagePath = imageMatch.group(2) ?? '';
+
+        widgets.add(
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: borderCol, width: 1.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    imagePath.startsWith('assets/')
+                        ? Image.asset(
+                            imagePath,
+                            height: 220,
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) => Container(
+                              height: 180,
+                              color: isDark ? AppColors.darkSurfaceVariant : AppColors.surfaceVariant,
+                              alignment: Alignment.center,
+                              child: Icon(Icons.image_not_supported_rounded, color: secTextColor),
+                            ),
+                          )
+                        : Image.network(
+                            imagePath,
+                            height: 220,
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) {
+                              final fallbackAsset = imagePath.contains('blog_ro_diagram')
+                                  ? 'assets/images/blog_ro_diagram.png'
+                                  : imagePath.contains('blog_uv_diagram')
+                                      ? 'assets/images/blog_uv_diagram.png'
+                                      : imagePath.contains('blog_uf_diagram')
+                                          ? 'assets/images/blog_uf_diagram.jpg'
+                                          : 'assets/images/blog_ro_header.png';
+                              return Image.asset(
+                                fallbackAsset,
+                                height: 220,
+                                fit: BoxFit.contain,
+                                errorBuilder: (c, e, s) => Container(
+                                  height: 180,
+                                  color: isDark ? AppColors.darkSurfaceVariant : AppColors.surfaceVariant,
+                                  alignment: Alignment.center,
+                                  child: Icon(Icons.image_not_supported_rounded, color: secTextColor),
+                                ),
+                              );
+                            },
+                          ),
+                    if (altText.isNotEmpty)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        color: isDark ? AppColors.darkSurfaceVariant : AppColors.surfaceVariant,
+                        child: Text(
+                          altText,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            fontSize: 12.5,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.w600,
+                            color: secTextColor,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+        continue;
+      }
+
       if (trimmed.startsWith('## ')) {
         // Section Header H2
         widgets.add(
@@ -593,54 +717,72 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
           ),
         );
       } else if (trimmed.contains('|') && trimmed.contains('\n')) {
-        // Simple Table Block
+        // Crisp Comparison Table Block
         final lines = trimmed.split('\n').where((l) => l.contains('|')).toList();
         if (lines.length >= 2) {
           final rows = lines.map((l) => l.split('|').map((c) => c.trim()).toList()).toList();
-          // Filter out markdown table header separators like ---
-          final cleanRows = rows.where((r) => !r.any((c) => c.contains('---'))).toList();
+          final cleanRows = rows.where((r) => !r.any((c) => c.contains('---'))).map((row) {
+            final filtered = List<String>.from(row);
+            if (filtered.isNotEmpty && filtered.first.isEmpty) filtered.removeAt(0);
+            if (filtered.isNotEmpty && filtered.last.isEmpty) filtered.removeLast();
+            return filtered;
+          }).where((r) => r.isNotEmpty).toList();
 
           if (cleanRows.isNotEmpty) {
             widgets.add(
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 14),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: borderCol),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Table(
-                    columnWidths: const {
-                      0: FlexColumnWidth(1.2),
-                      1: FlexColumnWidth(1.5),
-                      2: FlexColumnWidth(1.8),
-                    },
-                    children: cleanRows.asMap().entries.map((entry) {
-                      final rowIndex = entry.key;
-                      final row = entry.value;
-                      final isHeader = rowIndex == 0;
-                      return TableRow(
-                        decoration: BoxDecoration(
-                          color: isHeader
-                              ? (isDark ? AppColors.darkSurfaceVariant : AppColors.surfaceVariant)
-                              : Colors.transparent,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: borderCol, width: 1.5),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(11),
+                      child: Table(
+                        defaultColumnWidth: const IntrinsicColumnWidth(),
+                        border: TableBorder.all(
+                          color: borderCol,
+                          width: 1,
+                          style: BorderStyle.solid,
                         ),
-                        children: row.map((cell) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                            child: Text(
-                              cell,
-                              style: GoogleFonts.inter(
-                                fontSize: isHeader ? 12.5 : 12,
-                                fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
-                                color: isHeader ? textColor : secTextColor,
-                              ),
+                        children: cleanRows.asMap().entries.map((entry) {
+                          final rowIndex = entry.key;
+                          final row = entry.value;
+                          final isHeader = rowIndex == 0;
+                          return TableRow(
+                            decoration: BoxDecoration(
+                              color: isHeader
+                                  ? (isDark
+                                      ? AppColors.primary.withValues(alpha: 0.25)
+                                      : AppColors.primaryLight)
+                                  : (rowIndex % 2 == 1
+                                      ? (isDark
+                                          ? AppColors.darkSurfaceVariant.withValues(alpha: 0.4)
+                                          : AppColors.surfaceVariant.withValues(alpha: 0.5))
+                                      : Colors.transparent),
                             ),
+                            children: row.map((cell) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                                child: Text(
+                                  cell,
+                                  style: GoogleFonts.inter(
+                                    fontSize: isHeader ? 13 : 12.5,
+                                    fontWeight: isHeader ? FontWeight.bold : FontWeight.w500,
+                                    color: isHeader
+                                        ? AppColors.primary
+                                        : textColor,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
                           );
                         }).toList(),
-                      );
-                    }).toList(),
+                      ),
+                    ),
                   ),
                 ),
               ),

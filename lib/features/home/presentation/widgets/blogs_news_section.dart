@@ -188,24 +188,41 @@ class BlogsNewsSection extends StatelessWidget {
                                 height: 110,
                                 width: double.infinity,
                                 color: isDark ? AppColors.darkDivider : AppColors.divider,
-                                child: Image.network(
-                                  blog.imageUrl,
-                                  fit: BoxFit.cover,
-                                  cacheWidth: 600,
-                                  cacheHeight: 600,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      color: isDark ? AppColors.darkDivider : AppColors.divider,
-                                      child: Center(
-                                        child: Icon(
-                                          Icons.article_rounded,
-                                          size: 34,
-                                          color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
+                                child: blog.imageUrl.startsWith('assets/')
+                                    ? Image.asset(
+                                        blog.imageUrl,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) => Container(
+                                          color: isDark ? AppColors.darkDivider : AppColors.divider,
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.article_rounded,
+                                              size: 34,
+                                              color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : Image.network(
+                                        blog.imageUrl,
+                                        fit: BoxFit.cover,
+                                        cacheWidth: 600,
+                                        cacheHeight: 600,
+                                        errorBuilder: (context, error, stackTrace) => Image.asset(
+                                          'assets/images/blog_ro_header.png',
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (c, e, s) => Container(
+                                            color: isDark ? AppColors.darkDivider : AppColors.divider,
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.article_rounded,
+                                                size: 34,
+                                                color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    );
-                                  },
-                                ),
                               ),
 
                               // Blog Details
