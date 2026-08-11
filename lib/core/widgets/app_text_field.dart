@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_colors.dart';
 
-/// Clean light-themed text field with label, prefix/suffix icons.
+/// Dynamic theme-aware text field with label, prefix/suffix icons.
+/// Supports Dark Mode (#1E293B / #0F172A) & Light Mode (#FFFFFF / #F8FAFC).
 class AppTextField extends StatelessWidget {
   final String? label;
   final String? hintText;
@@ -49,6 +50,17 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textColorSecondary = isDark
+        ? Colors.white.withValues(alpha: 0.6)
+        : const Color(0xFF94A3B8);
+    final inputBg = isDark ? const Color(0xFF0F172A) : Colors.white;
+    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
+    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -58,8 +70,8 @@ class AppTextField extends StatelessWidget {
             label!,
             style: GoogleFonts.inter(
               fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w600,
+              color: textColorPrimary,
             ),
           ),
           const SizedBox(height: 8),
@@ -80,7 +92,7 @@ class AppTextField extends StatelessWidget {
           onFieldSubmitted: onSubmitted,
           validator: validator,
           style: GoogleFonts.inter(
-            color: AppColors.textPrimary,
+            color: textColorPrimary,
             fontSize: 15,
           ),
           decoration: InputDecoration(
@@ -107,27 +119,27 @@ class AppTextField extends StatelessWidget {
               minHeight: 44,
             ),
             filled: true,
-            fillColor: AppColors.surface,
+            fillColor: inputBg,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 14,
             ),
             hintStyle: GoogleFonts.inter(
-              color: AppColors.textTertiary,
+              color: textColorSecondary,
               fontSize: 14,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: borderColor),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: borderColor),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                color: AppColors.primary,
+              borderSide: BorderSide(
+                color: accentColor,
                 width: 1.5,
               ),
             ),
@@ -145,7 +157,7 @@ class AppTextField extends StatelessWidget {
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: AppColors.border.withValues(alpha: 0.5),
+                color: borderColor.withValues(alpha: 0.5),
               ),
             ),
           ),

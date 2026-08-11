@@ -111,6 +111,17 @@ class _AddProductModalState extends State<AddProductModal> {
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textColorSecondary = isDark
+        ? Colors.white.withValues(alpha: 0.65)
+        : const Color(0xFF64748B);
+    final surfaceColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final uploadBoxBg = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
+    final dividerColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
+    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
 
     return BlocListener<ProductsBloc, ProductsState>(
       listener: (context, state) {
@@ -144,239 +155,259 @@ class _AddProductModalState extends State<AddProductModal> {
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         child: Container(
-            padding: EdgeInsets.only(
-              left: 20,
-              right: 20,
-              top: 20,
-              bottom: bottomPadding + 24,
-            ),
-            decoration: const BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-              border: Border(
-                top: BorderSide(color: Color(0x2B00E5FF), width: 1.5),
-                left: BorderSide(color: Color(0x2B00E5FF), width: 1),
-                right: BorderSide(color: Color(0x2B00E5FF), width: 1),
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: bottomPadding + 24,
+          ),
+          decoration: BoxDecoration(
+            color: surfaceColor,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            border: Border(
+              top: BorderSide(
+                color: isDark
+                    ? const Color(0xFF00BCE1).withValues(alpha: 0.35)
+                    : const Color(0x2B00E5FF),
+                width: 1.5,
+              ),
+              left: BorderSide(
+                color: isDark
+                    ? const Color(0xFF00BCE1).withValues(alpha: 0.2)
+                    : const Color(0x2B00E5FF),
+                width: 1,
+              ),
+              right: BorderSide(
+                color: isDark
+                    ? const Color(0xFF00BCE1).withValues(alpha: 0.2)
+                    : const Color(0x2B00E5FF),
+                width: 1,
               ),
             ),
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Modal Handle Bar
-                    Center(
-                      child: Container(
-                        width: 40,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: AppColors.divider,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
+          ),
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Modal Handle Bar
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: dividerColor,
+                        borderRadius: BorderRadius.circular(2),
                       ),
                     ),
-                    const Gap(16),
+                  ),
+                  const Gap(16),
 
-                    // Header Row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Add Custom Product',
-                          style: GoogleFonts.outfit(
-                            color: AppColors.textPrimary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
+                  // Header Row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Add Custom Product',
+                        style: GoogleFonts.outfit(
+                          color: textColorPrimary,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
-                        IconButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          icon: const Icon(
-                            Icons.close_rounded,
-                            color: AppColors.textSecondary,
-                          ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: Icon(
+                          Icons.close_rounded,
+                          color: textColorSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Gap(16),
+
+                  // Field 1: Product Name
+                  AppTextField(
+                    label: 'Product Name',
+                    hintText: 'Enter your product name',
+                    controller: _nameController,
+                    prefixIcon: Icon(
+                      Icons.inventory_2_outlined,
+                      color: textColorSecondary,
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Please enter product name';
+                      }
+                      return null;
+                    },
+                  ),
+                  const Gap(16),
+
+                  // Field 2: Warranty Card / Product Photo
+                  Text(
+                    'Warranty Card / Product Photo',
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: textColorSecondary,
+                    ),
+                  ),
+                  const Gap(6),
+                  InkWell(
+                    onTap: (_isUploadingImage || _isSubmitting)
+                        ? null
+                        : _pickAndUploadImage,
+                    borderRadius: BorderRadius.circular(12),
+                    child: CustomPaint(
+                      painter: _DashedBorderPainter(
+                        color: _selectedImagePath != null
+                            ? accentColor
+                            : dividerColor,
+                      ),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        decoration: BoxDecoration(
+                          color: uploadBoxBg,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: _isUploadingImage
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: accentColor,
+                                    ),
+                                  ),
+                                  const Gap(8),
+                                  Text(
+                                    'Uploading to Cloudinary...',
+                                    style: GoogleFonts.inter(
+                                      color: textColorSecondary,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  if (_selectedImagePath != null &&
+                                      _selectedImagePath!.startsWith('http')) ...[
+                                    ClipRRect(
+                                      borderRadius:
+                                          BorderRadius.circular(8),
+                                      child: Image.network(
+                                        _selectedImagePath!,
+                                        height: 60,
+                                        width: 60,
+                                        fit: BoxFit.cover,
+                                        cacheWidth: 600,
+                                        cacheHeight: 600,
+                                      ),
+                                    ),
+                                    const Gap(6),
+                                  ] else ...[
+                                    Icon(
+                                      _selectedImagePath != null
+                                          ? Icons.check_circle_rounded
+                                          : Icons.camera_alt_outlined,
+                                      size: 30,
+                                      color: _selectedImagePath != null
+                                          ? AppColors.accentGreen
+                                          : accentColor,
+                                    ),
+                                    const Gap(6),
+                                  ],
+                                  Text(
+                                    _selectedImagePath != null
+                                        ? 'Cloudinary Image Ready (Tap to change)'
+                                        : 'Tap to select & upload image',
+                                    style: GoogleFonts.inter(
+                                      color: _selectedImagePath != null
+                                          ? textColorPrimary
+                                          : textColorSecondary,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ),
+                  ),
+                  const Gap(24),
+
+                  // Save Product Button
+                  Container(
+                    width: double.infinity,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      gradient: isDark
+                          ? const LinearGradient(
+                              colors: [Color(0xFF0088FF), Color(0xFF00BCE1)],
+                            )
+                          : const LinearGradient(
+                              colors: [Color(0xFF60A5FA), Color(0xFF8B5CF6)],
+                            ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: isDark
+                              ? const Color(0xFF00BCE1).withValues(alpha: 0.35)
+                              : const Color(0xFF8B5CF6).withValues(alpha: 0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
-                    const Gap(16),
-
-                    // Field 1: Product Name
-                    AppTextField(
-                      label: 'Product Name',
-                      hintText: 'Enter your product name',
-                      controller: _nameController,
-                      prefixIcon: const Icon(
-                        Icons.inventory_2_outlined,
-                        color: AppColors.textSecondary,
-                      ),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Please enter product name';
-                        }
-                        return null;
-                      },
-                    ),
-                    const Gap(16),
-
-                    // Field 2: Warranty Card / Product Photo
-                    Text(
-                      'Warranty Card / Product Photo',
-                      style: GoogleFonts.inter(
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    const Gap(6),
-                    InkWell(
-                      onTap: (_isUploadingImage || _isSubmitting)
-                          ? null
-                          : _pickAndUploadImage,
-                      borderRadius: BorderRadius.circular(12),
-                      child: CustomPaint(
-                        painter: _DashedBorderPainter(
-                          color: _selectedImagePath != null
-                              ? AppColors.primary
-                              : AppColors.divider,
-                        ),
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 20),
-                          decoration: BoxDecoration(
-                            color: AppColors.background,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: _isUploadingImage
-                              ? Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 24,
-                                      height: 24,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: AppColors.primary,
-                                      ),
-                                    ),
-                                    Gap(8),
-                                    Text(
-                                      'Uploading to Cloudinary...',
-                                      style: GoogleFonts.inter(
-                                        color: AppColors.textSecondary,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap:
+                            (_isSubmitting || _isUploadingImage)
+                                ? null
+                                : _onSaveProduct,
+                        borderRadius: BorderRadius.circular(12),
+                        child: Center(
+                          child: _isSubmitting
+                              ? SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: isDark ? const Color(0xFF020810) : Colors.white,
+                                  ),
                                 )
-                              : Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    if (_selectedImagePath != null &&
-                                        _selectedImagePath!.startsWith('http')) ...[
-                                      ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(8),
-                                        child: Image.network(
-                                          _selectedImagePath!,
-                                          height: 60,
-                                          width: 60,
-                                          fit: BoxFit.cover,
-                                          cacheWidth: 600,
-                                          cacheHeight: 600,
-                                        ),
-                                      ),
-                                      const Gap(6),
-                                    ] else ...[
-                                      Icon(
-                                        _selectedImagePath != null
-                                            ? Icons.check_circle_rounded
-                                            : Icons.camera_alt_outlined,
-                                        size: 30,
-                                        color: _selectedImagePath != null
-                                            ? AppColors.accentGreen
-                                            : AppColors.secondary,
-                                      ),
-                                      const Gap(6),
-                                    ],
-                                    Text(
-                                      _selectedImagePath != null
-                                          ? 'Cloudinary Image Ready (Tap to change)'
-                                          : 'Tap to select & upload image',
-                                      style: GoogleFonts.inter(
-                                        color: _selectedImagePath != null
-                                            ? AppColors.textPrimary
-                                            : AppColors.textSecondary,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
+                              : Text(
+                                  'SAVE PRODUCT',
+                                  style: GoogleFonts.inter(
+                                    color: isDark ? const Color(0xFF020810) : Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    letterSpacing: 0.5,
+                                  ),
                                 ),
                         ),
                       ),
                     ),
-                    const Gap(24),
-
-                    // Save Product Button
-                    Container(
-                      width: double.infinity,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF60A5FA), Color(0xFF8B5CF6)],
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color:
-                                const Color(0xFF8B5CF6).withValues(alpha: 0.3),
-                            blurRadius: 10,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap:
-                              (_isSubmitting || _isUploadingImage)
-                                  ? null
-                                  : _onSaveProduct,
-                          borderRadius: BorderRadius.circular(12),
-                          child: Center(
-                            child: _isSubmitting
-                                ? const SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: AppColors.textPrimary,
-                                    ),
-                                  )
-                                : Text(
-                                    'SAVE PRODUCT',
-                                    style: GoogleFonts.inter(
-                                      color: AppColors.textPrimary,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 13.5,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
-      );
+      ),
+    );
   }
 }
 
