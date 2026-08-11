@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../home/presentation/widgets/product_type_section.dart';
 import '../../../orders/presentation/bloc/cart_bloc.dart';
 import '../../../orders/presentation/pages/cart_page.dart';
 import '../../domain/entities/category_entity.dart';
@@ -10,7 +11,6 @@ import '../../domain/entities/product_entity.dart';
 import '../bloc/products_bloc.dart';
 import '../bloc/products_event.dart';
 import '../bloc/products_state.dart';
-import '../widgets/shop_product_card.dart';
 import 'category_shop_page.dart';
 
 class ShopPage extends StatefulWidget {
@@ -22,7 +22,7 @@ class ShopPage extends StatefulWidget {
 
 class _ShopPageState extends State<ShopPage> {
   final TextEditingController _searchController = TextEditingController();
-  String _selectedCategory = 'All';
+  String _selectedTypeOrCategory = 'All';
   String _searchQuery = '';
 
   @override
@@ -171,7 +171,6 @@ class _ShopPageState extends State<ShopPage> {
 
             if (state is ProductsLoaded) {
               final allProducts = state.products;
-              final categories = state.categories;
 
               return Column(
                 children: [
@@ -197,7 +196,7 @@ class _ShopPageState extends State<ShopPage> {
                           });
                         },
                         decoration: InputDecoration(
-                          hintText: 'Search RO purifiers, filters & spare parts...',
+                          hintText: 'Search Open, Box, Cabinet purifiers...',
                           hintStyle: GoogleFonts.inter(
                             color: textColorSecondary,
                             fontSize: 12.5,
@@ -229,10 +228,10 @@ class _ShopPageState extends State<ShopPage> {
                     ),
                   ),
                   const Gap(8),
-                  // Category Filter Pills Bar
-                  _buildCategoryFilterPills(categories, isDark),
+                  // Filter Pills Bar (Type-wise & All)
+                  _buildTypeFilterPills(isDark),
                   const Gap(12),
-                  // Main Body with Category-wise Product Sections
+                  // Main Body with Type-wise Product Sections
                   Expanded(
                     child: RefreshIndicator(
                       color: accentColor,
@@ -243,13 +242,15 @@ class _ShopPageState extends State<ShopPage> {
                       },
                       child: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: _buildCategorySections(
-                            context,
-                            allProducts,
-                            categories,
-                            isDark,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: _buildTypeSections(
+                              context,
+                              allProducts,
+                              isDark,
+                            ),
                           ),
                         ),
                       ),
@@ -266,8 +267,15 @@ class _ShopPageState extends State<ShopPage> {
     );
   }
 
-  Widget _buildCategoryFilterPills(List<CategoryEntity> categories, bool isDark) {
-    final catNames = ['All', ...categories.map((c) => c.name)];
+  Widget _buildTypeFilterPills(bool isDark) {
+    final filterNames = [
+      'All',
+      'Open Type',
+      'Box Type',
+      'Hot Cold Normal',
+      'Cabinet Type',
+    ];
+
     final textColorSecondary = isDark
         ? Colors.white.withValues(alpha: 0.65)
         : const Color(0xFF64748B);
@@ -280,20 +288,20 @@ class _ShopPageState extends State<ShopPage> {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: catNames.length,
+        itemCount: filterNames.length,
         itemBuilder: (context, index) {
-          final cat = catNames[index];
-          final isSelected = _selectedCategory == cat;
+          final name = filterNames[index];
+          final isSelected = _selectedTypeOrCategory == name;
 
           return Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: ChoiceChip(
-              label: Text(cat),
+              label: Text(name),
               selected: isSelected,
               onSelected: (selected) {
                 if (selected) {
                   setState(() {
-                    _selectedCategory = cat;
+                    _selectedTypeOrCategory = name;
                   });
                 }
               },
@@ -320,54 +328,123 @@ class _ShopPageState extends State<ShopPage> {
     );
   }
 
-  List<Widget> _buildCategorySections(
+  List<Widget> _buildTypeSections(
     BuildContext context,
     List<ProductEntity> allProducts,
-    List<CategoryEntity> categories,
     bool isDark,
   ) {
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
     final textColorSecondary = isDark
         ? Colors.white.withValues(alpha: 0.65)
         : const Color(0xFF64748B);
-    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
-
-    List<Widget> sectionWidgets = [];
 
     // Filter products by search query first if provided
-    List<ProductEntity> filteredBySearch = allProducts;
+    List<ProductEntity> filteredList = allProducts;
     if (_searchQuery.isNotEmpty) {
       final query = _searchQuery.toLowerCase();
-      filteredBySearch = allProducts.where((p) {
+      filteredList = allProducts.where((p) {
         final nameMatch = p.name.toLowerCase().contains(query);
         final descMatch = p.description?.toLowerCase().contains(query) ?? false;
         final catMatch = p.category?.toLowerCase().contains(query) ?? false;
-        return nameMatch || descMatch || catMatch;
+        final typeMatch = p.type?.toLowerCase().contains(query) ?? false;
+        return nameMatch || descMatch || catMatch || typeMatch;
       }).toList();
     }
 
-    // Group products by Category
-    Map<String, List<ProductEntity>> categoryMap = {};
-
-    // Initialize with known categories to preserve section order
-    for (final cat in categories) {
-      categoryMap[cat.name] = [];
+    // Helper functions to filter products by type
+    List<ProductEntity> filterByType(String tag) {
+      return filteredList.where((p) {
+        final t = (p.type ?? '').toLowerCase();
+        final n = p.name.toLowerCase();
+        if (tag == 'open') {
+          return t.contains('open') || n.contains('open');
+        } else if (tag == 'box') {
+          return t.contains('box') || n.contains('box');
+        } else if (tag == 'hot_cold_normal') {
+          return t.contains('hot') || t.contains('cold') || n.contains('hot') || n.contains('dispenser');
+        } else if (tag == 'cabinet') {
+          return t.contains('cabinet') || n.contains('cabinet');
+        }
+        return false;
+      }).toList();
     }
 
-    for (final product in filteredBySearch) {
-      final cat = product.category ?? 'RO Water Purifiers';
-      if (!categoryMap.containsKey(cat)) {
-        categoryMap[cat] = [];
+    final openProducts = filterByType('open');
+    final boxProducts = filterByType('box');
+    final hotColdProducts = filterByType('hot_cold_normal');
+    final cabinetProducts = filterByType('cabinet');
+
+    List<Widget> sections = [];
+
+    // Helper to add a ProductTypeSection if it matches selected filter
+    void addSectionIfMatches({
+      required String filterTitle,
+      required String sectionTitle,
+      required String typeTag,
+      required String subtitle,
+      required IconData icon,
+      required Color accentColor,
+      required List<ProductEntity> products,
+    }) {
+      if (_selectedTypeOrCategory == 'All' || _selectedTypeOrCategory == filterTitle) {
+        sections.add(
+          ProductTypeSection(
+            title: sectionTitle,
+            typeTag: typeTag,
+            subtitle: subtitle,
+            icon: icon,
+            accentColor: accentColor,
+            products: products,
+          ),
+        );
+        sections.add(const Gap(24));
       }
-      categoryMap[cat]!.add(product);
     }
 
-    // Filter by selected category pill if not 'All'
-    if (_selectedCategory != 'All') {
-      categoryMap.removeWhere((catName, _) => catName != _selectedCategory);
-    }
+    // 1. Open Type Purifiers
+    addSectionIfMatches(
+      filterTitle: 'Open Type',
+      sectionTitle: 'Open Type Purifiers',
+      typeTag: 'open',
+      subtitle: 'Traditional open-top water purifiers',
+      icon: Icons.water_drop_rounded,
+      accentColor: AppColors.primary,
+      products: openProducts,
+    );
 
-    if (categoryMap.isEmpty || categoryMap.values.every((list) => list.isEmpty)) {
+    // 2. Box Type Purifiers
+    addSectionIfMatches(
+      filterTitle: 'Box Type',
+      sectionTitle: 'Box Type Purifiers',
+      typeTag: 'box',
+      subtitle: 'Compact box-style water purifiers',
+      icon: Icons.inventory_2_rounded,
+      accentColor: AppColors.secondary,
+      products: boxProducts,
+    );
+
+    // 3. Hot Cold Normal
+    addSectionIfMatches(
+      filterTitle: 'Hot Cold Normal',
+      sectionTitle: 'Hot Cold Normal',
+      typeTag: 'hot_cold_normal',
+      subtitle: 'Multi-temperature water dispensers',
+      icon: Icons.thermostat_rounded,
+      accentColor: AppColors.actionOrange,
+      products: hotColdProducts,
+    );
+
+    // 4. Cabinet Type
+    addSectionIfMatches(
+      filterTitle: 'Cabinet Type',
+      sectionTitle: 'Cabinet Type Purifiers',
+      typeTag: 'cabinet',
+      subtitle: 'Premium cabinet-style purifiers',
+      icon: Icons.kitchen_rounded,
+      accentColor: AppColors.actionPurple,
+      products: cabinetProducts,
+    );
+
+    if (sections.isEmpty) {
       return [
         const Gap(60),
         Center(
@@ -385,102 +462,7 @@ class _ShopPageState extends State<ShopPage> {
       ];
     }
 
-    categoryMap.forEach((categoryName, products) {
-      if (products.isEmpty) return;
-
-      sectionWidgets.add(
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Category Name Header
-              Row(
-                children: [
-                  Container(
-                    width: 4,
-                    height: 18,
-                    decoration: BoxDecoration(
-                      color: accentColor,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                  const Gap(8),
-                  Text(
-                    categoryName,
-                    style: GoogleFonts.outfit(
-                      color: textColorPrimary,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.2,
-                    ),
-                  ),
-                ],
-              ),
-              // "See All >" Link Button
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => CategoryShopPage(
-                        categoryName: categoryName,
-                        products: categoryMap[categoryName] ?? [],
-                      ),
-                    ),
-                  );
-                },
-                borderRadius: BorderRadius.circular(8),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'See All',
-                        style: GoogleFonts.inter(
-                          color: accentColor,
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Gap(2),
-                      Icon(
-                        Icons.chevron_right_rounded,
-                        color: accentColor,
-                        size: 18,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-
-      // Horizontal Product List
-      sectionWidgets.add(
-        SizedBox(
-          height: 290,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            itemCount: products.length,
-            itemBuilder: (context, index) {
-              return ShopProductCard(
-                product: products[index],
-                isHorizontal: true,
-              );
-            },
-          ),
-        ),
-      );
-
-      sectionWidgets.add(const Gap(12));
-    });
-
-    sectionWidgets.add(const Gap(24));
-    return sectionWidgets;
+    sections.add(const Gap(80));
+    return sections;
   }
 }
