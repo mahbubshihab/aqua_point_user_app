@@ -9,7 +9,6 @@ import '../../../products/domain/entities/product_entity.dart';
 import '../../../products/presentation/bloc/products_bloc.dart';
 import '../../../products/presentation/bloc/products_state.dart';
 import '../../../products/presentation/pages/product_detail_page.dart';
-import '../../domain/entities/invoice_entity.dart';
 import '../../domain/entities/order_entity.dart';
 import '../../domain/entities/service_request_entity.dart';
 import '../bloc/services_bloc.dart';
@@ -37,9 +36,9 @@ class _ServicesHistoryPageState extends State<ServicesHistoryPage>
   void initState() {
     super.initState();
     _tabController = TabController(
-      length: 3,
+      length: 2,
       vsync: this,
-      initialIndex: widget.initialTabIndex,
+      initialIndex: widget.initialTabIndex > 1 ? 1 : widget.initialTabIndex,
     );
     _tabController.addListener(_handleTabSelection);
 
@@ -137,7 +136,6 @@ class _ServicesHistoryPageState extends State<ServicesHistoryPage>
               tabs: const [
                 Tab(text: 'Services'),
                 Tab(text: 'Orders'),
-                Tab(text: 'Invoices'),
               ],
             ),
           ),
@@ -203,7 +201,6 @@ class _ServicesHistoryPageState extends State<ServicesHistoryPage>
               children: [
                 _ServicesTabContent(servicesList: state.servicesList),
                 _OrdersTabContent(ordersList: state.ordersList),
-                _InvoicesTabContent(invoicesList: state.invoicesList),
               ],
             );
           }
@@ -759,134 +756,6 @@ class _OrdersTabContent extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-    );
-  }
-}
-
-class _InvoicesTabContent extends StatelessWidget {
-  final List<InvoiceEntity> invoicesList;
-
-  const _InvoicesTabContent({required this.invoicesList});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final cardBgColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final cardBorderColor = isDark
-        ? const Color(0xFF334155)
-        : const Color(0xFFE2E8F0);
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
-
-    return RefreshIndicator(
-      color: isDark ? const Color(0xFF00BCE1) : AppColors.primary,
-      backgroundColor: theme.cardColor,
-      onRefresh: () async {
-        context.read<ServicesBloc>().add(const LoadServicesHistory());
-        await Future.delayed(const Duration(milliseconds: 600));
-      },
-      child: invoicesList.isEmpty
-          ? const _EmptyStateView(
-              title: 'No history found',
-              subtitle: 'You have no billing or invoice records.',
-              icon: Icons.receipt_long_outlined,
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 120),
-              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-              cacheExtent: 800,
-              itemCount: invoicesList.length,
-              itemBuilder: (context, index) {
-                final item = invoicesList[index];
-                return RepaintBoundary(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: cardBgColor,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: isDark
-                            ? [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.25),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ]
-                            : AppShadows.soft,
-                        border: Border.all(color: cardBorderColor),
-                      ),
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? const Color(0xFF00BCE1).withValues(alpha: 0.15)
-                                  : AppColors.primaryLight,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.receipt_long_rounded,
-                              color: isDark ? const Color(0xFF00BCE1) : AppColors.primary,
-                              size: 24,
-                            ),
-                          ),
-                          const Gap(16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  item.id,
-                                  style: GoogleFonts.outfit(
-                                    color: textColorPrimary,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const Gap(4),
-                                Text(
-                                  item.date,
-                                  style: GoogleFonts.inter(
-                                    color: textColorSecondary,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                '৳${item.amount.toStringAsFixed(0)}',
-                                style: GoogleFonts.inter(
-                                  color: textColorPrimary,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const Gap(6),
-                              StatBadge(
-                                text: item.status,
-                                backgroundColor: AppColors.success.withValues(alpha: 0.15),
-                                textColor: AppColors.success,
-                              ),
-                            ],
-                          ),
-                        ],
                       ),
                     ),
                   ),
