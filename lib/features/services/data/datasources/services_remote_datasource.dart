@@ -133,48 +133,102 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
 
   @override
   Future<List<OrderEntity>> getOrdersHistory() async {
-    final userId = await _getCurrentUserId();
-    QuerySnapshot<Map<String, dynamic>> snapshot;
-    try {
-      snapshot = await firestore
-          .collection('orders')
-          .where('userId', isEqualTo: userId)
-          .orderBy('createdAt', descending: true)
-          .limit(10)
-          .get();
-    } catch (_) {
-      try {
-        snapshot = await firestore
-            .collection('orders')
-            .where('customerPhone', isEqualTo: userId)
-            .limit(10)
-            .get();
-      } catch (_) {
-        snapshot = await firestore
-            .collection('orders')
-            .limit(10)
-            .get();
+    final userPhone = await localDatasource.getUserPhone();
+    final localUserId = await localDatasource.getUserId();
+    final authUid = auth.currentUser?.uid;
+
+    final List<Future<QuerySnapshot<Map<String, dynamic>>>> queries = [];
+
+    if (userPhone != null && userPhone.isNotEmpty) {
+      queries.add(firestore.collection('orders').where('phone', isEqualTo: userPhone).get());
+      queries.add(firestore.collection('orders').where('customerPhone', isEqualTo: userPhone).get());
+      queries.add(firestore.collection('orders').where('userId', isEqualTo: userPhone).get());
+    }
+    if (authUid != null && authUid.isNotEmpty) {
+      queries.add(firestore.collection('orders').where('userId', isEqualTo: authUid).get());
+    }
+    if (localUserId != null && localUserId.isNotEmpty) {
+      queries.add(firestore.collection('orders').where('userId', isEqualTo: localUserId).get());
+    }
+
+    final Map<String, QueryDocumentSnapshot<Map<String, dynamic>>> uniqueDocs = {};
+
+    if (queries.isNotEmpty) {
+      final results = await Future.wait(
+        queries.map((q) => q.catchError((_) => firestore.collection('orders').limit(0).get())),
+      );
+
+      for (final snapshot in results) {
+        for (final doc in snapshot.docs) {
+          uniqueDocs[doc.id] = doc;
+        }
       }
     }
 
-    return snapshot.docs.map((docSnap) {
+    final docList = uniqueDocs.values.toList();
+
+    docList.sort((a, b) {
+      final aData = a.data();
+      final bData = b.data();
+      final aTime = _getTimestamp(aData['createdAt'], aData['date']);
+      final bTime = _getTimestamp(bData['createdAt'], bData['date']);
+      return bTime.compareTo(aTime);
+    });
+
+    return docList.map((docSnap) {
       final data = docSnap.data();
       final items = data['items'] as List<dynamic>?;
-      final title = (items != null && items.isNotEmpty)
-          ? (items[0]['name'] ?? 'Purifier Order')
-          : (data['title'] ?? 'RO Water Purifier Order');
+
+      final id = (data['orderId'] != null && data['orderId'].toString().isNotEmpty)
+          ? data['orderId'].toString()
+          : docSnap.id;
+
+      String title = 'RO Water Purifier Order';
+      if (items != null && items.isNotEmpty && items[0] is Map && items[0]['name'] != null) {
+        title = items[0]['name'].toString();
+      } else if (data['title'] != null && data['title'].toString().isNotEmpty) {
+        title = data['title'].toString();
+      }
+
+      String dateStr = '';
+      if (data['date'] != null && data['date'].toString().isNotEmpty) {
+        dateStr = data['date'].toString();
+      } else if (data['createdAt'] != null) {
+        if (data['createdAt'] is Timestamp) {
+          dateStr = (data['createdAt'] as Timestamp).toDate().toString();
+        } else {
+          dateStr = data['createdAt'].toString();
+        }
+      }
+
+      final amountNum = data['totalAmount'] ?? data['amount'];
+      final amount = (amountNum as num?)?.toDouble() ?? 0.0;
+
+      final status = (data['status'] ?? 'Pending').toString().toUpperCase();
+
       return OrderEntity(
-        id: docSnap.id,
+        id: id,
         title: title,
-        date: data['createdAt'] != null
-            ? data['createdAt'].toString()
-            : (data['date'] ?? ''),
-        amount: (data['totalAmount'] as num?)?.toDouble() ??
-            (data['amount'] as num?)?.toDouble() ??
-            0.0,
-        status: data['status'] ?? 'Pending',
+        date: dateStr,
+        amount: amount,
+        status: status,
       );
     }).toList();
+  }
+
+  int _getTimestamp(dynamic createdAt, dynamic date) {
+    if (createdAt is Timestamp) {
+      return createdAt.millisecondsSinceEpoch;
+    }
+    if (createdAt is String && createdAt.isNotEmpty) {
+      final dt = DateTime.tryParse(createdAt);
+      if (dt != null) return dt.millisecondsSinceEpoch;
+    }
+    if (date is String && date.isNotEmpty) {
+      final dt = DateTime.tryParse(date);
+      if (dt != null) return dt.millisecondsSinceEpoch;
+    }
+    return 0;
   }
 
   @override

@@ -67,19 +67,24 @@ class _CheckoutPageState extends State<CheckoutPage> {
     final itemsPayload = cartState.items.map((item) => item.toMap()).toList();
     final userId = FirebaseAuth.instance.currentUser?.uid ?? 'guest_user';
 
+    final phone = _phoneController.text.trim();
+    final address = _addressController.text.trim();
+
     final orderData = {
       'orderId': orderId,
       'userId': userId,
       'customerName': _nameController.text.trim(),
-      'phone': _phoneController.text.trim(),
-      'address': _addressController.text.trim(),
+      'phone': phone,
+      'customerPhone': phone,
+      'address': address,
+      'shippingAddress': address,
       'deliveryInstructions': _instructionsController.text.trim(),
       'paymentMethod': _selectedPaymentMethod,
       'items': itemsPayload,
       'subtotal': cartState.subtotal,
       'shippingFee': cartState.shippingFee,
       'totalAmount': cartState.totalAmount,
-      'status': 'pending',
+      'status': 'Pending',
       'createdAt': FieldValue.serverTimestamp(),
       'date': dateStr,
     };
