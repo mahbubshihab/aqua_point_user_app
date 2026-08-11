@@ -23,11 +23,9 @@ class CheckoutPage extends StatefulWidget {
 
 class _CheckoutPageState extends State<CheckoutPage> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController(text: 'Shihab Hossain');
-  final _phoneController = TextEditingController(text: '01712345678');
-  final _addressController = TextEditingController(
-    text: 'House 12, Road 4, Sector 7, Uttara, Dhaka',
-  );
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _addressController = TextEditingController();
   final _instructionsController = TextEditingController();
 
   String _selectedPaymentMethod = 'Cash on Delivery';
@@ -255,12 +253,22 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         const Gap(10),
                         AppCard(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text(
+                                'Full Name',
+                                style: GoogleFonts.inter(
+                                  color: textColorSecondary,
+                                  fontSize: 12.5,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const Gap(6),
                               TextFormField(
                                 controller: _nameController,
                                 style: GoogleFonts.inter(color: textColorPrimary, fontSize: 14),
                                 decoration: _buildInputDecoration(
-                                  label: 'Full Name',
+                                  hintText: 'Enter your full name',
                                   prefixIcon: Icons.person_outline_rounded,
                                   isDark: isDark,
                                   accentColor: accentColor,
@@ -275,12 +283,21 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 },
                               ),
                               const Gap(12),
+                              Text(
+                                'Phone Number',
+                                style: GoogleFonts.inter(
+                                  color: textColorSecondary,
+                                  fontSize: 12.5,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const Gap(6),
                               TextFormField(
                                 controller: _phoneController,
                                 keyboardType: TextInputType.phone,
                                 style: GoogleFonts.inter(color: textColorPrimary, fontSize: 14),
                                 decoration: _buildInputDecoration(
-                                  label: 'Phone Number',
+                                  hintText: '01XXXXXXXXX',
                                   prefixIcon: Icons.phone_outlined,
                                   isDark: isDark,
                                   accentColor: accentColor,
@@ -298,12 +315,21 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 },
                               ),
                               const Gap(12),
+                              Text(
+                                'Delivery Address',
+                                style: GoogleFonts.inter(
+                                  color: textColorSecondary,
+                                  fontSize: 12.5,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const Gap(6),
                               TextFormField(
                                 controller: _addressController,
                                 maxLines: 2,
                                 style: GoogleFonts.inter(color: textColorPrimary, fontSize: 14),
                                 decoration: _buildInputDecoration(
-                                  label: 'Delivery Address',
+                                  hintText: 'House, Road, Area, City',
                                   prefixIcon: Icons.home_outlined,
                                   isDark: isDark,
                                   accentColor: accentColor,
@@ -318,11 +344,20 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 },
                               ),
                               const Gap(12),
+                              Text(
+                                'Instructions (Optional)',
+                                style: GoogleFonts.inter(
+                                  color: textColorSecondary,
+                                  fontSize: 12.5,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const Gap(6),
                               TextFormField(
                                 controller: _instructionsController,
                                 style: GoogleFonts.inter(color: textColorPrimary, fontSize: 14),
                                 decoration: _buildInputDecoration(
-                                  label: 'Delivery Instructions (Optional)',
+                                  hintText: 'Special delivery instructions',
                                   prefixIcon: Icons.note_alt_outlined,
                                   isDark: isDark,
                                   accentColor: accentColor,
@@ -640,7 +675,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   }
 
   InputDecoration _buildInputDecoration({
-    required String label,
+    required String hintText,
     required IconData prefixIcon,
     required bool isDark,
     required Color accentColor,
@@ -648,15 +683,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
     required Color textColorSecondary,
   }) {
     return InputDecoration(
-      labelText: label,
-      labelStyle: GoogleFonts.inter(
-        color: textColorSecondary,
+      hintText: hintText,
+      hintStyle: GoogleFonts.inter(
+        color: textColorSecondary.withValues(alpha: 0.6),
         fontSize: 13,
-      ),
-      floatingLabelStyle: GoogleFonts.inter(
-        color: accentColor,
-        fontSize: 13,
-        fontWeight: FontWeight.w600,
       ),
       prefixIcon: Icon(prefixIcon, size: 18, color: accentColor),
       filled: true,
