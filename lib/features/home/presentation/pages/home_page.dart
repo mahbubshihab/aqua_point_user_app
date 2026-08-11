@@ -77,6 +77,7 @@ class _HomePageState extends State<HomePage> {
             }
 
             if (state is HomeLoaded) {
+              final topPadding = MediaQuery.paddingOf(context).top;
               return RefreshIndicator(
                 color: theme.colorScheme.primary,
                 backgroundColor: theme.colorScheme.surface,
@@ -84,15 +85,16 @@ class _HomePageState extends State<HomePage> {
                   context.read<HomeBloc>().add(const LoadHomeData());
                   await Future.delayed(const Duration(milliseconds: 600));
                 },
-                child: SingleChildScrollView(
+                child: CustomScrollView(
                   physics: const BouncingScrollPhysics(
                     parent: AlwaysScrollableScrollPhysics(),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // 1. Header Banner (with smooth theme toggle)
-                      HomeHeaderBanner(
+                  slivers: [
+                    // 1. Sticky Header Banner
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: _StickyHeaderDelegate(
+                        topPadding: topPadding,
                         onProfileTap: () {
                           Navigator.push(
                             context,
@@ -100,10 +102,12 @@ class _HomePageState extends State<HomePage> {
                           );
                         },
                       ),
-                      const Gap(14),
+                    ),
 
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    // 2. Homepage Content Sections
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -235,8 +239,8 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               );
             }
@@ -246,6 +250,40 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+}
+
+/// Custom delegate for pinning HomeHeaderBanner in CustomScrollView
+class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final double topPadding;
+  final VoidCallback onProfileTap;
+
+  _StickyHeaderDelegate({
+    required this.topPadding,
+    required this.onProfileTap,
+  });
+
+  @override
+  double get minExtent => topPadding + 76.0;
+
+  @override
+  double get maxExtent => topPadding + 76.0;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return HomeHeaderBanner(
+      onProfileTap: onProfileTap,
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _StickyHeaderDelegate oldDelegate) {
+    return oldDelegate.topPadding != topPadding ||
+        oldDelegate.onProfileTap != onProfileTap;
   }
 }
 
@@ -280,3 +318,4 @@ class _AnimatedSection extends StatelessWidget {
     );
   }
 }
+

@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_gradients.dart';
-import '../../../../core/theme/theme_provider.dart';
 import '../../../../core/widgets/animated_theme_toggle_button.dart';
 import '../../../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../../../features/auth/presentation/bloc/auth_state.dart';
@@ -20,7 +18,7 @@ class HomeHeaderBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final topPadding = MediaQuery.of(context).padding.top;
+    final topPadding = MediaQuery.paddingOf(context).top;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
     // Get userId from AuthBloc
@@ -30,86 +28,90 @@ class HomeHeaderBanner extends StatelessWidget {
       userId = authState.userId;
     }
 
-    return ClipPath(
-      clipper: _HeaderClipper(),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: isDarkMode
-              ? const LinearGradient(
-                  colors: [Color(0xFF0F172A), Color(0xFF0284C7)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-              : AppGradients.primary,
+    return Container(
+      decoration: BoxDecoration(
+        gradient: isDarkMode
+            ? const LinearGradient(
+                colors: [Color(0xFF0F172A), Color(0xFF0284C7)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
+            : AppGradients.primary,
+        borderRadius: const BorderRadius.vertical(
+          bottom: Radius.circular(20.0),
         ),
-        padding: EdgeInsets.only(
-          left: 16.0,
-          right: 16.0,
-          top: topPadding + 16.0,
-          bottom: 32.0, // extra padding for the curve
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Left: Greeting & Brand
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Image.asset(
-                          'assets/images/app_logo.png',
-                          height: 20,
-                          width: 20,
-                          fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) => const Icon(
-                            Icons.water_drop_rounded,
-                            size: 20,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'AQUA POINT',
-                        style: GoogleFonts.outfit(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  _buildGreeting(userId),
-                ],
-              ),
-            ),
-            
-            // Right: Actions
-            Row(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      padding: EdgeInsets.only(
+        left: 16.0,
+        right: 16.0,
+        top: topPadding + 10.0,
+        bottom: 12.0,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Left: Greeting & Brand
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const AnimatedThemeToggleButton(showLabel: false),
-                const SizedBox(width: 12),
-                _buildProfileAvatar(userId),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Image.asset(
+                        'assets/images/app_logo.png',
+                        height: 18,
+                        width: 18,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) => const Icon(
+                          Icons.water_drop_rounded,
+                          size: 18,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'AQUA POINT',
+                      style: GoogleFonts.outfit(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                _buildGreeting(userId),
               ],
             ),
-          ],
-        ),
+          ),
+          
+          // Right: Actions
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const AnimatedThemeToggleButton(showLabel: false),
+              const SizedBox(width: 10),
+              _buildProfileAvatar(userId),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -119,7 +121,7 @@ class HomeHeaderBanner extends StatelessWidget {
       return Text(
         'Welcome back!',
         style: GoogleFonts.inter(
-          fontSize: 20,
+          fontSize: 17,
           fontWeight: FontWeight.w600,
           color: Colors.white,
         ),
@@ -142,7 +144,7 @@ class HomeHeaderBanner extends StatelessWidget {
         return Text(
           name,
           style: GoogleFonts.inter(
-            fontSize: 20,
+            fontSize: 17,
             fontWeight: FontWeight.w600,
             color: Colors.white,
           ),
@@ -157,8 +159,8 @@ class HomeHeaderBanner extends StatelessWidget {
     return GestureDetector(
       onTap: onProfileTap,
       child: Container(
-        width: 44,
-        height: 44,
+        width: 40,
+        height: 40,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Colors.white.withValues(alpha: 0.2),
@@ -179,7 +181,7 @@ class HomeHeaderBanner extends StatelessWidget {
                         child: Image.network(
                           data['avatarUrl'],
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => const Icon(Icons.person, color: Colors.white),
+                          errorBuilder: (context, error, stackTrace) => const Icon(Icons.person, color: Colors.white),
                         ),
                       );
                     }
@@ -190,63 +192,5 @@ class HomeHeaderBanner extends StatelessWidget {
       ),
     );
   }
-  Widget _buildThemeToggle(BuildContext context, bool isDarkMode) {
-    return GestureDetector(
-      onTap: () {
-        Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-      },
-      child: Container(
-        width: 44,
-        height: 44,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.white.withValues(alpha: 0.2),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.5),
-            width: 2,
-          ),
-        ),
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 400),
-          transitionBuilder: (Widget child, Animation<double> animation) {
-            return RotationTransition(
-              turns: child.key == const ValueKey('icon_moon')
-                  ? Tween<double>(begin: -0.25, end: 0.0).animate(animation)
-                  : Tween<double>(begin: 0.25, end: 0.0).animate(animation),
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
-            );
-          },
-          child: Icon(
-            isDarkMode ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-            key: ValueKey(isDarkMode ? 'icon_sun' : 'icon_moon'),
-            color: Colors.white,
-            size: 20,
-          ),
-        ),
-      ),
-    );
-  }
 }
 
-class _HeaderClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.lineTo(0, size.height - 20);
-    path.quadraticBezierTo(
-      size.width / 2,
-      size.height,
-      size.width,
-      size.height - 20,
-    );
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
-}
