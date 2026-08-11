@@ -520,26 +520,32 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                 // Authenticated State (Logged-In User)
                 if (!_isFormExpanded) ...[
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.edit_note_rounded,
-                            color: AppColors.primary,
-                            size: 22,
-                          ),
-                          Gap(8),
-                          Text(
-                            'Write a Product Review',
-                            style: GoogleFonts.inter(
-                              color: AppColors.textPrimary,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
+                      Expanded(
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.edit_note_rounded,
+                              color: AppColors.primary,
+                              size: 22,
                             ),
-                          ),
-                        ],
+                            const Gap(8),
+                            Expanded(
+                              child: Text(
+                                'Write a Product Review',
+                                style: GoogleFonts.inter(
+                                  color: AppColors.textPrimary,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                      const Gap(8),
                       ElevatedButton.icon(
                         onPressed: () {
                           setState(() {
