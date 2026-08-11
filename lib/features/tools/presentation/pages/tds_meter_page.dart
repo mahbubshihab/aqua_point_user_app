@@ -3,7 +3,6 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_shadows.dart';
-import '../../../../core/widgets/stat_badge.dart';
 import '../../../home/domain/entities/water_quality_entity.dart';
 
 typedef WaterQualityDetailPage = TdsMeterPage;

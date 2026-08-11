@@ -6,12 +6,10 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../home/presentation/widgets/product_type_section.dart';
 import '../../../orders/presentation/bloc/cart_bloc.dart';
 import '../../../orders/presentation/pages/cart_page.dart';
-import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/product_entity.dart';
 import '../bloc/products_bloc.dart';
 import '../bloc/products_event.dart';
 import '../bloc/products_state.dart';
-import 'category_shop_page.dart';
 
 class ShopPage extends StatefulWidget {
   const ShopPage({super.key});
