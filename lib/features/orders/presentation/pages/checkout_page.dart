@@ -250,8 +250,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Section 1: Customer Shipping & Contact Information
-                        _buildSectionHeader('Shipping & Contact Info', Icons.location_on_outlined, textColorPrimary, accentColor),
+                        // Section 1: Customer Shipping Details
+                        _buildSectionHeader('Shipping Details', Icons.location_on_outlined, textColorPrimary, accentColor),
                         const Gap(10),
                         AppCard(
                           child: Column(
@@ -259,12 +259,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               TextFormField(
                                 controller: _nameController,
                                 style: GoogleFonts.inter(color: textColorPrimary, fontSize: 14),
-                                decoration: InputDecoration(
-                                  labelText: 'Full Name *',
-                                  labelStyle: GoogleFonts.inter(color: textColorSecondary),
-                                  hintText: 'Enter recipient name',
-                                  hintStyle: GoogleFonts.inter(color: textColorSecondary),
-                                  prefixIcon: Icon(Icons.person_outline, size: 20, color: accentColor),
+                                decoration: _buildInputDecoration(
+                                  label: 'Full Name',
+                                  prefixIcon: Icons.person_outline_rounded,
+                                  isDark: isDark,
+                                  accentColor: accentColor,
+                                  borderColor: borderColor,
+                                  textColorSecondary: textColorSecondary,
                                 ),
                                 validator: (value) {
                                   if (value == null || value.trim().isEmpty) {
@@ -278,12 +279,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 controller: _phoneController,
                                 keyboardType: TextInputType.phone,
                                 style: GoogleFonts.inter(color: textColorPrimary, fontSize: 14),
-                                decoration: InputDecoration(
-                                  labelText: 'Phone Number *',
-                                  labelStyle: GoogleFonts.inter(color: textColorSecondary),
-                                  hintText: '017XXXXXXXX',
-                                  hintStyle: GoogleFonts.inter(color: textColorSecondary),
-                                  prefixIcon: Icon(Icons.phone_outlined, size: 20, color: accentColor),
+                                decoration: _buildInputDecoration(
+                                  label: 'Phone Number',
+                                  prefixIcon: Icons.phone_outlined,
+                                  isDark: isDark,
+                                  accentColor: accentColor,
+                                  borderColor: borderColor,
+                                  textColorSecondary: textColorSecondary,
                                 ),
                                 validator: (value) {
                                   if (value == null || value.trim().isEmpty) {
@@ -300,12 +302,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 controller: _addressController,
                                 maxLines: 2,
                                 style: GoogleFonts.inter(color: textColorPrimary, fontSize: 14),
-                                decoration: InputDecoration(
-                                  labelText: 'Delivery Address *',
-                                  labelStyle: GoogleFonts.inter(color: textColorSecondary),
-                                  hintText: 'House no, Road, Area, District',
-                                  hintStyle: GoogleFonts.inter(color: textColorSecondary),
-                                  prefixIcon: Icon(Icons.home_outlined, size: 20, color: accentColor),
+                                decoration: _buildInputDecoration(
+                                  label: 'Delivery Address',
+                                  prefixIcon: Icons.home_outlined,
+                                  isDark: isDark,
+                                  accentColor: accentColor,
+                                  borderColor: borderColor,
+                                  textColorSecondary: textColorSecondary,
                                 ),
                                 validator: (value) {
                                   if (value == null || value.trim().isEmpty) {
@@ -318,12 +321,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               TextFormField(
                                 controller: _instructionsController,
                                 style: GoogleFonts.inter(color: textColorPrimary, fontSize: 14),
-                                decoration: InputDecoration(
-                                  labelText: 'Delivery Instructions (Optional)',
-                                  labelStyle: GoogleFonts.inter(color: textColorSecondary),
-                                  hintText: 'e.g. Leave with security guard, call before delivery',
-                                  hintStyle: GoogleFonts.inter(color: textColorSecondary),
-                                  prefixIcon: Icon(Icons.note_alt_outlined, size: 20, color: accentColor),
+                                decoration: _buildInputDecoration(
+                                  label: 'Delivery Instructions (Optional)',
+                                  prefixIcon: Icons.note_alt_outlined,
+                                  isDark: isDark,
+                                  accentColor: accentColor,
+                                  borderColor: borderColor,
+                                  textColorSecondary: textColorSecondary,
                                 ),
                               ),
                             ],
@@ -332,7 +336,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         const Gap(20),
 
                         // Section 2: Order Items Breakdown List
-                        _buildSectionHeader('Order Items (${cartState.totalItemCount})', Icons.shopping_bag_outlined, textColorPrimary, accentColor),
+                        _buildSectionHeader('Items (${cartState.totalItemCount})', Icons.shopping_bag_outlined, textColorPrimary, accentColor),
                         const Gap(10),
                         AppCard(
                           child: ListView.separated(
@@ -361,106 +365,90 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                               errorBuilder: (context, error, stackTrace) => Icon(
                                                 Icons.water_drop_rounded,
                                                 color: accentColor,
-                                                size: 24,
+                                                size: 22,
                                               ),
                                             )
                                           : Icon(
                                               Icons.water_drop_rounded,
                                               color: accentColor,
-                                              size: 24,
+                                              size: 22,
                                             ),
                                     ),
                                   ),
                                   const Gap(12),
                                   Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                    child: Text(
+                                      item.name,
+                                      style: GoogleFonts.inter(
+                                        color: textColorPrimary,
+                                        fontSize: 13.5,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const Gap(8),
+
+                                  // Compact Quantity Controls (- 1 +)
+                                  Container(
+                                    height: 32,
+                                    decoration: BoxDecoration(
+                                      color: itemBoxBg,
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(color: borderColor),
+                                    ),
+                                    child: Row(
                                       children: [
+                                        InkWell(
+                                          onTap: () {
+                                            context.read<CartBloc>().add(
+                                                  UpdateQuantity(
+                                                    itemId: item.id,
+                                                    quantity: item.quantity - 1,
+                                                  ),
+                                                );
+                                          },
+                                          borderRadius: const BorderRadius.horizontal(left: Radius.circular(8)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                                            child: Icon(Icons.remove, size: 14, color: textColorPrimary),
+                                          ),
+                                        ),
                                         Text(
-                                          item.name,
+                                          '${item.quantity}',
                                           style: GoogleFonts.inter(
                                             color: textColorPrimary,
-                                            fontSize: 13.5,
+                                            fontSize: 12.5,
                                             fontWeight: FontWeight.bold,
                                           ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                        const Gap(2),
-                                        Text(
-                                          '৳${item.price.toStringAsFixed(0)} each',
-                                          style: GoogleFonts.inter(
-                                            color: textColorSecondary,
-                                            fontSize: 12,
+                                        InkWell(
+                                          onTap: () {
+                                            context.read<CartBloc>().add(
+                                                  UpdateQuantity(
+                                                    itemId: item.id,
+                                                    quantity: item.quantity + 1,
+                                                  ),
+                                                );
+                                          },
+                                          borderRadius: const BorderRadius.horizontal(right: Radius.circular(8)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                                            child: Icon(Icons.add, size: 14, color: accentColor),
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-
-                                  // Quantity Controls (+ / -)
-                                  Row(
-                                    children: [
-                                      Container(
-                                        height: 32,
-                                        decoration: BoxDecoration(
-                                          color: itemBoxBg,
-                                          borderRadius: BorderRadius.circular(8),
-                                          border: Border.all(color: borderColor),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            InkWell(
-                                              onTap: () {
-                                                context.read<CartBloc>().add(
-                                                      UpdateQuantity(
-                                                        itemId: item.id,
-                                                        quantity: item.quantity - 1,
-                                                      ),
-                                                    );
-                                              },
-                                              borderRadius: const BorderRadius.horizontal(left: Radius.circular(8)),
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 8),
-                                                child: Icon(Icons.remove, size: 14, color: textColorPrimary),
-                                              ),
-                                            ),
-                                            Text(
-                                              '${item.quantity}',
-                                              style: GoogleFonts.inter(
-                                                color: textColorPrimary,
-                                                fontSize: 12.5,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            InkWell(
-                                              onTap: () {
-                                                context.read<CartBloc>().add(
-                                                      UpdateQuantity(
-                                                        itemId: item.id,
-                                                        quantity: item.quantity + 1,
-                                                      ),
-                                                    );
-                                              },
-                                              borderRadius: const BorderRadius.horizontal(right: Radius.circular(8)),
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 8),
-                                                child: Icon(Icons.add, size: 14, color: accentColor),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const Gap(8),
-                                      Text(
-                                        '৳${(item.price * item.quantity).toStringAsFixed(0)}',
-                                        style: GoogleFonts.inter(
-                                          color: accentColor,
-                                          fontSize: 13.5,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
+                                  const Gap(12),
+                                  Text(
+                                    '৳${NumberFormat('#,##0').format(item.price * item.quantity)}',
+                                    style: GoogleFonts.inter(
+                                      color: accentColor,
+                                      fontSize: 13.5,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ],
                               );
@@ -477,26 +465,32 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             children: [
                               _buildPaymentOption(
                                 title: 'Cash on Delivery',
-                                subtitle: 'Pay with cash upon delivery of products',
-                                icon: Icons.money_rounded,
+                                icon: Icons.local_shipping_outlined,
                                 value: 'Cash on Delivery',
                                 isDark: isDark,
+                                textColorPrimary: textColorPrimary,
+                                textColorSecondary: textColorSecondary,
+                                accentColor: accentColor,
+                                borderColor: borderColor,
                               ),
-                              Divider(color: borderColor, height: 16),
+                              const Gap(8),
                               _buildPaymentOption(
-                                title: 'bKash / Nagad / Mobile Banking',
-                                subtitle: 'Pay via MFS gateway during delivery',
+                                title: 'Mobile Banking (bKash / Nagad)',
                                 icon: Icons.account_balance_wallet_outlined,
-                                value: 'Mobile Banking',
+                                value: 'Mobile Banking (bKash / Nagad)',
                                 isDark: isDark,
+                                textColorPrimary: textColorPrimary,
+                                textColorSecondary: textColorSecondary,
+                                accentColor: accentColor,
+                                borderColor: borderColor,
                               ),
                             ],
                           ),
                         ),
                         const Gap(20),
 
-                        // Section 4: Price Summary Breakdown
-                        _buildSectionHeader('Payment Summary', Icons.receipt_long_outlined, textColorPrimary, accentColor),
+                        // Section 4: Summary Breakdown
+                        _buildSectionHeader('Summary', Icons.receipt_long_outlined, textColorPrimary, accentColor),
                         const Gap(10),
                         AppCard(
                           child: Column(
@@ -509,7 +503,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                     style: GoogleFonts.inter(color: textColorSecondary, fontSize: 13.5),
                                   ),
                                   Text(
-                                    '৳${cartState.subtotal.toStringAsFixed(0)}',
+                                    '৳${NumberFormat('#,##0').format(cartState.subtotal)}',
                                     style: GoogleFonts.inter(color: textColorPrimary, fontSize: 13.5, fontWeight: FontWeight.w600),
                                   ),
                                 ],
@@ -519,12 +513,18 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Delivery Fee',
+                                    'Delivery',
                                     style: GoogleFonts.inter(color: textColorSecondary, fontSize: 13.5),
                                   ),
                                   Text(
-                                    '৳${cartState.shippingFee.toStringAsFixed(0)}',
-                                    style: GoogleFonts.inter(color: textColorPrimary, fontSize: 13.5, fontWeight: FontWeight.w600),
+                                    cartState.shippingFee == 0
+                                        ? 'Free'
+                                        : '৳${NumberFormat('#,##0').format(cartState.shippingFee)}',
+                                    style: GoogleFonts.inter(
+                                      color: cartState.shippingFee == 0 ? Colors.green : textColorPrimary,
+                                      fontSize: 13.5,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -533,7 +533,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Total Payable',
+                                    'Total',
                                     style: GoogleFonts.inter(
                                       color: textColorPrimary,
                                       fontSize: 14.5,
@@ -541,7 +541,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                     ),
                                   ),
                                   Text(
-                                    '৳${cartState.totalAmount.toStringAsFixed(0)}',
+                                    '৳${NumberFormat('#,##0').format(cartState.totalAmount)}',
                                     style: GoogleFonts.outfit(
                                       color: accentColor,
                                       fontSize: 18,
@@ -559,7 +559,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   ),
                 ),
 
-                // Bottom Sticky Bar & "Confirm Order" Button
+                // Bottom Sticky Bar & "Place Order" Button
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -583,14 +583,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'Total Payable',
+                              'Total',
                               style: GoogleFonts.inter(
                                 color: textColorSecondary,
                                 fontSize: 11.5,
                               ),
                             ),
                             Text(
-                              '৳${cartState.totalAmount.toStringAsFixed(0)}',
+                              '৳${NumberFormat('#,##0').format(cartState.totalAmount)}',
                               style: GoogleFonts.outfit(
                                 color: accentColor,
                                 fontSize: 18,
@@ -607,8 +607,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               backgroundColor: accentColor,
                               foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
-                              elevation: 4,
-                              shadowColor: accentColor.withValues(alpha: 0.4),
+                              elevation: 2,
+                              shadowColor: accentColor.withValues(alpha: 0.3),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -626,16 +626,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        'CONFIRM ORDER',
+                                        'Place Order',
                                         style: GoogleFonts.inter(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.5,
                                         ),
                                       ),
                                       const Gap(6),
                                       Icon(
-                                        Icons.check_circle_rounded,
+                                        Icons.arrow_forward_rounded,
                                         color: isDark ? const Color(0xFF020810) : Colors.white,
                                         size: 18,
                                       ),
@@ -655,16 +654,62 @@ class _CheckoutPageState extends State<CheckoutPage> {
     );
   }
 
+  InputDecoration _buildInputDecoration({
+    required String label,
+    required IconData prefixIcon,
+    required bool isDark,
+    required Color accentColor,
+    required Color borderColor,
+    required Color textColorSecondary,
+  }) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: GoogleFonts.inter(
+        color: textColorSecondary,
+        fontSize: 13,
+      ),
+      floatingLabelStyle: GoogleFonts.inter(
+        color: accentColor,
+        fontSize: 13,
+        fontWeight: FontWeight.w600,
+      ),
+      prefixIcon: Icon(prefixIcon, size: 18, color: accentColor),
+      filled: true,
+      fillColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: borderColor),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: borderColor),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: accentColor, width: 1.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: AppColors.accentRed),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: AppColors.accentRed, width: 1.5),
+      ),
+    );
+  }
+
   Widget _buildSectionHeader(String title, IconData icon, Color textColor, Color accentColor) {
     return Row(
       children: [
-        Icon(icon, color: accentColor, size: 20),
+        Icon(icon, color: accentColor, size: 18),
         const Gap(8),
         Text(
           title,
           style: GoogleFonts.outfit(
             color: textColor,
-            fontSize: 16,
+            fontSize: 15,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -674,17 +719,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   Widget _buildPaymentOption({
     required String title,
-    required String subtitle,
     required IconData icon,
     required String value,
     required bool isDark,
+    required Color textColorPrimary,
+    required Color textColorSecondary,
+    required Color accentColor,
+    required Color borderColor,
   }) {
     final isSelected = _selectedPaymentMethod == value;
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
-    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
 
     return InkWell(
       onTap: () {
@@ -692,47 +735,42 @@ class _CheckoutPageState extends State<CheckoutPage> {
           _selectedPaymentMethod = value;
         });
       },
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
+      borderRadius: BorderRadius.circular(10),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? accentColor.withValues(alpha: 0.08)
+              : (isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC)),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: isSelected ? accentColor : borderColor,
+            width: isSelected ? 1.5 : 1.0,
+          ),
+        ),
         child: Row(
           children: [
-            Radio<String>(
-              value: value,
-              groupValue: _selectedPaymentMethod,
-              activeColor: accentColor,
-              onChanged: (val) {
-                if (val != null) {
-                  setState(() {
-                    _selectedPaymentMethod = val;
-                  });
-                }
-              },
+            Icon(
+              icon,
+              color: isSelected ? accentColor : textColorSecondary,
+              size: 20,
             ),
-            Icon(icon, color: isSelected ? accentColor : textColorSecondary, size: 22),
-            const Gap(12),
+            const Gap(10),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.inter(
-                      color: textColorPrimary,
-                      fontSize: 14,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                    ),
-                  ),
-                  const Gap(2),
-                  Text(
-                    subtitle,
-                    style: GoogleFonts.inter(
-                      color: textColorSecondary,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
+              child: Text(
+                title,
+                style: GoogleFonts.inter(
+                  color: isSelected ? textColorPrimary : textColorSecondary,
+                  fontSize: 13.5,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                ),
               ),
+            ),
+            Icon(
+              isSelected ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
+              color: isSelected ? accentColor : borderColor,
+              size: 20,
             ),
           ],
         ),
