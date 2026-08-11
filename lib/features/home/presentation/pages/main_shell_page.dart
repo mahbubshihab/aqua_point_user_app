@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../inbox_support/presentation/pages/chat_conversation_page.dart';
 import '../../../products/presentation/pages/products_page.dart';
 import '../../../services/presentation/pages/services_history_page.dart';
@@ -31,11 +30,11 @@ class MainShellPage extends StatelessWidget {
           ),
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
+                  color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
                   blurRadius: 20,
                   spreadRadius: 0,
                   offset: const Offset(0, -5),
@@ -121,8 +120,8 @@ class _NavBarItem extends StatelessWidget {
               context.read<HomeBloc>().add(SelectTab(index));
             }
           },
-          splashColor: AppColors.primary.withValues(alpha: 0.1),
-          highlightColor: AppColors.primary.withValues(alpha: 0.05),
+          splashColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+          highlightColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -132,7 +131,7 @@ class _NavBarItem extends StatelessWidget {
                 height: 3,
                 width: isActive ? 20 : 0,
                 decoration: BoxDecoration(
-                  color: AppColors.primary,
+                  color: Theme.of(context).colorScheme.primary,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -141,7 +140,7 @@ class _NavBarItem extends StatelessWidget {
                 duration: const Duration(milliseconds: 200),
                 child: Icon(
                   isActive ? activeIcon : icon,
-                  color: isActive ? AppColors.primary : AppColors.textTertiary,
+                  color: isActive ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
                   size: 24,
                 ),
               ),
@@ -151,7 +150,7 @@ class _NavBarItem extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-                  color: isActive ? AppColors.primary : AppColors.textTertiary,
+                  color: isActive ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
                 ),
                 child: Text(label),
               ),

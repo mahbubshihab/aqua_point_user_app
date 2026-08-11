@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_gradients.dart';
+import '../../../../core/theme/theme_provider.dart';
 import '../../../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../../../features/auth/presentation/bloc/auth_state.dart';
 
@@ -18,6 +20,7 @@ class HomeHeaderBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
     // Get userId from AuthBloc
     final authState = context.read<AuthBloc>().state;
@@ -30,8 +33,14 @@ class HomeHeaderBanner extends StatelessWidget {
       clipper: _HeaderClipper(),
       child: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: AppGradients.primary,
+        decoration: BoxDecoration(
+          gradient: isDarkMode
+              ? const LinearGradient(
+                  colors: [Color(0xFF0D47A1), Color(0xFF004D40)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : AppGradients.primary,
         ),
         padding: EdgeInsets.only(
           left: 16.0,
@@ -87,8 +96,15 @@ class HomeHeaderBanner extends StatelessWidget {
               ),
             ),
             
-            // Right: Profile Avatar
-            _buildProfileAvatar(userId),
+            // Right: Actions
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildThemeToggle(context, isDarkMode),
+                const SizedBox(width: 12),
+                _buildProfileAvatar(userId),
+              ],
+            ),
           ],
         ),
       ),
@@ -168,6 +184,45 @@ class HomeHeaderBanner extends StatelessWidget {
                   return const Icon(Icons.person, color: Colors.white);
                 },
               ),
+      ),
+    );
+  }
+  Widget _buildThemeToggle(BuildContext context, bool isDarkMode) {
+    return GestureDetector(
+      onTap: () {
+        Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+      },
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white.withValues(alpha: 0.2),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.5),
+            width: 2,
+          ),
+        ),
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 400),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return RotationTransition(
+              turns: child.key == const ValueKey('icon_moon')
+                  ? Tween<double>(begin: -0.25, end: 0.0).animate(animation)
+                  : Tween<double>(begin: 0.25, end: 0.0).animate(animation),
+              child: FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            );
+          },
+          child: Icon(
+            isDarkMode ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+            key: ValueKey(isDarkMode ? 'icon_sun' : 'icon_moon'),
+            color: Colors.white,
+            size: 20,
+          ),
+        ),
       ),
     );
   }

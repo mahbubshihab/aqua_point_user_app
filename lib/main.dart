@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'core/constants/app_constants.dart';
 import 'core/services/bulk_sms_service.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_provider.dart';
 import 'features/auth/data/datasources/auth_local_datasource.dart';
 import 'features/auth/data/datasources/auth_remote_datasource.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
@@ -46,7 +48,7 @@ void main() async {
     );
   } catch (_) {}
 
-  // Set system UI for light theme
+  // Set system UI — will be updated dynamically by ThemeProvider
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -78,55 +80,75 @@ class MyApp extends StatelessWidget {
       datasource: InboxSupportRemoteDatasource(),
     );
 
-    return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider<ServicesRepository>.value(
-          value: servicesRepository,
-        ),
-        RepositoryProvider<ProductsRepository>.value(
-          value: productsRepository,
-        ),
-        RepositoryProvider<InboxSupportRepository>.value(
-          value: inboxSupportRepository,
-        ),
-      ],
-      child: MultiBlocProvider(
+    return ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: MultiRepositoryProvider(
         providers: [
-          BlocProvider<AuthBloc>(
-            create: (context) => AuthBloc(
-              bulkSmsService: BulkSmsService(),
-              localDatasource: AuthLocalDatasource(),
-              remoteDatasource: AuthRemoteDatasource(),
-            )..add(const CheckAuthStatus()),
+          RepositoryProvider<ServicesRepository>.value(
+            value: servicesRepository,
           ),
-          BlocProvider<CartBloc>(
-            create: (context) => CartBloc(),
+          RepositoryProvider<ProductsRepository>.value(
+            value: productsRepository,
           ),
-          BlocProvider<HomeBloc>(
-            create: (context) => HomeBloc(repository: homeRepository)
-              ..add(const LoadHomeData()),
-          ),
-          BlocProvider<ServicesBloc>(
-            create: (context) => ServicesBloc(repository: servicesRepository)
-              ..add(const LoadServicesHistory()),
-          ),
-          BlocProvider<ProductsBloc>(
-            create: (context) => ProductsBloc(repository: productsRepository)
-              ..add(const LoadProducts()),
-          ),
-          BlocProvider<InboxSupportBloc>(
-            create: (context) => InboxSupportBloc(repository: inboxSupportRepository)
-              ..add(const LoadInboxData()),
+          RepositoryProvider<InboxSupportRepository>.value(
+            value: inboxSupportRepository,
           ),
         ],
-        child: MaterialApp(
-          title: AppConstants.appTitle,
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme,
-          home: const CustomSplashPage(),
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider<AuthBloc>(
+              create: (context) => AuthBloc(
+                bulkSmsService: BulkSmsService(),
+                localDatasource: AuthLocalDatasource(),
+                remoteDatasource: AuthRemoteDatasource(),
+              )..add(const CheckAuthStatus()),
+            ),
+            BlocProvider<CartBloc>(
+              create: (context) => CartBloc(),
+            ),
+            BlocProvider<HomeBloc>(
+              create: (context) => HomeBloc(repository: homeRepository)
+                ..add(const LoadHomeData()),
+            ),
+            BlocProvider<ServicesBloc>(
+              create: (context) => ServicesBloc(repository: servicesRepository)
+                ..add(const LoadServicesHistory()),
+            ),
+            BlocProvider<ProductsBloc>(
+              create: (context) => ProductsBloc(repository: productsRepository)
+                ..add(const LoadProducts()),
+            ),
+            BlocProvider<InboxSupportBloc>(
+              create: (context) => InboxSupportBloc(repository: inboxSupportRepository)
+                ..add(const LoadInboxData()),
+            ),
+          ],
+          child: Consumer<ThemeProvider>(
+            builder: (context, themeProvider, _) {
+              // Update system UI based on theme
+              final isDark = themeProvider.isDarkMode;
+              SystemChrome.setSystemUIOverlayStyle(
+                SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+                  statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+                  systemNavigationBarColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+                  systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+                ),
+              );
+
+              return MaterialApp(
+                title: AppConstants.appTitle,
+                debugShowCheckedModeBanner: false,
+                theme: AppTheme.lightTheme,
+                darkTheme: AppTheme.darkTheme,
+                themeMode: themeProvider.themeMode,
+                home: const CustomSplashPage(),
+              );
+            },
+          ),
         ),
       ),
     );
   }
 }
-
