@@ -13,6 +13,7 @@ import '../widgets/categories_section.dart';
 import '../widgets/home_header_banner.dart';
 import '../widgets/product_type_section.dart';
 import '../widgets/promotional_banners_slider.dart';
+import '../widgets/quick_action_grid.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -115,9 +116,18 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
 
-                            if (state.banners.isNotEmpty) const Gap(20),
+                            if (state.banners.isNotEmpty) const Gap(16),
 
-                            // 3. Categories
+                            // 3. Quick Action Cards (Book Service, Shop, My Products, Support) right after banner!
+                            _AnimatedSection(
+                              animate: _startAnimations,
+                              delay: const Duration(milliseconds: 50),
+                              child: const QuickActionGrid(),
+                            ),
+
+                            const Gap(24),
+
+                            // 4. Categories
                             if (state.categories.isNotEmpty)
                               _AnimatedSection(
                                 animate: _startAnimations,
@@ -129,7 +139,7 @@ class _HomePageState extends State<HomePage> {
 
                             if (state.categories.isNotEmpty) const Gap(24),
 
-                            // 4. Product Type Sections
+                            // 5. Product Type Sections
                             if (state.openTypeProducts.isNotEmpty)
                               _AnimatedSection(
                                 animate: _startAnimations,
@@ -194,7 +204,7 @@ class _HomePageState extends State<HomePage> {
 
                             if (state.cabinetTypeProducts.isNotEmpty) const Gap(24),
 
-                            // 5. Blogs & News (at the bottom)
+                            // 6. Blogs & News (at the bottom)
                             if (state.blogs.isNotEmpty)
                               _AnimatedSection(
                                 animate: _startAnimations,
@@ -220,7 +230,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
 
-                            // 6. Bottom Padding
+                            // 7. Bottom Padding
                             const Gap(100),
                           ],
                         ),

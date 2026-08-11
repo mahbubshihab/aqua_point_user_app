@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_shadows.dart';
+import '../../../inbox_support/presentation/pages/chat_conversation_page.dart';
+import '../../../products/presentation/pages/products_page.dart';
 import '../../../products/presentation/pages/shop_page.dart';
 import '../../../services/presentation/bloc/services_bloc.dart';
 import '../../../services/presentation/pages/create_service_request_page.dart';
@@ -31,27 +32,65 @@ class QuickActionGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     final actionItems = items ??
         [
-          const QuickActionItem(
-            label: 'Request Service',
+          QuickActionItem(
+            label: 'Book Service',
             icon: Icons.home_repair_service_rounded,
-            iconColor: AppColors.primary,
+            iconColor: isDark ? const Color(0xFF00BCE1) : AppColors.primary,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider.value(
+                    value: context.read<ServicesBloc>(),
+                    child: const CreateServiceRequestPage(),
+                  ),
+                ),
+              );
+            },
           ),
-          const QuickActionItem(
+          QuickActionItem(
             label: 'Shop',
             icon: Icons.shopping_bag_rounded,
-            iconColor: AppColors.success,
+            iconColor: isDark ? const Color(0xFF10B981) : AppColors.success,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const ShopPage(),
+                ),
+              );
+            },
           ),
-          const QuickActionItem(
-            label: 'Invoices',
-            icon: Icons.receipt_long_rounded,
-            iconColor: AppColors.warning,
+          QuickActionItem(
+            label: 'My Products',
+            icon: Icons.inventory_2_rounded,
+            iconColor: isDark ? const Color(0xFFF59E0B) : AppColors.warning,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const ProductsPage(),
+                ),
+              );
+            },
           ),
-          const QuickActionItem(
+          QuickActionItem(
             label: 'Support',
             icon: Icons.support_agent_rounded,
-            iconColor: AppColors.secondary,
+            iconColor: isDark ? const Color(0xFF3B82F6) : AppColors.secondary,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const ChatConversationPage(),
+                ),
+              );
+            },
           ),
         ];
 
@@ -59,9 +98,9 @@ class QuickActionGrid extends StatelessWidget {
       crossAxisCount: 4,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-      childAspectRatio: 0.8,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      childAspectRatio: 0.82,
       children: actionItems.map((item) {
         return QuickActionTile(item: item);
       }).toList(),
@@ -87,6 +126,12 @@ class _QuickActionTileState extends State<QuickActionTile> {
   @override
   Widget build(BuildContext context) {
     final item = widget.item;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+    final cardBgColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
 
     return AnimatedScale(
       scale: _isPressed ? 0.92 : 1.0,
@@ -98,31 +143,29 @@ class _QuickActionTileState extends State<QuickActionTile> {
           setState(() => _isPressed = false);
           if (item.onTap != null) {
             item.onTap!();
-          } else if (item.label == 'Request Service' || item.label == 'Book Service') {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => BlocProvider.value(
-                  value: context.read<ServicesBloc>(),
-                  child: const CreateServiceRequestPage(),
-                ),
-              ),
-            );
-          } else if (item.label == 'Shop' || item.label == 'Buy Parts') {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const ShopPage(),
-              ),
-            );
           }
         },
         onTapCancel: () => setState(() => _isPressed = false),
         child: Container(
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: cardBgColor,
             borderRadius: BorderRadius.circular(16),
-            boxShadow: AppShadows.soft,
+            border: Border.all(color: borderColor, width: 1),
+            boxShadow: isDark
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.25),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -131,7 +174,7 @@ class _QuickActionTileState extends State<QuickActionTile> {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: item.iconColor.withValues(alpha: 0.1),
+                  color: item.iconColor.withValues(alpha: isDark ? 0.18 : 0.12),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -149,9 +192,9 @@ class _QuickActionTileState extends State<QuickActionTile> {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.inter(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textPrimary,
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.bold,
+                    color: textColorPrimary,
                     height: 1.2,
                   ),
                 ),
