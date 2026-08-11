@@ -11,6 +11,7 @@ import '../bloc/home_state.dart';
 import '../widgets/blogs_news_section.dart';
 import '../widgets/categories_section.dart';
 import '../widgets/home_header_banner.dart';
+import '../widgets/my_products_section.dart';
 import '../widgets/product_type_section.dart';
 import '../widgets/promotional_banners_slider.dart';
 import '../widgets/quick_action_grid.dart';
@@ -118,7 +119,7 @@ class _HomePageState extends State<HomePage> {
 
                             if (state.banners.isNotEmpty) const Gap(16),
 
-                            // 3. Quick Action Cards (Book Service, Shop, My Products, Support) right after banner!
+                            // 3. Quick Action Cards (Book Service, Shop, Water Reminder, Support)
                             _AnimatedSection(
                               animate: _startAnimations,
                               delay: const Duration(milliseconds: 50),
@@ -127,11 +128,20 @@ class _HomePageState extends State<HomePage> {
 
                             const Gap(24),
 
-                            // 4. Categories
+                            // 4. Dedicated My Products Section (displays product image & name) right under Quick Actions!
+                            _AnimatedSection(
+                              animate: _startAnimations,
+                              delay: const Duration(milliseconds: 100),
+                              child: const MyProductsSection(),
+                            ),
+
+                            const Gap(24),
+
+                            // 5. Categories
                             if (state.categories.isNotEmpty)
                               _AnimatedSection(
                                 animate: _startAnimations,
-                                delay: const Duration(milliseconds: 100),
+                                delay: const Duration(milliseconds: 150),
                                 child: CategoriesSection(
                                   categories: state.categories,
                                 ),
@@ -139,7 +149,7 @@ class _HomePageState extends State<HomePage> {
 
                             if (state.categories.isNotEmpty) const Gap(24),
 
-                            // 5. Product Type Sections
+                            // 6. Product Type Sections
                             if (state.openTypeProducts.isNotEmpty)
                               _AnimatedSection(
                                 animate: _startAnimations,
@@ -204,7 +214,7 @@ class _HomePageState extends State<HomePage> {
 
                             if (state.cabinetTypeProducts.isNotEmpty) const Gap(24),
 
-                            // 6. Blogs & News (at the bottom)
+                            // 7. Blogs & News (at the bottom)
                             if (state.blogs.isNotEmpty)
                               _AnimatedSection(
                                 animate: _startAnimations,
@@ -230,7 +240,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
 
-                            // 7. Bottom Padding
+                            // 8. Bottom Padding
                             const Gap(100),
                           ],
                         ),

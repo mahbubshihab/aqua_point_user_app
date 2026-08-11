@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../inbox_support/presentation/pages/chat_conversation_page.dart';
-import '../../../products/presentation/pages/products_page.dart';
 import '../../../products/presentation/pages/shop_page.dart';
 import '../../../services/presentation/bloc/services_bloc.dart';
 import '../../../services/presentation/pages/create_service_request_page.dart';
+import '../../../tools/presentation/pages/water_reminder_page.dart';
 
 class QuickActionItem {
   final String label;
@@ -67,14 +67,14 @@ class QuickActionGrid extends StatelessWidget {
             },
           ),
           QuickActionItem(
-            label: 'My Products',
-            icon: Icons.inventory_2_rounded,
+            label: 'Water Reminder',
+            icon: Icons.alarm_rounded,
             iconColor: isDark ? const Color(0xFFF59E0B) : AppColors.warning,
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => const ProductsPage(),
+                  builder: (_) => const WaterReminderPage(),
                 ),
               );
             },
