@@ -32,12 +32,14 @@ class HomeHeaderBanner extends StatelessWidget {
 
     return ClipPath(
       clipper: _HeaderClipper(),
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
         width: double.infinity,
         decoration: BoxDecoration(
           gradient: isDarkMode
               ? const LinearGradient(
-                  colors: [Color(0xFF0D47A1), Color(0xFF004D40)],
+                  colors: [Color(0xFF0F172A), Color(0xFF0284C7)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 )
