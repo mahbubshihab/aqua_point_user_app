@@ -65,6 +65,25 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final cardBg = isDark
+        ? const Color(0xFF081223).withValues(alpha: 0.85)
+        : Colors.white.withValues(alpha: 0.9);
+
+    final cardBorder = isDark
+        ? const Color(0xFF00BCE1).withValues(alpha: 0.2)
+        : const Color(0xFF0088FF).withValues(alpha: 0.25);
+
+    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textColorAccent = isDark ? const Color(0xFF00BCE1) : const Color(0xFF0088FF);
+
+    final inputBg = isDark ? const Color(0xFF0D1B2E) : const Color(0xFFF1F5F9);
+    final inputBorder = isDark
+        ? const Color(0xFF00BCE1).withValues(alpha: 0.3)
+        : const Color(0xFF0088FF).withValues(alpha: 0.3);
+
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is OtpSentState) {
@@ -87,7 +106,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         }
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFF020810),
+        backgroundColor: theme.scaffoldBackgroundColor,
         body: RainAndWavesBackground(
           child: Center(
             child: SingleChildScrollView(
@@ -97,20 +116,20 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 maxWidth: 380,
                 padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 36),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF081223).withValues(alpha: 0.85),
+                  color: cardBg,
                   borderRadius: BorderRadius.circular(28),
                   border: Border.all(
-                    color: const Color(0xFF00BCE1).withValues(alpha: 0.2),
+                    color: cardBorder,
                     width: 1.5,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.6),
+                      color: isDark ? Colors.black.withValues(alpha: 0.6) : Colors.blue.withValues(alpha: 0.08),
                       blurRadius: 50,
                       offset: const Offset(0, 20),
                     ),
                     BoxShadow(
-                      color: const Color(0xFF00BCE1).withValues(alpha: 0.1),
+                      color: textColorAccent.withValues(alpha: 0.1),
                       blurRadius: 30,
                       spreadRadius: 2,
                     ),
@@ -121,16 +140,16 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Top Glowing Cyan Border Line
+                      // Top Glowing Accent Border Line
                       Container(
                         width: 80,
                         height: 3,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF00BCE1),
+                          color: textColorAccent,
                           borderRadius: BorderRadius.circular(2),
-                          boxShadow: const [
+                          boxShadow: [
                             BoxShadow(
-                              color: Color(0xFF00BCE1),
+                              color: textColorAccent,
                               blurRadius: 10,
                               spreadRadius: 2,
                             ),
@@ -154,7 +173,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(24),
                                     border: Border.all(
-                                      color: const Color(0xFF00BCE1).withValues(alpha: 0.3),
+                                      color: textColorAccent.withValues(alpha: 0.3),
                                       width: 1.5,
                                     ),
                                   ),
@@ -165,18 +184,24 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                 height: 72,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
-                                  gradient: const LinearGradient(
-                                    colors: [Color(0xFF0A1628), Color(0xFF0D2035)],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
+                                  gradient: isDark
+                                      ? const LinearGradient(
+                                          colors: [Color(0xFF0A1628), Color(0xFF0D2035)],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        )
+                                      : const LinearGradient(
+                                          colors: [Color(0xFFE0F2FE), Color(0xFFBAE6FD)],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
                                   border: Border.all(
-                                    color: const Color(0xFF00BCE1).withValues(alpha: 0.4),
+                                    color: textColorAccent.withValues(alpha: 0.4),
                                     width: 1.5,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color(0xFF00BCE1).withValues(alpha: 0.25),
+                                      color: textColorAccent.withValues(alpha: 0.25),
                                       blurRadius: 20,
                                     ),
                                   ],
@@ -187,11 +212,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                     width: 40,
                                     height: 40,
                                     fit: BoxFit.contain,
-                                    errorBuilder: (context, error, stackTrace) =>
-                                        const Icon(
+                                    errorBuilder: (context, error, stackTrace) => Icon(
                                       Icons.water_drop_rounded,
                                       size: 36,
-                                      color: Color(0xFF00BCE1),
+                                      color: textColorAccent,
                                     ),
                                   ),
                                 ),
@@ -213,7 +237,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                 fontSize: 26,
                                 fontWeight: FontWeight.w900,
                                 letterSpacing: 3.0,
-                                color: Colors.white,
+                                color: textColorPrimary,
                               ),
                             ),
                             TextSpan(
@@ -222,10 +246,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                 fontSize: 26,
                                 fontWeight: FontWeight.w900,
                                 letterSpacing: 3.0,
-                                color: const Color(0xFF00BCE1),
+                                color: textColorAccent,
                                 shadows: [
-                                  const Shadow(
-                                    color: Color(0x9900BCE1),
+                                  Shadow(
+                                    color: textColorAccent.withValues(alpha: 0.6),
                                     blurRadius: 16,
                                   ),
                                 ],
@@ -239,12 +263,12 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       // Phone Input Container
                       Container(
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0D1B2E),
+                          color: inputBg,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: _phoneError != null
                                 ? const Color(0xFFEF4444)
-                                : const Color(0xFF00BCE1).withValues(alpha: 0.3),
+                                : inputBorder,
                             width: 1.5,
                           ),
                         ),
@@ -256,7 +280,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                               decoration: BoxDecoration(
                                 border: Border(
                                   right: BorderSide(
-                                    color: const Color(0xFF00BCE1).withValues(alpha: 0.2),
+                                    color: inputBorder,
                                     width: 1,
                                   ),
                                 ),
@@ -271,7 +295,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                     style: GoogleFonts.inter(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
-                                      color: Colors.white,
+                                      color: textColorPrimary,
                                     ),
                                   ),
                                 ],
@@ -290,13 +314,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                 style: GoogleFonts.inter(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.white,
+                                  color: textColorPrimary,
                                   letterSpacing: 1.0,
                                 ),
                                 decoration: InputDecoration(
                                   hintText: '1XXXXXXXXX',
                                   hintStyle: GoogleFonts.inter(
-                                    color: Colors.white.withValues(alpha: 0.35),
+                                    color: isDark ? Colors.white.withValues(alpha: 0.35) : const Color(0xFF94A3B8),
                                     fontSize: 15,
                                     fontWeight: FontWeight.w400,
                                   ),
@@ -342,21 +366,21 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                             child: ElevatedButton(
                               onPressed: isLoading ? null : _onSendOtpPressed,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF00BCE1),
-                                foregroundColor: const Color(0xFF020810),
+                                backgroundColor: textColorAccent,
+                                foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
                                 elevation: 8,
-                                shadowColor: const Color(0xFF00BCE1).withValues(alpha: 0.4),
+                                shadowColor: textColorAccent.withValues(alpha: 0.4),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
                               child: isLoading
-                                  ? const SizedBox(
+                                  ? SizedBox(
                                       width: 20,
                                       height: 20,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
-                                        color: Color(0xFF020810),
+                                        color: isDark ? const Color(0xFF020810) : Colors.white,
                                       ),
                                     )
                                   : Text(
@@ -374,22 +398,27 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
                       const SizedBox(height: 16),
 
-                      // "Continue with Google" Button (Matching Admin Web screenshot!)
+                      // "Continue with Google" Button
                       Container(
                         width: double.infinity,
                         height: 50,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
                           gradient: LinearGradient(
-                            colors: [
-                              const Color(0xFF00BCE1).withValues(alpha: 0.12),
-                              const Color(0xFF3E4396).withValues(alpha: 0.15),
-                            ],
+                            colors: isDark
+                                ? [
+                                    const Color(0xFF00BCE1).withValues(alpha: 0.12),
+                                    const Color(0xFF3E4396).withValues(alpha: 0.15),
+                                  ]
+                                : [
+                                    const Color(0xFFE0F2FE),
+                                    const Color(0xFFF1F5F9),
+                                  ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           border: Border.all(
-                            color: const Color(0xFF00BCE1).withValues(alpha: 0.25),
+                            color: inputBorder,
                             width: 1,
                           ),
                         ),
@@ -398,14 +427,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                           child: InkWell(
                             borderRadius: BorderRadius.circular(16),
                             onTap: () {
-                              // Fast guest login / Google sign-in demo trigger
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
                                     'Google Sign-In ready! Use Phone OTP to sign in.',
                                     style: GoogleFonts.inter(color: Colors.white),
                                   ),
-                                  backgroundColor: const Color(0xFF00BCE1),
+                                  backgroundColor: textColorAccent,
                                   behavior: SnackBarBehavior.floating,
                                 ),
                               );
@@ -413,14 +441,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                // Google Logo G
                                 Image.network(
                                   'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg',
                                   width: 20,
                                   height: 20,
-                                  errorBuilder: (context, error, stackTrace) => const Icon(
+                                  errorBuilder: (context, error, stackTrace) => Icon(
                                     Icons.g_mobiledata_rounded,
-                                    color: Colors.white,
+                                    color: textColorPrimary,
                                     size: 24,
                                   ),
                                 ),
@@ -428,7 +455,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                 Text(
                                   'Continue with Google',
                                   style: GoogleFonts.inter(
-                                    color: Colors.white,
+                                    color: textColorPrimary,
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
                                     letterSpacing: 0.3,

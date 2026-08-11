@@ -1,7 +1,8 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
-/// Animated Rain Particles + Ocean Waves Background matching Admin Web Login screen!
+/// Animated Rain Particles + Ocean Waves Background matching Admin Web ocean scene,
+/// with full support for both Dark Mode and Light Mode themes!
 class RainAndWavesBackground extends StatefulWidget {
   final Widget child;
 
@@ -25,7 +26,6 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
   void initState() {
     super.initState();
 
-    // Rain Animation Controller (60 FPS loop)
     _rainController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 50),
@@ -34,13 +34,11 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
       })
       ..repeat();
 
-    // Wave Rolling Controller
     _waveController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 6000),
     )..repeat(reverse: true);
 
-    // Initialize 120 Rain Drops
     for (int i = 0; i < 120; i++) {
       _drops.add(_createRandomDrop(isInitial: true));
     }
@@ -62,7 +60,7 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
     setState(() {
       for (var drop in _drops) {
         drop.y += drop.speed;
-        drop.x += 0.0005; // Slight slant wind effect
+        drop.x += 0.0005;
         if (drop.y > 1.1) {
           drop.y = -0.05;
           drop.x = _random.nextDouble();
@@ -81,26 +79,43 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    // Theme Dependent Palette
+    final bgGradient = isDark
+        ? const LinearGradient(
+            colors: [
+              Color(0xFF020810),
+              Color(0xFF041220),
+              Color(0xFF061828),
+              Color(0xFF0A1E30),
+              Color(0xFF0D2A3E),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          )
+        : const LinearGradient(
+            colors: [
+              Color(0xFFE0F7FA),
+              Color(0xFFE1F5FE),
+              Color(0xFFF0F9FF),
+              Color(0xFFE0F2FE),
+              Color(0xFFBAE6FD),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          );
+
+    final rainColor = isDark ? const Color(0xFF00BCE1) : const Color(0xFF0088FF);
 
     return Stack(
       children: [
-        // 1. Deep Midnight Ocean Background Gradient
+        // 1. Background Gradient
         Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF020810),
-                Color(0xFF041220),
-                Color(0xFF061828),
-                Color(0xFF0A1E30),
-                Color(0xFF0D2A3E),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
+          decoration: BoxDecoration(gradient: bgGradient),
         ),
 
         // 2. Ambient Glow Orbs
@@ -112,10 +127,14 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
             height: 320,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF00BCE1).withValues(alpha: 0.08),
+              color: isDark
+                  ? const Color(0xFF00BCE1).withValues(alpha: 0.08)
+                  : const Color(0xFF0088FF).withValues(alpha: 0.12),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF00BCE1).withValues(alpha: 0.12),
+                  color: isDark
+                      ? const Color(0xFF00BCE1).withValues(alpha: 0.12)
+                      : const Color(0xFF0088FF).withValues(alpha: 0.15),
                   blurRadius: 100,
                   spreadRadius: 40,
                 ),
@@ -131,10 +150,14 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
             height: 280,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF3E4396).withValues(alpha: 0.12),
+              color: isDark
+                  ? const Color(0xFF3E4396).withValues(alpha: 0.12)
+                  : const Color(0xFF0284C7).withValues(alpha: 0.1),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF3E4396).withValues(alpha: 0.15),
+                  color: isDark
+                      ? const Color(0xFF3E4396).withValues(alpha: 0.15)
+                      : const Color(0xFF0284C7).withValues(alpha: 0.12),
                   blurRadius: 90,
                   spreadRadius: 30,
                 ),
@@ -146,7 +169,7 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
         // 3. Falling Rain Canvas
         CustomPaint(
           size: size,
-          painter: _RainPainter(_drops),
+          painter: _RainPainter(_drops, rainColor),
         ),
 
         // 4. Animated Ocean Waves at Bottom
@@ -160,7 +183,7 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
             builder: (context, child) {
               return CustomPaint(
                 size: Size(size.width, 180),
-                painter: _OceanWavesPainter(_waveController.value),
+                painter: _OceanWavesPainter(_waveController.value, isDark),
               );
             },
           ),
@@ -195,8 +218,9 @@ class _RainDrop {
 
 class _RainPainter extends CustomPainter {
   final List<_RainDrop> drops;
+  final Color rainColor;
 
-  _RainPainter(this.drops);
+  _RainPainter(this.drops, this.rainColor);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -209,8 +233,8 @@ class _RainPainter extends CustomPainter {
       final paint = Paint()
         ..shader = LinearGradient(
           colors: [
-            const Color(0xFF00BCE1).withValues(alpha: 0.0),
-            const Color(0xFF00BCE1).withValues(alpha: drop.opacity),
+            rainColor.withValues(alpha: 0.0),
+            rainColor.withValues(alpha: drop.opacity),
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -228,15 +252,28 @@ class _RainPainter extends CustomPainter {
 
 class _OceanWavesPainter extends CustomPainter {
   final double progress;
+  final bool isDark;
 
-  _OceanWavesPainter(this.progress);
+  _OceanWavesPainter(this.progress, this.isDark);
 
   @override
   void paint(Canvas canvas, Size size) {
     final width = size.width;
     final height = size.height;
 
-    // Wave 1 - Deep Background Wave
+    final color1 = isDark
+        ? const Color(0xFF001E32).withValues(alpha: 0.85)
+        : const Color(0xFFB2EBF2).withValues(alpha: 0.7);
+
+    final color2 = isDark
+        ? const Color(0xFF003250).withValues(alpha: 0.5)
+        : const Color(0xFF80DEEA).withValues(alpha: 0.5);
+
+    final color3 = isDark
+        ? const Color(0xFF00BCE1).withValues(alpha: 0.08)
+        : const Color(0xFF00BCE1).withValues(alpha: 0.2);
+
+    // Wave 1
     final path1 = Path();
     path1.moveTo(0, height * 0.5);
     for (double i = 0; i <= width; i++) {
@@ -246,9 +283,9 @@ class _OceanWavesPainter extends CustomPainter {
     path1.lineTo(width, height);
     path1.lineTo(0, height);
     path1.close();
-    canvas.drawPath(path1, Paint()..color = const Color(0xFF001E32).withValues(alpha: 0.85));
+    canvas.drawPath(path1, Paint()..color = color1);
 
-    // Wave 2 - Midground Cyan Wave
+    // Wave 2
     final path2 = Path();
     path2.moveTo(0, height * 0.6);
     for (double i = 0; i <= width; i++) {
@@ -258,9 +295,9 @@ class _OceanWavesPainter extends CustomPainter {
     path2.lineTo(width, height);
     path2.lineTo(0, height);
     path2.close();
-    canvas.drawPath(path2, Paint()..color = const Color(0xFF003250).withValues(alpha: 0.5));
+    canvas.drawPath(path2, Paint()..color = color2);
 
-    // Wave 3 - Foreground Aqua Accent Wave
+    // Wave 3
     final path3 = Path();
     path3.moveTo(0, height * 0.7);
     for (double i = 0; i <= width; i++) {
@@ -270,7 +307,7 @@ class _OceanWavesPainter extends CustomPainter {
     path3.lineTo(width, height);
     path3.lineTo(0, height);
     path3.close();
-    canvas.drawPath(path3, Paint()..color = const Color(0xFF00BCE1).withValues(alpha: 0.08));
+    canvas.drawPath(path3, Paint()..color = color3);
   }
 
   @override
