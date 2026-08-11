@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_gradients.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../auth/presentation/pages/login_page.dart';
@@ -103,8 +103,6 @@ class _CustomSplashPageState extends State<CustomSplashPage>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is Authenticated) {
@@ -118,50 +116,16 @@ class _CustomSplashPageState extends State<CustomSplashPage>
         }
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFF0B101D),
+        backgroundColor: AppColors.background,
         body: Stack(
           children: [
-            // Ambient glowing background orbs
-            Positioned(
-              top: size.height * 0.25,
-              left: size.width * 0.15,
-              child: AnimatedBuilder(
-                animation: _pulseController,
-                builder: (context, child) {
-                  return Container(
-                    width: 280 * _pulseAnimation.value,
-                    height: 280 * _pulseAnimation.value,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.primary.withValues(alpha: 0.12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.2),
-                          blurRadius: 120,
-                          spreadRadius: 40,
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-            Positioned(
-              bottom: size.height * 0.15,
-              right: size.width * 0.1,
-              child: Container(
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: const Color(0xFF0088FF).withValues(alpha: 0.08),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF0088FF).withValues(alpha: 0.15),
-                      blurRadius: 100,
-                      spreadRadius: 30,
-                    ),
-                  ],
+            // Ambient light background with a subtle gradient
+            Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [AppColors.surface, AppColors.primaryLight],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
               ),
             ),
@@ -179,43 +143,31 @@ class _CustomSplashPageState extends State<CustomSplashPage>
                       ScaleTransition(
                         scale: _pulseAnimation,
                         child: Container(
-                          width: 128,
-                          height: 128,
+                          width: 120,
+                          height: 120,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF141D30), Color(0xFF1A2640)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            border: Border.all(
-                              color: AppColors.primary.withValues(alpha: 0.6),
-                              width: 2,
-                            ),
+                            gradient: AppGradients.primary,
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.primary.withValues(alpha: 0.4),
-                                blurRadius: 30,
+                                color: AppColors.primary.withValues(alpha: 0.3),
+                                blurRadius: 24,
                                 spreadRadius: 4,
+                                offset: const Offset(0, 8),
                               ),
                             ],
                           ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(64),
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                              child: Padding(
-                                padding: const EdgeInsets.all(22.0),
-                                child: Image.asset(
-                                  'assets/images/app_logo.png',
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(
-                                    Icons.water_drop_rounded,
-                                    size: 64,
-                                    color: AppColors.primary,
-                                  ),
-                                ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(24.0),
+                            child: Image.asset(
+                              'assets/images/app_logo.png',
+                              fit: BoxFit.contain,
+                              color: Colors.white,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(
+                                Icons.water_drop_rounded,
+                                size: 56,
+                                color: Colors.white,
                               ),
                             ),
                           ),
@@ -225,48 +177,38 @@ class _CustomSplashPageState extends State<CustomSplashPage>
                       const SizedBox(height: 32),
 
                       // Brand Name
-                      ShaderMask(
-                        shaderCallback: (bounds) => const LinearGradient(
-                          colors: [Color(0xFF00E5FF), Color(0xFF00B0FF), Colors.white],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ).createShader(bounds),
-                        child: Text(
-                          'AQUA POINT',
-                          style: GoogleFonts.outfit(
-                            fontSize: 34,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 4.0,
-                            color: Colors.white,
-                          ),
+                      Text(
+                        'AQUA POINT',
+                        style: GoogleFonts.outfit(
+                          fontSize: 34,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 3.0,
+                          color: AppColors.primary,
                         ),
                       ),
 
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 8),
 
                       // Tagline
                       Text(
-                        'PURE WATER • PURE LIFE',
+                        'Pure Water, Better Life',
                         style: GoogleFonts.inter(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 2.5,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 1.0,
                           color: AppColors.textSecondary,
                         ),
                       ),
 
-                      const SizedBox(height: 48),
+                      const SizedBox(height: 56),
 
-                      // Sleek Cyan Progress Indicator
-                      SizedBox(
-                        width: 140,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: const LinearProgressIndicator(
-                            minHeight: 3,
-                            backgroundColor: Color(0xFF1E293B),
-                            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-                          ),
+                      // Circular Progress Indicator
+                      const SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 3,
+                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
                         ),
                       ),
                     ],
@@ -277,15 +219,16 @@ class _CustomSplashPageState extends State<CustomSplashPage>
 
             // Bottom Version
             Positioned(
-              bottom: 24,
+              bottom: 32,
               left: 0,
               right: 0,
               child: Text(
                 'v1.0.0',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.mono(
-                  fontSize: 11,
-                  color: Colors.white24,
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  color: AppColors.textTertiary,
+                  fontWeight: FontWeight.w500,
                   letterSpacing: 1.0,
                 ),
               ),

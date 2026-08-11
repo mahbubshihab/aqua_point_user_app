@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/glass_card.dart';
+import '../../../../core/theme/app_gradients.dart';
+import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../../home/presentation/pages/main_shell_page.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
@@ -57,11 +59,10 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
               widget.apiMessage!,
               style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
             ),
-            backgroundColor: AppColors.cardBackground,
+            backgroundColor: AppColors.textPrimary,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
-              side: const BorderSide(color: AppColors.divider),
             ),
           ),
         );
@@ -100,7 +101,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please enter 6-digit code'),
-          backgroundColor: AppColors.accentRed,
+          backgroundColor: AppColors.error,
         ),
       );
       return;
@@ -129,29 +130,22 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
       textStyle: GoogleFonts.outfit(
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        color: Colors.white,
+        color: AppColors.textPrimary,
       ),
       decoration: BoxDecoration(
-        color: AppColors.inputFill,
+        color: AppColors.background,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.divider, width: 1.2),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.border, width: 1.5),
       ),
     );
 
     final focusedPinTheme = defaultPinTheme.copyWith(
       decoration: defaultPinTheme.decoration!.copyWith(
-        border: Border.all(color: const Color(0xFF00E5FF), width: 2),
+        border: Border.all(color: AppColors.primary, width: 2),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF00E5FF).withValues(alpha: 0.4),
-            blurRadius: 16,
+            color: AppColors.primary.withValues(alpha: 0.15),
+            blurRadius: 10,
             spreadRadius: 1,
           ),
         ],
@@ -160,7 +154,8 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
 
     final submittedPinTheme = defaultPinTheme.copyWith(
       decoration: defaultPinTheme.decoration!.copyWith(
-        border: Border.all(color: const Color(0xFF00E5FF), width: 1.5),
+        border: Border.all(color: AppColors.primary, width: 1.5),
+        color: AppColors.primaryLight.withValues(alpha: 0.3),
       ),
     );
 
@@ -174,11 +169,10 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                   state.apiMessage!,
                   style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
                 ),
-                backgroundColor: AppColors.cardBackground,
+                backgroundColor: AppColors.textPrimary,
                 behavior: SnackBarBehavior.floating,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
-                  side: const BorderSide(color: AppColors.divider),
                 ),
               ),
             );
@@ -193,232 +187,241 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
-              backgroundColor: AppColors.accentRed,
+              backgroundColor: AppColors.error,
             ),
           );
         }
       },
       child: Scaffold(
         backgroundColor: AppColors.background,
-        appBar: AppBar(
-          backgroundColor: AppColors.background,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ),
-        body: Stack(
-          children: [
-            // Background cyan glow
-            Positioned(
-              top: -40,
-              left: -50,
-              child: Container(
-                width: 280,
-                height: 280,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.primary.withValues(alpha: 0.12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.25),
-                      blurRadius: 120,
-                      spreadRadius: 50,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            SafeArea(
-              child: Center(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-                  child: Column(
-                    children: [
-                      // Header: Verify OTP Title
-                      Text(
-                        'Verify OTP',
-                        style: GoogleFonts.outfit(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 1.0,
-                          color: Colors.white,
-                          shadows: [
-                            Shadow(
-                              color: AppColors.primary.withValues(alpha: 0.4),
-                              blurRadius: 14,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-
-                      // Phone Number Badge
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: AppColors.primary.withValues(alpha: 0.4),
-                            width: 1,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Header Section with Wave
+              ClipPath(
+                clipper: _WaveClipper(),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.45,
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    gradient: AppGradients.primaryVertical,
+                  ),
+                  child: SafeArea(
+                    bottom: false,
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          top: 10,
+                          left: 10,
+                          child: IconButton(
+                            icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+                            onPressed: () => Navigator.pop(context),
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primary.withValues(alpha: 0.15),
-                              blurRadius: 12,
-                            ),
-                          ],
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.phone_android_rounded,
-                              size: 16,
-                              color: AppColors.primary,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              _formattedPhone,
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                                letterSpacing: 0.5,
+                        Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 80,
+                                height: 80,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(alpha: 0.1),
+                                      blurRadius: 20,
+                                      offset: const Offset(0, 10),
+                                    ),
+                                  ],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Image.asset(
+                                    'assets/images/app_logo.png',
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (context, error, stackTrace) =>
+                                        const Icon(
+                                      Icons.water_drop_rounded,
+                                      size: 40,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 20),
+                              Text(
+                                'AQUA POINT',
+                                style: GoogleFonts.outfit(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 2.0,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Pure Water, Better Life',
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white.withValues(alpha: 0.9),
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                            ],
+                          ),
                         ),
-                      ),
-
-                      const SizedBox(height: 36),
-
-                      // Glassmorphic OTP Card
-                      GlassCard(
-                        borderRadius: 24.0,
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 28.0),
-                        fillColor: const Color(0x281E293B),
-                        borderColor: AppColors.divider,
-                        child: Column(
-                          children: [
-                            // 6-Digit Glassmorphic Pinput
-                            Pinput(
-                              length: 6,
-                              controller: _pinController,
-                              focusNode: _pinFocusNode,
-                              autofocus: true,
-                              autofillHints: const [AutofillHints.oneTimeCode],
-                              defaultPinTheme: defaultPinTheme,
-                              focusedPinTheme: focusedPinTheme,
-                              submittedPinTheme: submittedPinTheme,
-                              onCompleted: (pin) {
-                                _onVerifyPressed();
-                              },
-                            ),
-                            const SizedBox(height: 28),
-
-                            // Primary Button Verify with Cyan Gradient & Glow
-                            BlocBuilder<AuthBloc, AuthState>(
-                              builder: (context, state) {
-                                final isLoading = state is AuthLoading;
-
-                                return Container(
-                                  width: double.infinity,
-                                  height: 52,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16),
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xFF00E5FF),
-                                        Color(0xFF0090B8),
-                                      ],
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: const Color(0xFF00E5FF).withValues(alpha: 0.35),
-                                        blurRadius: 16,
-                                        spreadRadius: 0,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      onTap: isLoading ? null : _onVerifyPressed,
-                                      borderRadius: BorderRadius.circular(16),
-                                      child: Center(
-                                        child: isLoading
-                                            ? const SizedBox(
-                                                width: 22,
-                                                height: 22,
-                                                child: CircularProgressIndicator(
-                                                  strokeWidth: 2.5,
-                                                  color: Colors.black,
-                                                ),
-                                              )
-                                            : Text(
-                                                'Verify',
-                                                style: GoogleFonts.inter(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w700,
-                                                  color: Colors.black,
-                                                  letterSpacing: 0.5,
-                                                ),
-                                              ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 20),
-
-                            // Minimal Resend Timer
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                if (_timerSeconds > 0)
-                                  Text(
-                                    'Resend in ${_timerSeconds}s',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  )
-                                else
-                                  GestureDetector(
-                                    onTap: _onResendOtp,
-                                    child: Text(
-                                      'Resend Code',
-                                      style: GoogleFonts.inter(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w700,
-                                        color: const Color(0xFF00E5FF),
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+
+              // OTP Card
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Transform.translate(
+                  offset: const Offset(0, -40),
+                  child: AppCard(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 28.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Verify OTP',
+                          style: GoogleFonts.outfit(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'We sent a 6-digit code to',
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryLight,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Text(
+                            _formattedPhone,
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 28),
+
+                        // 6-Digit Pinput
+                        Pinput(
+                          length: 6,
+                          controller: _pinController,
+                          focusNode: _pinFocusNode,
+                          autofocus: true,
+                          autofillHints: const [AutofillHints.oneTimeCode],
+                          defaultPinTheme: defaultPinTheme,
+                          focusedPinTheme: focusedPinTheme,
+                          submittedPinTheme: submittedPinTheme,
+                          onCompleted: (pin) {
+                            _onVerifyPressed();
+                          },
+                        ),
+                        const SizedBox(height: 32),
+
+                        // Verify Button
+                        BlocBuilder<AuthBloc, AuthState>(
+                          builder: (context, state) {
+                            final isLoading = state is AuthLoading;
+                            return AppButton(
+                              text: 'Verify',
+                              isLoading: isLoading,
+                              onPressed: isLoading ? null : _onVerifyPressed,
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Resend Timer
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (_timerSeconds > 0)
+                              Text(
+                                'Resend in ${_timerSeconds}s',
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.textSecondary,
+                                ),
+                              )
+                            else
+                              GestureDetector(
+                                onTap: _onResendOtp,
+                                child: Text(
+                                  'Resend Code',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
+class _WaveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.lineTo(0, size.height - 40);
+    
+    final firstControlPoint = Offset(size.width / 4, size.height);
+    final firstEndPoint = Offset(size.width / 2, size.height - 20);
+    path.quadraticBezierTo(
+      firstControlPoint.dx, 
+      firstControlPoint.dy, 
+      firstEndPoint.dx, 
+      firstEndPoint.dy,
+    );
+    
+    final secondControlPoint = Offset(size.width - (size.width / 4), size.height - 40);
+    final secondEndPoint = Offset(size.width, size.height - 10);
+    path.quadraticBezierTo(
+      secondControlPoint.dx, 
+      secondControlPoint.dy, 
+      secondEndPoint.dx, 
+      secondEndPoint.dy,
+    );
+    
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}

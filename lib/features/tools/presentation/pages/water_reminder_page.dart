@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/glass_card.dart';
+import '../../../../core/theme/app_shadows.dart';
 
 class WaterReminderPage extends StatefulWidget {
   const WaterReminderPage({super.key});
@@ -39,7 +40,10 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Added $amount ml of water! Stay hydrated 💧'),
+        content: Text(
+          'Added $amount ml of water! Stay hydrated 💧',
+          style: GoogleFonts.inter(),
+        ),
         duration: const Duration(seconds: 2),
         backgroundColor: AppColors.primary,
         behavior: SnackBarBehavior.floating,
@@ -62,24 +66,31 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.surface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textPrimary, size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: AppColors.textPrimary,
+            size: 20,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Water Hydration & Reminder',
-          style: TextStyle(
+          style: GoogleFonts.outfit(
             color: AppColors.textPrimary,
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh_rounded, color: AppColors.textSecondary),
+            icon: const Icon(
+              Icons.refresh_rounded,
+              color: AppColors.textSecondary,
+            ),
             onPressed: _resetToday,
             tooltip: 'Reset Today\'s Water Intake',
           ),
@@ -87,53 +98,44 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Streak Banner
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+                  colors: [AppColors.primary, AppColors.secondary],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x403B82F6),
-                    blurRadius: 10,
-                    offset: Offset(0, 4),
-                  ),
-                ],
+                boxShadow: AppShadows.medium,
               ),
               child: Row(
                 children: [
-                  const Text(
-                    '🔥',
-                    style: TextStyle(fontSize: 26),
-                  ),
-                  const Gap(12),
+                  const Text('🔥', style: TextStyle(fontSize: 32)),
+                  const Gap(16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           '$_streakDays Days Hydration Streak!',
-                          style: const TextStyle(
+                          style: GoogleFonts.outfit(
                             color: Colors.white,
-                            fontSize: 14,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const Gap(2),
-                        const Text(
+                        const Gap(4),
+                        Text(
                           'Keep up the great work to boost your health & energy.',
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 11.5,
+                          style: GoogleFonts.inter(
+                            color: Colors.white.withValues(alpha: 0.9),
+                            fontSize: 13,
                           ),
                         ),
                       ],
@@ -142,25 +144,32 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
                 ],
               ),
             ),
-            const Gap(16),
+            const Gap(24),
 
             // Progress Circular Display Card
-            GlassCard(
-              padding: const EdgeInsets.all(20),
-              borderRadius: 20,
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: AppShadows.soft,
+                border: Border.all(color: AppColors.border),
+              ),
               child: Column(
                 children: [
                   Stack(
                     alignment: Alignment.center,
                     children: [
                       SizedBox(
-                        width: 170,
-                        height: 170,
+                        width: 200,
+                        height: 200,
                         child: CircularProgressIndicator(
                           value: progress,
-                          strokeWidth: 14,
-                          backgroundColor: AppColors.inputFill,
-                          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                          strokeWidth: 16,
+                          backgroundColor: AppColors.background,
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                            AppColors.primary,
+                          ),
                           strokeCap: StrokeCap.round,
                         ),
                       ),
@@ -170,21 +179,21 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
                           const Icon(
                             Icons.water_drop_rounded,
                             color: AppColors.primary,
-                            size: 32,
+                            size: 36,
                           ),
                           const Gap(4),
                           Text(
                             '$percentage%',
-                            style: const TextStyle(
-                              fontSize: 28,
+                            style: GoogleFonts.outfit(
+                              fontSize: 36,
                               fontWeight: FontWeight.w900,
                               color: AppColors.textPrimary,
                             ),
                           ),
                           Text(
                             '$_consumedMl / $_targetMl ml',
-                            style: const TextStyle(
-                              fontSize: 12,
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
                               fontWeight: FontWeight.w600,
                               color: AppColors.textSecondary,
                             ),
@@ -193,7 +202,7 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
                       ),
                     ],
                   ),
-                  const Gap(20),
+                  const Gap(32),
 
                   // Quick Log Water Buttons
                   Row(
@@ -208,7 +217,7 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
                       _QuickAddButton(
                         label: '+ 500ml',
                         icon: Icons.water_damage_rounded,
-                        color: AppColors.accentGreen,
+                        color: AppColors.success,
                         onTap: () => _addWater(500, 'Water Bottle'),
                       ),
                       _QuickAddButton(
@@ -222,63 +231,86 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
                 ],
               ),
             ),
-            const Gap(16),
+            const Gap(24),
 
             // Daily Target Selector Card
-            GlassCard(
-              padding: const EdgeInsets.all(16),
-              borderRadius: 16,
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: AppShadows.soft,
+                border: Border.all(color: AppColors.border),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        'Daily Hydration Target',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Daily Hydration Target',
+                          style: GoogleFonts.outfit(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
                         ),
-                      ),
-                      Gap(2),
-                      Text(
-                        'Recommended: 2,500 ml for adults',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: AppColors.textSecondary,
+                        const Gap(4),
+                        Text(
+                          'Recommended: 2,500 ml for adults',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            color: AppColors.textSecondary,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.remove_circle_outline, color: AppColors.primary),
-                        onPressed: () {
-                          if (_targetMl > 1000) {
-                            setState(() => _targetMl -= 250);
-                          }
-                        },
-                      ),
-                      Text(
-                        '$_targetMl ml',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
-                          fontSize: 13,
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.background,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.remove_rounded,
+                            color: AppColors.primary,
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            if (_targetMl > 1000) {
+                              setState(() => _targetMl -= 250);
+                            }
+                          },
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.add_circle_outline, color: AppColors.primary),
-                        onPressed: () {
-                          if (_targetMl < 5000) {
-                            setState(() => _targetMl += 250);
-                          }
-                        },
-                      ),
-                    ],
+                        Text(
+                          '$_targetMl ml',
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                            fontSize: 14,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.add_rounded,
+                            color: AppColors.primary,
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            if (_targetMl < 5000) {
+                              setState(() => _targetMl += 250);
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -286,9 +318,14 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
             const Gap(16),
 
             // Reminder Notification Settings
-            GlassCard(
-              padding: const EdgeInsets.all(16),
-              borderRadius: 16,
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: AppShadows.soft,
+                border: Border.all(color: AppColors.border),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -296,13 +333,24 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
-                        children: const [
-                          Icon(Icons.notifications_active_rounded, color: AppColors.accentGold, size: 20),
-                          Gap(8),
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: AppColors.warning.withValues(alpha: 0.15),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.notifications_active_rounded,
+                              color: AppColors.warning,
+                              size: 20,
+                            ),
+                          ),
+                          const Gap(12),
                           Text(
                             'Hydration Reminders',
-                            style: TextStyle(
-                              fontSize: 13.5,
+                            style: GoogleFonts.outfit(
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: AppColors.textPrimary,
                             ),
@@ -311,7 +359,7 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
                       ),
                       Switch.adaptive(
                         value: _remindersEnabled,
-                        activeTrackColor: AppColors.primary,
+                        activeColor: AppColors.primary,
                         onChanged: (val) {
                           setState(() => _remindersEnabled = val);
                         },
@@ -319,16 +367,19 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
                     ],
                   ),
                   if (_remindersEnabled) ...[
-                    const Divider(color: AppColors.divider, height: 20),
-                    const Text(
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Divider(color: AppColors.border, height: 1),
+                    ),
+                    Text(
                       'Notification Interval',
-                      style: TextStyle(
-                        fontSize: 11.5,
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
                         color: AppColors.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const Gap(8),
+                    const Gap(12),
                     Row(
                       children: [1, 2, 3].map((hours) {
                         final isSelected = _reminderIntervalHours == hours;
@@ -339,23 +390,27 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
                             },
                             child: Container(
                               margin: const EdgeInsets.symmetric(horizontal: 4),
-                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              padding: const EdgeInsets.symmetric(vertical: 10),
                               decoration: BoxDecoration(
                                 color: isSelected
                                     ? AppColors.primary
-                                    : AppColors.inputFill,
+                                    : AppColors.background,
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
-                                  color: isSelected ? AppColors.primary : AppColors.cardBorder,
+                                  color: isSelected
+                                      ? AppColors.primary
+                                      : AppColors.border,
                                 ),
                               ),
                               alignment: Alignment.center,
                               child: Text(
                                 'Every $hours hr${hours > 1 ? 's' : ''}',
-                                style: TextStyle(
-                                  fontSize: 11.5,
+                                style: GoogleFonts.inter(
+                                  fontSize: 13,
                                   fontWeight: FontWeight.bold,
-                                  color: isSelected ? Colors.white : AppColors.textPrimary,
+                                  color: isSelected
+                                      ? Colors.white
+                                      : AppColors.textPrimary,
                                 ),
                               ),
                             ),
@@ -367,26 +422,36 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
                 ],
               ),
             ),
-            const Gap(16),
+            const Gap(24),
 
             // Today's Intake History List
-            const Text(
-              'Today\'s Water Intake Logs',
-              style: TextStyle(
-                fontSize: 14,
+            Text(
+              'Today\'s Water Logs',
+              style: GoogleFonts.outfit(
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
             ),
-            const Gap(8),
+            const Gap(16),
 
             if (_todayLogs.isEmpty)
-              const Padding(
-                padding: EdgeInsets.all(20),
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.border),
+                ),
                 child: Center(
                   child: Text(
-                    'No water logged yet today. Tap +250ml above to start!',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                    'No water logged yet today.\nTap +250ml above to start!',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                      color: AppColors.textSecondary,
+                      fontSize: 14,
+                      height: 1.5,
+                    ),
                   ),
                 ),
               )
@@ -398,45 +463,50 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
                 itemBuilder: (context, index) {
                   final log = _todayLogs[index];
                   return Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 16,
+                    ),
                     decoration: BoxDecoration(
-                      color: AppColors.cardBackground,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.cardBorder),
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: AppColors.border),
+                      boxShadow: AppShadows.soft,
                     ),
                     child: Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withValues(alpha: 0.15),
+                          padding: const EdgeInsets.all(10),
+                          decoration: const BoxDecoration(
+                            color: AppColors.primaryLight,
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
                             Icons.water_drop_rounded,
                             color: AppColors.primary,
-                            size: 16,
+                            size: 20,
                           ),
                         ),
-                        const Gap(12),
+                        const Gap(16),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 log['label']!,
-                                style: const TextStyle(
+                                style: GoogleFonts.inter(
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.textPrimary,
-                                  fontSize: 12.5,
+                                  fontSize: 15,
                                 ),
                               ),
+                              const Gap(2),
                               Text(
                                 log['time']!,
-                                style: const TextStyle(
+                                style: GoogleFonts.inter(
                                   color: AppColors.textSecondary,
-                                  fontSize: 11,
+                                  fontSize: 13,
                                 ),
                               ),
                             ],
@@ -444,10 +514,10 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
                         ),
                         Text(
                           log['amount']!,
-                          style: const TextStyle(
+                          style: GoogleFonts.outfit(
                             fontWeight: FontWeight.bold,
                             color: AppColors.primary,
-                            fontSize: 13,
+                            fontSize: 16,
                           ),
                         ),
                       ],
@@ -455,7 +525,7 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
                   );
                 },
               ),
-            const Gap(24),
+            const Gap(32),
           ],
         ),
       ),
@@ -482,24 +552,24 @@ class _QuickAddButton extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: color.withValues(alpha: 0.4)),
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: color.withValues(alpha: 0.2)),
           ),
           child: Column(
             children: [
-              Icon(icon, color: color, size: 22),
-              const Gap(4),
+              Icon(icon, color: color, size: 24),
+              const Gap(8),
               Text(
                 label,
-                style: TextStyle(
+                style: GoogleFonts.inter(
                   color: color,
                   fontWeight: FontWeight.bold,
-                  fontSize: 12,
+                  fontSize: 13,
                 ),
               ),
             ],

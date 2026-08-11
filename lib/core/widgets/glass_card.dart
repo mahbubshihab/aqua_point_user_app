@@ -1,9 +1,9 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_shadows.dart';
 
-/// True Glassmorphism Card Widget
-/// Features backdrop blur (12px), semi-transparent fill (Color(0x1F1A2236)),
-/// and a subtle glowing cyan border (Color(0x2B00E5FF)).
+/// Clean light-themed card widget.
+/// Replaces the old GlassCard (no more BackdropFilter blur for performance).
 class GlassCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
@@ -17,14 +17,14 @@ class GlassCard extends StatelessWidget {
   final VoidCallback? onTap;
   final double? width;
   final double? height;
-  final double blurSigma;
+  final double blurSigma; // kept for API compat, ignored
 
   const GlassCard({
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(16),
     this.margin,
-    this.borderRadius = 16.0,
+    this.borderRadius = 12.0,
     this.fillColor,
     this.borderColor,
     this.borderGradient,
@@ -33,80 +33,45 @@ class GlassCard extends StatelessWidget {
     this.onTap,
     this.width,
     this.height,
-    this.blurSigma = 12.0,
+    this.blurSigma = 0, // no blur
   });
 
   @override
   Widget build(BuildContext context) {
-    final effectiveFillColor = fillColor ?? const Color(0x1F1A2236);
-    final effectiveBorderColor = borderColor ?? const Color(0x2B00E5FF);
-
-    Widget innerContent = Container(
+    Widget content = Container(
       width: width,
       height: height,
       padding: padding,
       decoration: BoxDecoration(
-        color: effectiveFillColor,
-        borderRadius: BorderRadius.circular(
-          borderGradient != null ? (borderRadius - borderWidth).clamp(0.0, 999.0) : borderRadius,
+        color: fillColor ?? AppColors.surface,
+        borderRadius: BorderRadius.circular(borderRadius),
+        border: Border.all(
+          color: borderColor ?? AppColors.border,
+          width: borderWidth,
         ),
-        border: borderGradient == null
-            ? Border.all(color: effectiveBorderColor, width: borderWidth)
-            : null,
-        boxShadow: boxShadow ??
-            [
-              BoxShadow(
-                color: effectiveBorderColor.withValues(alpha: 0.1),
-                blurRadius: 12,
-                spreadRadius: 0,
-                offset: const Offset(0, 4),
-              ),
-            ],
+        boxShadow: boxShadow ?? AppShadows.soft,
       ),
       child: child,
     );
 
-    Widget content;
-    if (borderGradient != null) {
-      content = Container(
-        decoration: BoxDecoration(
-          gradient: borderGradient,
-          borderRadius: BorderRadius.circular(borderRadius),
-        ),
-        padding: EdgeInsets.all(borderWidth),
-        child: innerContent,
-      );
-    } else {
-      content = innerContent;
-    }
-
-    Widget cardWidget = ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
-        child: content,
-      ),
-    );
-
     if (onTap != null) {
-      cardWidget = Material(
+      content = Material(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(borderRadius),
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(borderRadius),
-          child: cardWidget,
+          splashColor: AppColors.primary.withValues(alpha: 0.08),
+          highlightColor: AppColors.primary.withValues(alpha: 0.04),
+          child: content,
         ),
       );
     }
 
     if (margin != null) {
-      cardWidget = Padding(
-        padding: margin!,
-        child: cardWidget,
-      );
+      content = Padding(padding: margin!, child: content);
     }
 
-    return cardWidget;
+    return content;
   }
 }

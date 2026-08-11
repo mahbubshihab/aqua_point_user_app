@@ -1,14 +1,15 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_shadows.dart';
 import '../../../../core/services/cloudinary_service.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
-import 'package:gap/gap.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -63,13 +64,14 @@ class _ProfilePageState extends State<ProfilePage> {
         final data = doc.data() as Map<String, dynamic>;
         _nameController.text = data['name'] ?? '';
         _emailController.text = data['email'] ?? '';
-        
+
         // Cleanup old root address field if present
         if (data.containsKey('address')) {
           await FirebaseFirestore.instance
               .collection('customers')
               .doc(_userId)
-              .update({'address': FieldValue.delete()}).catchError((_) {});
+              .update({'address': FieldValue.delete()})
+              .catchError((_) {});
         }
 
         setState(() {
@@ -107,7 +109,8 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         _addresses = docs;
         if (_addresses.isNotEmpty) {
-          final firstData = _addresses.first.data() as Map<String, dynamic>? ?? {};
+          final firstData =
+              _addresses.first.data() as Map<String, dynamic>? ?? {};
           _addressController.text = firstData['address'] as String? ?? '';
         }
       });
@@ -141,10 +144,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Primary address updated'),
-            backgroundColor: AppColors.primary,
-            duration: Duration(seconds: 2),
+          SnackBar(
+            content: Text(
+              'Primary address updated',
+              style: GoogleFonts.inter(),
+            ),
+            backgroundColor: AppColors.success,
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -162,19 +168,22 @@ class _ProfilePageState extends State<ProfilePage> {
           .doc(_userId)
           .collection('addresses')
           .add({
-        'address': newAddressStr.trim(),
-        'isPrimary': isFirst,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
+            'address': newAddressStr.trim(),
+            'isPrimary': isFirst,
+            'createdAt': FieldValue.serverTimestamp(),
+          });
 
       _addressController.text = newAddressStr.trim();
       await _loadAddresses();
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Address added successfully'),
-            backgroundColor: AppColors.primary,
+          SnackBar(
+            content: Text(
+              'Address added successfully',
+              style: GoogleFonts.inter(),
+            ),
+            backgroundColor: AppColors.success,
           ),
         );
       }
@@ -199,9 +208,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Address removed'),
-            backgroundColor: AppColors.accentRed,
+          SnackBar(
+            content: Text('Address removed', style: GoogleFonts.inter()),
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -215,27 +224,40 @@ class _ProfilePageState extends State<ProfilePage> {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        backgroundColor: AppColors.cardBackground,
-        title: const Text(
+        backgroundColor: AppColors.surface,
+        title: Text(
           'Add New Address',
-          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+          style: GoogleFonts.outfit(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         content: TextField(
           controller: controller,
           autofocus: true,
-          style: const TextStyle(color: AppColors.textPrimary),
+          style: GoogleFonts.inter(color: AppColors.textPrimary),
           decoration: InputDecoration(
             hintText: 'Enter complete address',
-            hintStyle: const TextStyle(color: AppColors.textSecondary),
+            hintStyle: GoogleFonts.inter(color: AppColors.textTertiary),
             filled: true,
-            fillColor: AppColors.inputFill,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+            fillColor: AppColors.background,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: AppColors.border),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: AppColors.border),
+            ),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.inter(color: AppColors.textSecondary),
+            ),
           ),
           TextButton(
             onPressed: () {
@@ -244,7 +266,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.pop(dialogContext);
               }
             },
-            child: const Text('Save', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
+            child: Text(
+              'Save',
+              style: GoogleFonts.inter(
+                color: AppColors.primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),
@@ -281,9 +309,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Avatar updated'),
-              backgroundColor: AppColors.primary,
+            SnackBar(
+              content: Text('Avatar updated', style: GoogleFonts.inter()),
+              backgroundColor: AppColors.success,
             ),
           );
         }
@@ -293,8 +321,8 @@ class _ProfilePageState extends State<ProfilePage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Upload failed: $e'),
-            backgroundColor: AppColors.accentRed,
+            content: Text('Upload failed: $e', style: GoogleFonts.inter()),
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -322,16 +350,19 @@ class _ProfilePageState extends State<ProfilePage> {
       // Save typed address in addresses sub-collection
       if (_addressController.text.trim().isNotEmpty) {
         final existing = _addresses.any(
-            (doc) => (doc['address'] as String).trim() == _addressController.text.trim());
+          (doc) =>
+              (doc['address'] as String).trim() ==
+              _addressController.text.trim(),
+        );
         if (!existing) {
           await FirebaseFirestore.instance
               .collection('customers')
               .doc(_userId)
               .collection('addresses')
               .add({
-            'address': _addressController.text.trim(),
-            'createdAt': FieldValue.serverTimestamp(),
-          });
+                'address': _addressController.text.trim(),
+                'createdAt': FieldValue.serverTimestamp(),
+              });
           await _loadAddresses();
         }
       }
@@ -340,9 +371,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile saved'),
-            backgroundColor: AppColors.primary,
+          SnackBar(
+            content: Text('Profile saved', style: GoogleFonts.inter()),
+            backgroundColor: AppColors.success,
           ),
         );
       }
@@ -350,9 +381,9 @@ class _ProfilePageState extends State<ProfilePage> {
       debugPrint('Error saving profile: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to save'),
-            backgroundColor: AppColors.accentRed,
+          SnackBar(
+            content: Text('Failed to save', style: GoogleFonts.inter()),
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -376,55 +407,112 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        backgroundColor: AppColors.background,
+        body: Center(
+          child: CircularProgressIndicator(color: AppColors.primary),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          'Personal Info',
-          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
-        ),
-        iconTheme: const IconThemeData(color: AppColors.textPrimary),
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
-          : RefreshIndicator(
-              color: AppColors.primary,
-              backgroundColor: AppColors.cardBackground,
-              onRefresh: () async {
-                await _loadProfile();
-                await _loadAddresses();
-              },
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                padding: const EdgeInsets.all(24.0),
+      body: RefreshIndicator(
+        color: AppColors.primary,
+        backgroundColor: AppColors.surface,
+        onRefresh: () async {
+          await _loadProfile();
+          await _loadAddresses();
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Gradient Header
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [AppColors.primary, AppColors.secondary],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top + 16,
+                  bottom: 32,
+                  left: 24,
+                  right: 24,
+                ),
                 child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Avatar
-                  Center(
-                    child: GestureDetector(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Profile',
+                          style: TextStyle(color: Colors.transparent),
+                        ), // Spacer
+                        Text(
+                          'Personal Info',
+                          style: GoogleFonts.outfit(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            _isEditing ? Icons.close : Icons.edit_rounded,
+                            color: Colors.white,
+                          ),
+                          onPressed: _isSaving
+                              ? null
+                              : () {
+                                  if (_isEditing) {
+                                    setState(() => _isEditing = false);
+                                    _loadProfile();
+                                  } else {
+                                    setState(() => _isEditing = true);
+                                  }
+                                },
+                        ),
+                      ],
+                    ),
+                    const Gap(24),
+                    GestureDetector(
                       onTap: _isEditing ? _pickAndUploadImage : null,
                       child: Stack(
                         children: [
-                          CircleAvatar(
-                            radius: 50,
-                            backgroundColor: AppColors.cardBackground,
-                            backgroundImage:
-                                _avatarUrl != null ? NetworkImage(_avatarUrl!) : null,
-                            child: _avatarUrl == null
-                                ? Text(
-                                    _nameController.text.isNotEmpty
-                                        ? _nameController.text[0].toUpperCase()
-                                        : '?',
-                                    style: const TextStyle(
-                                      fontSize: 36,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.primary,
-                                    ),
-                                  )
-                                : null,
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 4),
+                              boxShadow: AppShadows.medium,
+                            ),
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundColor: AppColors.surface,
+                              backgroundImage: _avatarUrl != null
+                                  ? NetworkImage(_avatarUrl!)
+                                  : null,
+                              child: _avatarUrl == null
+                                  ? Text(
+                                      _nameController.text.isNotEmpty
+                                          ? _nameController.text[0]
+                                                .toUpperCase()
+                                          : '?',
+                                      style: GoogleFonts.outfit(
+                                        fontSize: 36,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.primary,
+                                      ),
+                                    )
+                                  : null,
+                            ),
                           ),
                           if (_isUploadingAvatar)
                             Positioned.fill(
@@ -438,7 +526,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     width: 24,
                                     height: 24,
                                     child: CircularProgressIndicator(
-                                      color: AppColors.primary,
+                                      color: Colors.white,
                                       strokeWidth: 2,
                                     ),
                                   ),
@@ -452,311 +540,403 @@ class _ProfilePageState extends State<ProfilePage> {
                               child: Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: const BoxDecoration(
-                                  color: AppColors.primary,
+                                  color: AppColors.surface,
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Icon(Icons.camera_alt,
-                                    color: Colors.white, size: 16),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const Gap(32),
-
-                  // Phone Number (always read-only)
-                  _buildTextField(
-                    label: 'Phone Number',
-                    initialValue: _phoneNumber,
-                    readOnly: true,
-                    icon: Icons.lock_outline,
-                  ),
-                  const Gap(16),
-
-                  // Name
-                  _buildTextField(
-                    label: 'Full Name',
-                    controller: _nameController,
-                    readOnly: !_isEditing,
-                    hintText: 'Enter your name',
-                  ),
-                  const Gap(16),
-
-                  // Email
-                  _buildTextField(
-                    label: 'Email',
-                    controller: _emailController,
-                    readOnly: !_isEditing,
-                    hintText: 'Enter your email',
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  const Gap(24),
-
-                  // Saved Addresses Section Header
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Saved Addresses',
-                        style: TextStyle(
-                          color: AppColors.textPrimary,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      InkWell(
-                        onTap: _showAddAddressDialog,
-                        borderRadius: BorderRadius.circular(8),
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          child: Row(
-                            children: [
-                              Icon(Icons.add_circle_outline_rounded,
-                                  color: AppColors.primary, size: 18),
-                              Gap(4),
-                              Text(
-                                'Add New',
-                                style: TextStyle(
+                                child: const Icon(
+                                  Icons.camera_alt,
                                   color: AppColors.primary,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
+                                  size: 20,
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Gap(10),
-
-                  // Addresses List
-                  if (_isLoadingAddresses)
-                    const Center(
-                        child: Padding(
-                      padding: EdgeInsets.all(12.0),
-                      child: CircularProgressIndicator(
-                          color: AppColors.primary, strokeWidth: 2),
-                    ))
-                  else if (_addresses.isEmpty)
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: AppColors.inputFill.withValues(alpha: 0.5),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.cardBorder, width: 0.5),
-                      ),
-                      child: const Row(
-                        children: [
-                          Icon(Icons.location_off_outlined,
-                              color: AppColors.textSecondary, size: 20),
-                          Gap(10),
-                          Expanded(
-                            child: Text(
-                              'No saved addresses yet. Tap "+ Add New" to add one.',
-                              style: TextStyle(
-                                  color: AppColors.textSecondary, fontSize: 13),
                             ),
-                          ),
                         ],
                       ),
-                    )
-                  else
-                    Column(
-                      children: _addresses.map((doc) {
-                        final data = doc.data() as Map<String, dynamic>? ?? {};
-                        final addressStr = data['address'] as String? ?? '';
-                        final isPrimary = data['isPrimary'] == true || _addressController.text == addressStr;
-
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 8),
-                          decoration: BoxDecoration(
-                            color: isPrimary
-                                ? AppColors.primary.withValues(alpha: 0.12)
-                                : AppColors.inputFill,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: isPrimary
-                                  ? AppColors.primary
-                                  : AppColors.cardBorder,
-                              width: isPrimary ? 1.5 : 0.5,
-                            ),
-                          ),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(12),
-                              onTap: () {
-                                if (!isPrimary) {
-                                  _setPrimaryAddress(doc.id, addressStr);
-                                }
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 8),
-                                child: Row(
-                                  children: [
-                                    Radio<bool>(
-                                      value: true,
-                                      groupValue: isPrimary,
-                                      activeColor: AppColors.primary,
-                                      onChanged: (_) {
-                                        if (!isPrimary) {
-                                          _setPrimaryAddress(doc.id, addressStr);
-                                        }
-                                      },
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            addressStr,
-                                            style: TextStyle(
-                                              color: AppColors.textPrimary,
-                                              fontSize: 13.5,
-                                              fontWeight: isPrimary
-                                                  ? FontWeight.bold
-                                                  : FontWeight.normal,
-                                            ),
-                                          ),
-                                          if (isPrimary) ...[
-                                            const Gap(2),
-                                            const Text(
-                                              'Primary Address',
-                                              style: TextStyle(
-                                                color: AppColors.primary,
-                                                fontSize: 10.5,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ],
-                                      ),
-                                    ),
-                                    if (!isPrimary)
-                                      TextButton(
-                                        onPressed: () =>
-                                            _setPrimaryAddress(doc.id, addressStr),
-                                        child: const Text(
-                                          'Set Primary',
-                                          style: TextStyle(
-                                            color: AppColors.primary,
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.delete_outline,
-                                        color: AppColors.accentRed,
-                                        size: 20,
-                                      ),
-                                      onPressed: () =>
-                                          _deleteAddress(doc.id, addressStr),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
                     ),
-
-                  const Gap(32),
-
-                  // Edit / Save Button
-                  ElevatedButton.icon(
-                    onPressed: _isSaving
-                        ? null
-                        : _isEditing
-                            ? _saveProfile
-                            : () => setState(() => _isEditing = true),
-                    icon: _isSaving
-                        ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
-                          )
-                        : Icon(
-                            _isEditing ? Icons.save_rounded : Icons.edit_rounded,
-                            size: 18,
-                          ),
-                    label: Text(
-                      _isSaving
-                          ? 'Saving...'
-                          : _isEditing
-                              ? 'Save Profile'
-                              : 'Edit Profile',
-                      style: const TextStyle(
-                          fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          _isEditing ? AppColors.primary : AppColors.cardBackground,
-                      foregroundColor:
-                          _isEditing ? Colors.black : AppColors.textPrimary,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        side: _isEditing
-                            ? BorderSide.none
-                            : const BorderSide(
-                                color: AppColors.primary, width: 1),
+                    const Gap(16),
+                    Text(
+                      _nameController.text.isEmpty
+                          ? 'Add Your Name'
+                          : _nameController.text,
+                      style: GoogleFonts.outfit(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-
-                  if (_isEditing) ...[
-                    const Gap(12),
-                    TextButton(
-                      onPressed: () {
-                        setState(() => _isEditing = false);
-                        _loadProfile();
-                      },
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(color: AppColors.textSecondary),
+                    const Gap(4),
+                    Text(
+                      _phoneNumber,
+                      style: GoogleFonts.inter(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        fontSize: 15,
                       ),
                     ),
                   ],
+                ),
+              ),
 
-                  const Gap(24),
+              // Form Section
+              Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (_isEditing) ...[
+                      Text(
+                        'Edit Details',
+                        style: GoogleFonts.outfit(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const Gap(16),
+                      _buildTextField(
+                        label: 'Full Name',
+                        controller: _nameController,
+                        hintText: 'Enter your name',
+                      ),
+                      const Gap(16),
+                      _buildTextField(
+                        label: 'Email Address',
+                        controller: _emailController,
+                        hintText: 'Enter your email',
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      const Gap(24),
+                      SizedBox(
+                        height: 52,
+                        child: ElevatedButton(
+                          onPressed: _isSaving ? null : _saveProfile,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: _isSaving
+                              ? const SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : Text(
+                                  'Save Changes',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                        ),
+                      ),
+                      const Gap(32),
+                    ] else ...[
+                      if (_emailController.text.isNotEmpty) ...[
+                        _buildInfoTile(
+                          icon: Icons.email_outlined,
+                          title: 'Email Address',
+                          subtitle: _emailController.text,
+                        ),
+                        const Gap(16),
+                      ],
+                    ],
 
-                  // Logout
-                  OutlinedButton.icon(
-                    onPressed: _logout,
-                    icon: const Icon(Icons.logout, color: AppColors.accentRed),
-                    label: const Text('Logout',
-                        style: TextStyle(color: AppColors.accentRed)),
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: AppColors.accentRed),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                    // Saved Addresses Section
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Saved Addresses',
+                          style: GoogleFonts.outfit(
+                            color: AppColors.textPrimary,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: _showAddAddressDialog,
+                          borderRadius: BorderRadius.circular(8),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.add_circle_outline_rounded,
+                                  color: AppColors.primary,
+                                  size: 18,
+                                ),
+                                const Gap(4),
+                                Text(
+                                  'Add New',
+                                  style: GoogleFonts.inter(
+                                    color: AppColors.primary,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Gap(16),
+
+                    if (_isLoadingAddresses)
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: CircularProgressIndicator(
+                            color: AppColors.primary,
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      )
+                    else if (_addresses.isEmpty)
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: AppColors.border),
+                          boxShadow: AppShadows.soft,
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: const BoxDecoration(
+                                color: AppColors.primaryLight,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.location_off_outlined,
+                                color: AppColors.primary,
+                                size: 24,
+                              ),
+                            ),
+                            const Gap(16),
+                            Expanded(
+                              child: Text(
+                                'No saved addresses yet. Tap "+ Add New" to add one.',
+                                style: GoogleFonts.inter(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    else
+                      Column(
+                        children: _addresses.map((doc) {
+                          final data =
+                              doc.data() as Map<String, dynamic>? ?? {};
+                          final addressStr = data['address'] as String? ?? '';
+                          final isPrimary =
+                              data['isPrimary'] == true ||
+                              _addressController.text == addressStr;
+
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            decoration: BoxDecoration(
+                              color: isPrimary
+                                  ? AppColors.primaryLight
+                                  : AppColors.surface,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: isPrimary
+                                    ? AppColors.primary.withValues(alpha: 0.3)
+                                    : AppColors.border,
+                                width: 1,
+                              ),
+                              boxShadow: AppShadows.soft,
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(16),
+                                onTap: () {
+                                  if (!isPrimary) {
+                                    _setPrimaryAddress(doc.id, addressStr);
+                                  }
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Row(
+                                    children: [
+                                      Radio<bool>(
+                                        value: true,
+                                        groupValue: isPrimary,
+                                        activeColor: AppColors.primary,
+                                        onChanged: (_) {
+                                          if (!isPrimary) {
+                                            _setPrimaryAddress(
+                                              doc.id,
+                                              addressStr,
+                                            );
+                                          }
+                                        },
+                                      ),
+                                      const Gap(8),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              addressStr,
+                                              style: GoogleFonts.inter(
+                                                color: AppColors.textPrimary,
+                                                fontSize: 15,
+                                                fontWeight: isPrimary
+                                                    ? FontWeight.w600
+                                                    : FontWeight.normal,
+                                              ),
+                                            ),
+                                            if (isPrimary) ...[
+                                              const Gap(4),
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 2,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.primary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(4),
+                                                ),
+                                                child: Text(
+                                                  'Primary',
+                                                  style: GoogleFonts.inter(
+                                                    color: Colors.white,
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ],
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.delete_outline,
+                                          color: AppColors.error,
+                                          size: 24,
+                                        ),
+                                        onPressed: () =>
+                                            _deleteAddress(doc.id, addressStr),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+
+                    const Gap(32),
+
+                    // Logout Button
+                    SizedBox(
+                      height: 52,
+                      child: OutlinedButton.icon(
+                        onPressed: _logout,
+                        icon: const Icon(Icons.logout, color: AppColors.error),
+                        label: Text(
+                          'Logout',
+                          style: GoogleFonts.inter(
+                            color: AppColors.error,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: AppColors.error),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                    const Gap(40),
+                  ],
+                ),
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoTile({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border),
+        boxShadow: AppShadows.soft,
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: const BoxDecoration(
+              color: AppColors.primaryLight,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: AppColors.primary, size: 24),
+          ),
+          const Gap(16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.inter(
+                    color: AppColors.textSecondary,
+                    fontSize: 12,
+                  ),
+                ),
+                const Gap(4),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.inter(
+                    color: AppColors.textPrimary,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
+        ],
+      ),
     );
   }
 
   Widget _buildTextField({
     required String label,
-    TextEditingController? controller,
-    String? initialValue,
-    bool readOnly = false,
-    IconData? icon,
-    int maxLines = 1,
+    required TextEditingController controller,
     TextInputType? keyboardType,
     String? hintText,
   }) {
@@ -765,51 +945,40 @@ class _ProfilePageState extends State<ProfilePage> {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            color: AppColors.textSecondary,
-            fontSize: 13,
+          style: GoogleFonts.inter(
+            color: AppColors.textPrimary,
+            fontSize: 14,
             fontWeight: FontWeight.w600,
           ),
         ),
-        const Gap(6),
+        const Gap(8),
         TextFormField(
           controller: controller,
-          initialValue: initialValue,
-          readOnly: readOnly,
-          maxLines: maxLines,
           keyboardType: keyboardType,
-          style: TextStyle(
-            color: readOnly ? AppColors.textSecondary : AppColors.textPrimary,
-            fontSize: 15,
-          ),
+          style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 15),
           decoration: InputDecoration(
             filled: true,
-            fillColor: readOnly
-                ? AppColors.inputFill.withValues(alpha: 0.5)
-                : AppColors.inputFill,
-            hintText: readOnly ? null : hintText,
-            hintStyle: const TextStyle(
-                color: AppColors.textSecondary, fontSize: 14),
-            suffixIcon: icon != null
-                ? Icon(icon, color: AppColors.textSecondary, size: 18)
-                : null,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            fillColor: AppColors.surface,
+            hintText: hintText,
+            hintStyle: GoogleFonts.inter(
+              color: AppColors.textTertiary,
+              fontSize: 14,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: readOnly
-                  ? BorderSide.none
-                  : const BorderSide(
-                      color: AppColors.cardBorder, width: 0.5),
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide:
-                  const BorderSide(color: AppColors.primary, width: 1),
+              borderSide: const BorderSide(color: AppColors.primary),
             ),
           ),
         ),

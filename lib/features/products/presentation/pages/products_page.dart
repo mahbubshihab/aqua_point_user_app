@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -37,9 +38,9 @@ class _ProductsPageState extends State<ProductsPage> {
         backgroundColor: AppColors.background,
         elevation: 0,
         centerTitle: false,
-        title: const Text(
+        title: Text(
           'My Products',
-          style: TextStyle(
+          style: GoogleFonts.outfit(
             color: AppColors.textPrimary,
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -76,8 +77,8 @@ class _ProductsPageState extends State<ProductsPage> {
                         ),
                         child: Text(
                           '${cartState.totalItemCount}',
-                          style: const TextStyle(
-                            color: Colors.black,
+                          style: GoogleFonts.inter(
+                            color: Colors.white,
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
                           ),
@@ -115,7 +116,7 @@ class _ProductsPageState extends State<ProductsPage> {
                   padding: EdgeInsets.all(8.0),
                   child: Icon(
                     Icons.add_rounded,
-                    color: Colors.white,
+                    color: AppColors.textPrimary,
                     size: 24,
                   ),
                 ),
@@ -147,7 +148,7 @@ class _ProductsPageState extends State<ProductsPage> {
                   const Gap(12),
                   Text(
                     state.message,
-                    style: const TextStyle(
+                    style: GoogleFonts.inter(
                       color: AppColors.textSecondary,
                       fontSize: 15,
                     ),
@@ -169,7 +170,7 @@ class _ProductsPageState extends State<ProductsPage> {
 
             return RefreshIndicator(
               color: AppColors.primary,
-              backgroundColor: AppColors.cardBackground,
+              backgroundColor: AppColors.surface,
               onRefresh: () async {
                 context.read<ProductsBloc>().add(const LoadProducts());
                 await Future.delayed(const Duration(milliseconds: 600));
@@ -188,7 +189,7 @@ class _ProductsPageState extends State<ProductsPage> {
                                 Container(
                                   padding: const EdgeInsets.all(24),
                                   decoration: BoxDecoration(
-                                    color: AppColors.cardBackground,
+                                    color: AppColors.surface,
                                     shape: BoxShape.circle,
                                     border: Border.all(color: AppColors.divider),
                                   ),
@@ -199,19 +200,19 @@ class _ProductsPageState extends State<ProductsPage> {
                                   ),
                                 ),
                                 const Gap(20),
-                                const Text(
+                                Text(
                                   'No Products Yet',
-                                  style: TextStyle(
+                                  style: GoogleFonts.outfit(
                                     color: AppColors.textPrimary,
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 const Gap(8),
-                                const Text(
+                                Text(
                                   'Add your device or shop from our store.',
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: GoogleFonts.inter(
                                     color: AppColors.textSecondary,
                                     fontSize: 12.5,
                                   ),
@@ -233,11 +234,11 @@ class _ProductsPageState extends State<ProductsPage> {
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                     ),
-                                    icon: const Icon(Icons.shopping_bag_outlined, color: Colors.black, size: 18),
-                                    label: const Text(
+                                    icon: const Icon(Icons.shopping_bag_outlined, color: Colors.white, size: 18),
+                                    label: Text(
                                       'Shop Now',
-                                      style: TextStyle(
-                                        color: Colors.black,
+                                      style: GoogleFonts.inter(
+                                        color: Colors.white,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 13,
                                       ),
@@ -259,9 +260,9 @@ class _ProductsPageState extends State<ProductsPage> {
                                       ),
                                     ),
                                     icon: const Icon(Icons.add_rounded, color: AppColors.primary, size: 18),
-                                    label: const Text(
+                                    label: Text(
                                       'Add Device',
-                                      style: TextStyle(
+                                      style: GoogleFonts.inter(
                                         color: AppColors.primary,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 13,

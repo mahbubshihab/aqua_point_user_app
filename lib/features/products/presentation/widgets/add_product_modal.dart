@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/services/cloudinary_service.dart';
@@ -142,9 +143,7 @@ class _AddProductModalState extends State<AddProductModal> {
       },
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
+        child: Container(
             padding: EdgeInsets.only(
               left: 20,
               right: 20,
@@ -152,7 +151,7 @@ class _AddProductModalState extends State<AddProductModal> {
               bottom: bottomPadding + 24,
             ),
             decoration: const BoxDecoration(
-              color: Color(0x1F1A2236),
+              color: AppColors.surface,
               borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
               border: Border(
                 top: BorderSide(color: Color(0x2B00E5FF), width: 1.5),
@@ -185,9 +184,9 @@ class _AddProductModalState extends State<AddProductModal> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Add Custom Product',
-                          style: TextStyle(
+                          style: GoogleFonts.outfit(
                             color: AppColors.textPrimary,
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -223,9 +222,9 @@ class _AddProductModalState extends State<AddProductModal> {
                     const Gap(16),
 
                     // Field 2: Warranty Card / Product Photo
-                    const Text(
+                    Text(
                       'Warranty Card / Product Photo',
-                      style: TextStyle(
+                      style: GoogleFonts.inter(
                         fontSize: 11.5,
                         fontWeight: FontWeight.w600,
                         color: AppColors.textSecondary,
@@ -247,13 +246,13 @@ class _AddProductModalState extends State<AddProductModal> {
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(vertical: 20),
                           decoration: BoxDecoration(
-                            color: AppColors.inputFill,
+                            color: AppColors.background,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: _isUploadingImage
                               ? Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
+                                  children: [
                                     SizedBox(
                                       width: 24,
                                       height: 24,
@@ -265,7 +264,7 @@ class _AddProductModalState extends State<AddProductModal> {
                                     Gap(8),
                                     Text(
                                       'Uploading to Cloudinary...',
-                                      style: TextStyle(
+                                      style: GoogleFonts.inter(
                                         color: AppColors.textSecondary,
                                         fontSize: 12,
                                         fontWeight: FontWeight.w500,
@@ -307,7 +306,7 @@ class _AddProductModalState extends State<AddProductModal> {
                                       _selectedImagePath != null
                                           ? 'Cloudinary Image Ready (Tap to change)'
                                           : 'Tap to select & upload image',
-                                      style: TextStyle(
+                                      style: GoogleFonts.inter(
                                         color: _selectedImagePath != null
                                             ? AppColors.textPrimary
                                             : AppColors.textSecondary,
@@ -355,13 +354,13 @@ class _AddProductModalState extends State<AddProductModal> {
                                     height: 20,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      color: Colors.white,
+                                      color: AppColors.textPrimary,
                                     ),
                                   )
-                                : const Text(
+                                : Text(
                                     'SAVE PRODUCT',
-                                    style: TextStyle(
-                                      color: Colors.white,
+                                    style: GoogleFonts.inter(
+                                      color: AppColors.textPrimary,
                                       fontWeight: FontWeight.w600,
                                       fontSize: 13.5,
                                       letterSpacing: 0.5,
@@ -377,8 +376,7 @@ class _AddProductModalState extends State<AddProductModal> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
 

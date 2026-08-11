@@ -2,7 +2,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../products/domain/entities/category_entity.dart';
 import '../../../products/domain/entities/product_entity.dart';
 import '../../domain/entities/banner_entity.dart';
+import '../../domain/entities/blog_entity.dart';
 import '../../domain/entities/company_info_entity.dart';
+import '../../domain/entities/hydration_entity.dart';
+import '../../domain/entities/water_quality_entity.dart';
 import '../../domain/repositories/home_repository.dart';
 import 'home_event.dart';
 import 'home_state.dart';
@@ -21,63 +24,43 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     LoadHomeData event,
     Emitter<HomeState> emit,
   ) async {
-    emit(const HomeLoading());
+    // Keep showing previous loaded state during refresh if available
+    if (state is! HomeLoaded) {
+      emit(const HomeLoading());
+    }
+    
     try {
-      List<BannerEntity> banners = [];
-      try {
-        banners = await repository.getBanners();
-      } catch (_) {
-        banners = [];
-      }
+      final results = await Future.wait([
+        repository.getBanners().catchError((_) => <BannerEntity>[]),
+        repository.getCompanyInfo().catchError((_) => const CompanyInfoEntity()),
+        repository.getCategories().catchError((_) => <CategoryEntity>[]),
+        repository.getProductsByType('open_type', limit: 10).catchError((_) => <ProductEntity>[]),
+        repository.getProductsByType('box_type', limit: 10).catchError((_) => <ProductEntity>[]),
+        repository.getProductsByType('hot_cold_normal', limit: 10).catchError((_) => <ProductEntity>[]),
+        repository.getProductsByType('cabinet_type', limit: 10).catchError((_) => <ProductEntity>[]),
+        repository.getHydrationData().catchError((_) => const HydrationEntity(currentGlasses: 0, targetGlasses: 8)),
+        repository.getWaterQualityData().catchError((_) => const WaterQualityEntity(tds: 18, status: 'Excellent', iron: 0.01, ph: 7.2, hardness: 'Soft')),
+        repository.getBlogs().catchError((_) => <BlogEntity>[]),
+      ]);
 
-      CompanyInfoEntity companyInfo;
-      try {
-        companyInfo = await repository.getCompanyInfo();
-      } catch (_) {
-        companyInfo = const CompanyInfoEntity();
-      }
+      final banners = results[0] as List<BannerEntity>;
+      final companyInfo = results[1] as CompanyInfoEntity;
+      final categories = results[2] as List<CategoryEntity>;
+      final openTypeProducts = results[3] as List<ProductEntity>;
+      final boxTypeProducts = results[4] as List<ProductEntity>;
+      final hotColdNormalProducts = results[5] as List<ProductEntity>;
+      final cabinetTypeProducts = results[6] as List<ProductEntity>;
+      final hydration = results[7] as HydrationEntity;
+      final waterQuality = results[8] as WaterQualityEntity;
+      final blogs = results[9] as List<BlogEntity>;
 
-      List<CategoryEntity> categories = [];
-      try {
-        categories = await repository.getCategories();
-      } catch (_) {
-        categories = [];
+      int currentTab = 0;
+      if (state is HomeLoaded) {
+        currentTab = (state as HomeLoaded).tabIndex;
       }
-
-      List<ProductEntity> openTypeProducts = [];
-      try {
-        openTypeProducts = await repository.getProductsByType('open_type', limit: 10);
-      } catch (_) {
-        openTypeProducts = [];
-      }
-
-      List<ProductEntity> boxTypeProducts = [];
-      try {
-        boxTypeProducts = await repository.getProductsByType('box_type', limit: 10);
-      } catch (_) {
-        boxTypeProducts = [];
-      }
-
-      List<ProductEntity> hotColdNormalProducts = [];
-      try {
-        hotColdNormalProducts = await repository.getProductsByType('hot_cold_normal', limit: 10);
-      } catch (_) {
-        hotColdNormalProducts = [];
-      }
-
-      List<ProductEntity> cabinetTypeProducts = [];
-      try {
-        cabinetTypeProducts = await repository.getProductsByType('cabinet_type', limit: 10);
-      } catch (_) {
-        cabinetTypeProducts = [];
-      }
-
-      final hydration = await repository.getHydrationData();
-      final waterQuality = await repository.getWaterQualityData();
-      final blogs = await repository.getBlogs();
 
       emit(HomeLoaded(
-        tabIndex: 0,
+        tabIndex: currentTab,
         banners: banners,
         companyInfo: companyInfo,
         hydration: hydration,
@@ -90,7 +73,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         cabinetTypeProducts: cabinetTypeProducts,
       ));
     } catch (e) {
-      emit(HomeError(e.toString()));
+      if (state is! HomeLoaded) {
+        emit(HomeError(e.toString()));
+      }
     }
   }
 

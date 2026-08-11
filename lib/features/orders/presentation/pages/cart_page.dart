@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../bloc/cart_bloc.dart';
-import '../../products/presentation/pages/shop_page.dart';
+import '../../../products/presentation/pages/shop_page.dart';
 import 'checkout_page.dart';
 
 class CartPage extends StatelessWidget {
@@ -25,9 +26,9 @@ class CartPage extends StatelessWidget {
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'My Cart',
-          style: TextStyle(
+          style: GoogleFonts.outfit(
             color: AppColors.textPrimary,
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -46,9 +47,9 @@ class CartPage extends StatelessWidget {
                   color: AppColors.accentRed,
                   size: 18,
                 ),
-                label: const Text(
+                label: Text(
                   'Clear All',
-                  style: TextStyle(
+                  style: GoogleFonts.inter(
                     color: AppColors.accentRed,
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
@@ -72,7 +73,7 @@ class CartPage extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
-                        color: AppColors.cardBackground,
+                        color: AppColors.surface,
                         shape: BoxShape.circle,
                         border: Border.all(color: AppColors.divider),
                       ),
@@ -83,19 +84,19 @@ class CartPage extends StatelessWidget {
                       ),
                     ),
                     const Gap(20),
-                    const Text(
+                    Text(
                       'Your Cart is Empty',
-                      style: TextStyle(
+                      style: GoogleFonts.outfit(
                         color: AppColors.textPrimary,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const Gap(8),
-                    const Text(
+                    Text(
                       'Looks like you haven\'t added any products to your cart yet.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: GoogleFonts.inter(
                         color: AppColors.textSecondary,
                         fontSize: 13,
                       ),
@@ -118,11 +119,11 @@ class CartPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      icon: const Icon(Icons.arrow_back_rounded, color: Colors.black, size: 18),
-                      label: const Text(
+                      icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 18),
+                      label: Text(
                         'Browse Products',
-                        style: TextStyle(
-                          color: Colors.black,
+                        style: GoogleFonts.inter(
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
@@ -154,7 +155,7 @@ class CartPage extends StatelessWidget {
                           const Gap(8),
                           Text(
                             'Cart Items (${cartState.totalItemCount})',
-                            style: const TextStyle(
+                            style: GoogleFonts.outfit(
                               color: AppColors.textPrimary,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -178,17 +179,17 @@ class CartPage extends StatelessWidget {
                       const Gap(24),
 
                       // Price Summary Card
-                      const Row(
+                      Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.receipt_long_outlined,
                             color: AppColors.primary,
                             size: 20,
                           ),
-                          Gap(8),
+                          const Gap(8),
                           Text(
                             'Price Summary',
-                            style: TextStyle(
+                            style: GoogleFonts.outfit(
                               color: AppColors.textPrimary,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -203,16 +204,16 @@ class CartPage extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
+                                Text(
                                   'Subtotal',
-                                  style: TextStyle(
+                                  style: GoogleFonts.inter(
                                     color: AppColors.textSecondary,
                                     fontSize: 14,
                                   ),
                                 ),
                                 Text(
                                   '৳${cartState.subtotal.toStringAsFixed(0)}',
-                                  style: const TextStyle(
+                                  style: GoogleFonts.inter(
                                     color: AppColors.textPrimary,
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
@@ -224,16 +225,16 @@ class CartPage extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
+                                Text(
                                   'Delivery Fee',
-                                  style: TextStyle(
+                                  style: GoogleFonts.inter(
                                     color: AppColors.textSecondary,
                                     fontSize: 14,
                                   ),
                                 ),
                                 Text(
                                   '৳${cartState.shippingFee.toStringAsFixed(0)}',
-                                  style: const TextStyle(
+                                  style: GoogleFonts.inter(
                                     color: AppColors.textPrimary,
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
@@ -245,9 +246,9 @@ class CartPage extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
+                                Text(
                                   'Total Amount',
-                                  style: TextStyle(
+                                  style: GoogleFonts.inter(
                                     color: AppColors.textPrimary,
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
@@ -255,7 +256,7 @@ class CartPage extends StatelessWidget {
                                 ),
                                 Text(
                                   '৳${cartState.totalAmount.toStringAsFixed(0)}',
-                                  style: const TextStyle(
+                                  style: GoogleFonts.outfit(
                                     color: AppColors.primary,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -276,7 +277,7 @@ class CartPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: const BoxDecoration(
-                  color: Color(0xF00D111D),
+                  color: AppColors.surface,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                   border: Border(top: BorderSide(color: AppColors.divider)),
                 ),
@@ -288,16 +289,16 @@ class CartPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text(
+                          Text(
                             'Total Amount',
-                            style: TextStyle(
+                            style: GoogleFonts.inter(
                               color: AppColors.textSecondary,
                               fontSize: 11.5,
                             ),
                           ),
                           Text(
                             '৳${cartState.totalAmount.toStringAsFixed(0)}',
-                            style: const TextStyle(
+                            style: GoogleFonts.outfit(
                               color: AppColors.primary,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -325,21 +326,21 @@ class CartPage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
                                 'Proceed to Checkout',
-                                style: TextStyle(
-                                  color: Colors.black,
+                                style: GoogleFonts.inter(
+                                  color: Colors.white,
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Gap(6),
-                              Icon(
+                              const Gap(6),
+                              const Icon(
                                 Icons.arrow_forward_rounded,
-                                color: Colors.black,
+                                color: Colors.white,
                                 size: 18,
                               ),
                             ],
@@ -368,7 +369,7 @@ class CartPage extends StatelessWidget {
             width: 70,
             height: 70,
             decoration: BoxDecoration(
-              color: AppColors.inputFill,
+              color: AppColors.background,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.divider),
             ),
@@ -404,7 +405,7 @@ class CartPage extends StatelessWidget {
                     Expanded(
                       child: Text(
                         item.name,
-                        style: const TextStyle(
+                        style: GoogleFonts.inter(
                           color: AppColors.textPrimary,
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -431,7 +432,7 @@ class CartPage extends StatelessWidget {
                   const Gap(2),
                   Text(
                     item.warranty!,
-                    style: const TextStyle(
+                    style: GoogleFonts.inter(
                       color: AppColors.accentGreen,
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
@@ -446,7 +447,7 @@ class CartPage extends StatelessWidget {
                   children: [
                     Text(
                       '৳${item.price.toStringAsFixed(0)}',
-                      style: const TextStyle(
+                      style: GoogleFonts.inter(
                         color: AppColors.primary,
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
@@ -456,7 +457,7 @@ class CartPage extends StatelessWidget {
                     Container(
                       height: 32,
                       decoration: BoxDecoration(
-                        color: AppColors.inputFill,
+                        color: AppColors.background,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: AppColors.divider),
                       ),
@@ -487,7 +488,7 @@ class CartPage extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 4),
                             child: Text(
                               '${item.quantity}',
-                              style: const TextStyle(
+                              style: GoogleFonts.inter(
                                 color: AppColors.textPrimary,
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
@@ -532,21 +533,21 @@ class CartPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.cardBackground,
+        backgroundColor: AppColors.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: const BorderSide(color: AppColors.divider),
         ),
-        title: const Text(
+        title: Text(
           'Clear Cart?',
-          style: TextStyle(
+          style: GoogleFonts.inter(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
-        content: const Text(
+        content: Text(
           'Are you sure you want to remove all items from your cart?',
-          style: TextStyle(
+          style: GoogleFonts.inter(
             color: AppColors.textSecondary,
             fontSize: 14,
           ),
@@ -554,9 +555,9 @@ class CartPage extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text(
+            child: Text(
               'Cancel',
-              style: TextStyle(color: AppColors.textSecondary),
+              style: GoogleFonts.inter(color: AppColors.textSecondary),
             ),
           ),
           ElevatedButton(
@@ -570,10 +571,10 @@ class CartPage extends StatelessWidget {
               Navigator.pop(ctx);
               context.read<CartBloc>().add(const ClearCart());
             },
-            child: const Text(
+            child: Text(
               'Clear All',
-              style: TextStyle(
-                color: Colors.white,
+              style: GoogleFonts.inter(
+                color: AppColors.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),

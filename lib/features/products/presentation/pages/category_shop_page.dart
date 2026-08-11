@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/entities/product_entity.dart';
@@ -70,12 +71,12 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textPrimary, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           widget.categoryName,
-          style: const TextStyle(
+          style: GoogleFonts.outfit(
             color: AppColors.textPrimary,
             fontSize: 17,
             fontWeight: FontWeight.bold,
@@ -96,7 +97,7 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                         MaterialPageRoute(builder: (_) => const CartPage()),
                       );
                     },
-                    icon: const Icon(Icons.shopping_bag_outlined, color: Colors.white, size: 24),
+                    icon: const Icon(Icons.shopping_bag_outlined, color: AppColors.textPrimary, size: 24),
                   ),
                   if (count > 0)
                     Positioned(
@@ -115,8 +116,8 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                         child: Text(
                           '$count',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.black,
+                          style: GoogleFonts.inter(
+                            color: Colors.white,
                             fontSize: 9.5,
                             fontWeight: FontWeight.bold,
                           ),
@@ -143,13 +144,13 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                     child: Container(
                       height: 44,
                       decoration: BoxDecoration(
-                        color: const Color(0xB31E293B),
+                        color: AppColors.surface,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: const Color(0x80334155)),
                       ),
                       child: TextField(
                         controller: _searchController,
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
+                        style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 13),
                         onChanged: (val) {
                           setState(() {
                             _searchQuery = val;
@@ -157,7 +158,7 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                         },
                         decoration: InputDecoration(
                           hintText: 'Search in ${widget.categoryName}...',
-                          hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 12.5),
+                          hintStyle: GoogleFonts.inter(color: AppColors.textSecondary, fontSize: 12.5),
                           prefixIcon: const Icon(Icons.search_rounded, color: AppColors.primary, size: 20),
                           suffixIcon: _searchQuery.isNotEmpty
                               ? GestureDetector(
@@ -182,16 +183,16 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                     height: 44,
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
-                      color: const Color(0xB31E293B),
+                      color: AppColors.surface,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: const Color(0x8000BCE1)),
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: _sortBy,
-                        dropdownColor: const Color(0xFF1E293B),
+                        dropdownColor: AppColors.surface,
                         icon: const Icon(Icons.tune_rounded, color: AppColors.primary, size: 18),
-                        style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+                        style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 12, fontWeight: FontWeight.w500),
                         items: ['Featured', 'Price: Low to High', 'Price: High to Low', 'Top Rated']
                             .map(
                               (item) => DropdownMenuItem(
@@ -221,7 +222,7 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                 children: [
                   Text(
                     'Showing ${filtered.length} products',
-                    style: const TextStyle(
+                    style: GoogleFonts.inter(
                       color: AppColors.textSecondary,
                       fontSize: 12,
                     ),
@@ -234,7 +235,7 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
             Expanded(
               child: RefreshIndicator(
                 color: AppColors.primary,
-                backgroundColor: AppColors.cardBackground,
+                backgroundColor: AppColors.surface,
                 onRefresh: () async {
                   context.read<ProductsBloc>().add(const LoadProducts());
                   await Future.delayed(const Duration(milliseconds: 600));
@@ -252,7 +253,7 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                                 const Gap(12),
                                 Text(
                                   'No products found in ${widget.categoryName}',
-                                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                                  style: GoogleFonts.inter(color: AppColors.textSecondary, fontSize: 14),
                                 ),
                               ],
                             ),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_gradients.dart';
+import '../theme/app_shadows.dart';
 
 enum AppButtonType {
   primary,
@@ -8,8 +11,7 @@ enum AppButtonType {
   ghost,
 }
 
-/// Customizable button with primary, secondary, outlined, and ghost variants.
-/// Supports loading indicator state and custom icons.
+/// Premium button with gradient primary, clean secondary, outlined, and ghost variants.
 class AppButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
@@ -37,7 +39,7 @@ class AppButton extends StatelessWidget {
     this.borderRadius = 12.0,
     this.backgroundColor,
     this.textColor,
-    this.fontSize = 16.0,
+    this.fontSize = 15.0,
   });
 
   const AppButton.secondary({
@@ -52,7 +54,7 @@ class AppButton extends StatelessWidget {
     this.borderRadius = 12.0,
     this.backgroundColor,
     this.textColor,
-    this.fontSize = 16.0,
+    this.fontSize = 15.0,
   }) : type = AppButtonType.secondary;
 
   const AppButton.outlined({
@@ -67,7 +69,7 @@ class AppButton extends StatelessWidget {
     this.borderRadius = 12.0,
     this.backgroundColor,
     this.textColor,
-    this.fontSize = 16.0,
+    this.fontSize = 15.0,
   }) : type = AppButtonType.outlined;
 
   @override
@@ -77,15 +79,19 @@ class AppButton extends StatelessWidget {
     Color fillBgColor;
     Color borderBgColor = Colors.transparent;
     Color effectiveTextColor;
+    List<BoxShadow>? shadow;
+    Gradient? gradient;
 
     switch (type) {
       case AppButtonType.primary:
         fillBgColor = backgroundColor ?? AppColors.primary;
-        effectiveTextColor = textColor ?? AppColors.textPrimary;
+        effectiveTextColor = textColor ?? AppColors.textOnPrimary;
+        gradient = backgroundColor == null ? AppGradients.primary : null;
+        shadow = isDisabled ? null : AppShadows.colored(AppColors.primary);
         break;
       case AppButtonType.secondary:
-        fillBgColor = backgroundColor ?? AppColors.secondary.withValues(alpha: 0.15);
-        effectiveTextColor = textColor ?? AppColors.secondary;
+        fillBgColor = backgroundColor ?? AppColors.primaryLight;
+        effectiveTextColor = textColor ?? AppColors.primary;
         break;
       case AppButtonType.outlined:
         fillBgColor = backgroundColor ?? Colors.transparent;
@@ -99,7 +105,9 @@ class AppButton extends StatelessWidget {
     }
 
     if (isDisabled && type == AppButtonType.primary) {
+      gradient = null;
       fillBgColor = fillBgColor.withValues(alpha: 0.5);
+      shadow = null;
     }
 
     Widget content;
@@ -126,7 +134,7 @@ class AppButton extends StatelessWidget {
       children.add(
         Text(
           text,
-          style: TextStyle(
+          style: GoogleFonts.inter(
             fontSize: fontSize,
             fontWeight: FontWeight.w600,
             color: effectiveTextColor,
@@ -146,15 +154,18 @@ class AppButton extends StatelessWidget {
       child: InkWell(
         onTap: isDisabled ? null : onPressed,
         borderRadius: BorderRadius.circular(borderRadius),
+        splashColor: effectiveTextColor.withValues(alpha: 0.1),
         child: Container(
           height: height,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           decoration: BoxDecoration(
-            color: fillBgColor,
+            color: gradient == null ? fillBgColor : null,
+            gradient: gradient,
             borderRadius: BorderRadius.circular(borderRadius),
             border: borderBgColor != Colors.transparent
                 ? Border.all(color: borderBgColor, width: 1.5)
                 : null,
+            boxShadow: shadow,
           ),
           alignment: Alignment.center,
           child: content,

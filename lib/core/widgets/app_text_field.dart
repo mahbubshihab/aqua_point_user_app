@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_colors.dart';
 
-/// Dark styled text field with rounded border, label, prefix icon, and hint text.
+/// Clean light-themed text field with label, prefix/suffix icons.
 class AppTextField extends StatelessWidget {
   final String? label;
   final String? hintText;
@@ -55,10 +56,10 @@ class AppTextField extends StatelessWidget {
         if (label != null) ...[
           Text(
             label!,
-            style: const TextStyle(
+            style: GoogleFonts.inter(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: AppColors.textSecondary,
+              color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 8),
@@ -78,7 +79,7 @@ class AppTextField extends StatelessWidget {
           onChanged: onChanged,
           onFieldSubmitted: onSubmitted,
           validator: validator,
-          style: const TextStyle(
+          style: GoogleFonts.inter(
             color: AppColors.textPrimary,
             fontSize: 15,
           ),
@@ -106,22 +107,22 @@ class AppTextField extends StatelessWidget {
               minHeight: 44,
             ),
             filled: true,
-            fillColor: AppColors.inputFill,
+            fillColor: AppColors.surface,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 14,
             ),
-            hintStyle: const TextStyle(
-              color: AppColors.textSecondary,
+            hintStyle: GoogleFonts.inter(
+              color: AppColors.textTertiary,
               fontSize: 14,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.divider),
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.divider),
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -132,13 +133,19 @@ class AppTextField extends StatelessWidget {
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.accentRed),
+              borderSide: const BorderSide(color: AppColors.error),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(
-                color: AppColors.accentRed,
+                color: AppColors.error,
                 width: 1.5,
+              ),
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: AppColors.border.withValues(alpha: 0.5),
               ),
             ),
           ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_colors.dart';
 
-/// Badge widget (e.g. "EXCELLENT", "0/8 Glasses") with custom color and rounded pill shape.
+/// Badge widget with custom color and rounded pill shape.
+/// Updated for light theme.
 class StatBadge extends StatelessWidget {
   final String text;
   final Color? backgroundColor;
@@ -21,14 +23,14 @@ class StatBadge extends StatelessWidget {
     this.textColor,
     this.icon,
     this.iconWidget,
-    this.padding = const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-    this.fontSize = 10.0,
-    this.fontWeight = FontWeight.bold,
+    this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+    this.fontSize = 11.0,
+    this.fontWeight = FontWeight.w600,
     this.borderRadius = 20.0,
     this.border,
   });
 
-  /// Preset for Excellent Water Quality badge (Green)
+  /// Preset for Excellent / Success badge (Green)
   factory StatBadge.excellent({
     Key? key,
     String text = 'EXCELLENT',
@@ -37,18 +39,13 @@ class StatBadge extends StatelessWidget {
     return StatBadge(
       key: key,
       text: text,
-      backgroundColor: AppColors.accentGreen.withValues(alpha: 0.15),
-      textColor: AppColors.accentGreen,
+      backgroundColor: AppColors.successLight,
+      textColor: AppColors.success,
       icon: icon,
-      border: Border.all(
-        color: AppColors.accentGreen.withValues(alpha: 0.3),
-        width: 1,
-      ),
     );
   }
 
-
-  /// Preset for Hydration or Info badge (Blue)
+  /// Preset for Info badge (Blue)
   factory StatBadge.info({
     Key? key,
     required String text,
@@ -57,21 +54,47 @@ class StatBadge extends StatelessWidget {
     return StatBadge(
       key: key,
       text: text,
-      backgroundColor: AppColors.primary.withValues(alpha: 0.15),
-      textColor: AppColors.secondary,
+      backgroundColor: AppColors.primaryLight,
+      textColor: AppColors.primary,
       icon: icon,
-      border: Border.all(
-        color: AppColors.primary.withValues(alpha: 0.3),
-        width: 1,
-      ),
+    );
+  }
+
+  /// Preset for Warning badge (Amber)
+  factory StatBadge.warning({
+    Key? key,
+    required String text,
+    IconData? icon = Icons.warning_amber_rounded,
+  }) {
+    return StatBadge(
+      key: key,
+      text: text,
+      backgroundColor: AppColors.warningLight,
+      textColor: AppColors.warning,
+      icon: icon,
+    );
+  }
+
+  /// Preset for Error badge (Red)
+  factory StatBadge.error({
+    Key? key,
+    required String text,
+    IconData? icon = Icons.error_outline_rounded,
+  }) {
+    return StatBadge(
+      key: key,
+      text: text,
+      backgroundColor: AppColors.errorLight,
+      textColor: AppColors.error,
+      icon: icon,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final effectiveBgColor =
-        backgroundColor ?? AppColors.primary.withValues(alpha: 0.15);
-    final effectiveTextColor = textColor ?? AppColors.textPrimary;
+        backgroundColor ?? AppColors.primaryLight;
+    final effectiveTextColor = textColor ?? AppColors.primary;
 
     final List<Widget> children = [];
 
@@ -79,18 +102,18 @@ class StatBadge extends StatelessWidget {
       children.add(iconWidget!);
       children.add(const SizedBox(width: 4));
     } else if (icon != null) {
-      children.add(Icon(icon, size: fontSize + 2, color: effectiveTextColor));
+      children.add(Icon(icon, size: fontSize + 3, color: effectiveTextColor));
       children.add(const SizedBox(width: 4));
     }
 
     children.add(
       Text(
         text,
-        style: TextStyle(
+        style: GoogleFonts.inter(
           color: effectiveTextColor,
           fontSize: fontSize,
           fontWeight: fontWeight,
-          letterSpacing: 0.5,
+          letterSpacing: 0.3,
         ),
       ),
     );

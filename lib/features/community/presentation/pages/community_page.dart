@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../bloc/community_bloc.dart';
 import '../bloc/community_event.dart';
@@ -23,12 +24,12 @@ class CommunityPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Reviews, Clients & FAQs',
-          style: TextStyle(
+          style: GoogleFonts.outfit(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.w600,
-            fontSize: 16,
+            fontSize: 18,
           ),
         ),
       ),
@@ -52,23 +53,26 @@ class CommunityPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline_rounded, color: AppColors.accentRed, size: 48),
+                  const Icon(Icons.error_outline_rounded, color: AppColors.error, size: 48),
                   const SizedBox(height: 12),
                   Text(
                     state.message,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: AppColors.textSecondary),
+                    style: GoogleFonts.inter(color: AppColors.textSecondary),
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                     onPressed: () {
                       context.read<CommunityBloc>().add(const LoadCommunityData());
                     },
-                    child: const Text('Retry'),
+                    child: Text('Retry', style: GoogleFonts.inter()),
                   ),
                 ],
               ),
@@ -78,7 +82,7 @@ class CommunityPage extends StatelessWidget {
           if (state is CommunityLoaded) {
             return RefreshIndicator(
               color: AppColors.primary,
-              backgroundColor: AppColors.cardBackground,
+              backgroundColor: AppColors.surface,
               onRefresh: () async {
                 context.read<CommunityBloc>().add(const LoadCommunityData());
               },
@@ -124,9 +128,9 @@ class CommunitySectionWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomerTestimonialsSlider(reviews: state.reviews),
-              const Gap(20),
+              const Gap(24),
               CorporateClientsMarquee(clients: state.clients),
-              const Gap(20),
+              const Gap(24),
               FaqsAccordion(faqs: state.faqs),
             ],
           );

@@ -3,9 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_shadows.dart';
 import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_card.dart';
 import '../../domain/entities/service_request_entity.dart';
 import '../bloc/services_bloc.dart';
 import '../bloc/services_event.dart';
@@ -116,28 +117,42 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        backgroundColor: AppColors.cardBackground,
-        title: const Text(
+        backgroundColor: AppColors.surface,
+        title: Text(
           'Add New Address',
-          style: TextStyle(color: AppColors.textPrimary),
+          style: GoogleFonts.outfit(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         content: TextField(
           controller: controller,
-          style: const TextStyle(color: AppColors.textPrimary),
+          style: GoogleFonts.inter(color: AppColors.textPrimary),
           decoration: InputDecoration(
             hintText: 'Enter your address',
-            hintStyle: const TextStyle(color: AppColors.textSecondary),
+            hintStyle: GoogleFonts.inter(color: AppColors.textTertiary),
             filled: true,
-            fillColor: AppColors.inputFill,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+            fillColor: AppColors.background,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: AppColors.border),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: AppColors.border),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: AppColors.primary),
+            ),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text(
+            child: Text(
               'Cancel',
-              style: TextStyle(color: AppColors.textSecondary),
+              style: GoogleFonts.inter(color: AppColors.textSecondary),
             ),
           ),
           TextButton(
@@ -150,9 +165,12 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                 }
               }
             },
-            child: const Text(
+            child: Text(
               'Save',
-              style: TextStyle(color: AppColors.primary),
+              style: GoogleFonts.inter(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -163,8 +181,11 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
   void _showAddressBottomSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.cardBackground,
+      backgroundColor: AppColors.surface,
       isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
@@ -178,9 +199,9 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Saved Addresses',
-                      style: TextStyle(
+                      style: GoogleFonts.outfit(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textPrimary,
@@ -189,10 +210,10 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                     const Gap(16),
                     Expanded(
                       child: _addresses.isEmpty
-                          ? const Center(
+                          ? Center(
                               child: Text(
                                 'No addresses found.',
-                                style: TextStyle(
+                                style: GoogleFonts.inter(
                                   color: AppColors.textSecondary,
                                 ),
                               ),
@@ -205,7 +226,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                                 return ListTile(
                                   title: Text(
                                     addressStr,
-                                    style: const TextStyle(
+                                    style: GoogleFonts.inter(
                                       color: AppColors.textPrimary,
                                     ),
                                   ),
@@ -223,7 +244,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                                   trailing: IconButton(
                                     icon: const Icon(
                                       Icons.delete_outline,
-                                      color: AppColors.accentRed,
+                                      color: AppColors.error,
                                     ),
                                     onPressed: () {
                                       _deleteAddress(doc.id, addressStr);
@@ -264,14 +285,14 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.dark(
+            colorScheme: const ColorScheme.light(
               primary: AppColors.primary,
               onPrimary: Colors.white,
-              surface: AppColors.cardBackground,
+              surface: AppColors.surface,
               onSurface: AppColors.textPrimary,
             ),
             dialogTheme: const DialogThemeData(
-              backgroundColor: AppColors.cardBackground,
+              backgroundColor: AppColors.surface,
             ),
           ),
           child: child!,
@@ -292,10 +313,10 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.dark(
+            colorScheme: const ColorScheme.light(
               primary: AppColors.primary,
               onPrimary: Colors.white,
-              surface: AppColors.cardBackground,
+              surface: AppColors.surface,
               onSurface: AppColors.textPrimary,
             ),
           ),
@@ -322,9 +343,9 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
   void _submitForm() {
     if (_shippingAddress == null || _shippingAddress!.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select or add an address.'),
-          backgroundColor: AppColors.accentRed,
+        SnackBar(
+          content: Text('Please select or add an address.', style: GoogleFonts.inter()),
+          backgroundColor: AppColors.error,
         ),
       );
       return;
@@ -332,9 +353,9 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
 
     if (_selectedTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select an appointment time.'),
-          backgroundColor: AppColors.accentRed,
+        SnackBar(
+          content: Text('Please select an appointment time.', style: GoogleFonts.inter()),
+          backgroundColor: AppColors.error,
         ),
       );
       return;
@@ -368,11 +389,11 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Service Request',
-          style: TextStyle(
+          style: GoogleFonts.outfit(
             color: AppColors.textPrimary,
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -382,9 +403,9 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
         listener: (context, state) {
           if (state is ServiceRequestSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Service request submitted successfully!'),
-                backgroundColor: AppColors.accentGreen,
+              SnackBar(
+                content: Text('Service request submitted successfully!', style: GoogleFonts.inter()),
+                backgroundColor: AppColors.success,
                 behavior: SnackBarBehavior.floating,
               ),
             );
@@ -392,8 +413,8 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
           } else if (state is ServicesError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.message),
-                backgroundColor: AppColors.accentRed,
+                content: Text(state.message, style: GoogleFonts.inter()),
+                backgroundColor: AppColors.error,
               ),
             );
           }
@@ -409,17 +430,22 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Address Shipping section
-                const Text(
+                Text(
                   'Address Shipping',
-                  style: TextStyle(
+                  style: GoogleFonts.inter(
                     color: AppColors.textSecondary,
-                    fontSize: 11.5,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const Gap(6),
-                AppCard(
-                  padding: const EdgeInsets.all(12),
+                const Gap(8),
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: AppShadows.soft,
+                  ),
+                  padding: const EdgeInsets.all(16),
                   child: _isLoadingAddresses
                       ? const Center(
                           child: CircularProgressIndicator(
@@ -431,67 +457,65 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                           child: AppButton(
                             text: 'Add Address',
                             onPressed: _showAddAddressDialog,
-                            height: 36,
+                            height: 40,
                           ),
                         )
                       : Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary.withValues(
-                                  alpha: 0.15,
-                                ),
+                              padding: const EdgeInsets.all(10),
+                              decoration: const BoxDecoration(
+                                color: AppColors.primaryLight,
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(
                                 Icons.home_outlined,
                                 color: AppColors.primary,
-                                size: 18,
+                                size: 20,
                               ),
                             ),
-                            const Gap(12),
+                            const Gap(16),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                  Text(
                                     'Selected Address',
-                                    style: TextStyle(
+                                    style: GoogleFonts.inter(
                                       color: AppColors.textSecondary,
-                                      fontSize: 11,
+                                      fontSize: 12,
                                     ),
                                   ),
-                                  const Gap(2),
+                                  const Gap(4),
                                   Text(
                                     _shippingAddress!,
-                                    style: const TextStyle(
+                                    style: GoogleFonts.inter(
                                       color: AppColors.textPrimary,
-                                      fontSize: 12.5,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            const Gap(6),
+                            const Gap(8),
                             TextButton.icon(
                               onPressed: _showAddressBottomSheet,
                               style: TextButton.styleFrom(
                                 foregroundColor: AppColors.secondary,
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
+                                  horizontal: 12,
+                                  vertical: 6,
                                 ),
                               ),
                               icon: const Text(
                                 '✏️',
                                 style: TextStyle(fontSize: 12),
                               ),
-                              label: const Text(
+                              label: Text(
                                 'Change',
-                                style: TextStyle(
-                                  fontSize: 11.5,
+                                style: GoogleFonts.inter(
+                                  fontSize: 13,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -500,154 +524,162 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                         ),
                 ),
 
-                const Gap(20),
+                const Gap(24),
 
                 // Appointment Date field
-                const Text(
+                Text(
                   'Appointment Date',
-                  style: TextStyle(
+                  style: GoogleFonts.inter(
                     color: AppColors.textSecondary,
-                    fontSize: 11.5,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const Gap(6),
+                const Gap(8),
                 InkWell(
                   onTap: _selectDate,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 12,
+                      horizontal: 16,
+                      vertical: 16,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.inputFill,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.divider),
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: AppColors.border),
+                      boxShadow: AppShadows.soft,
                     ),
                     child: Row(
                       children: [
                         const Icon(
                           Icons.calendar_today_outlined,
-                          color: AppColors.secondary,
-                          size: 18,
+                          color: AppColors.primary,
+                          size: 20,
                         ),
-                        const Gap(10),
+                        const Gap(12),
                         Text(
                           _formattedDate,
-                          style: const TextStyle(
+                          style: GoogleFonts.inter(
                             color: AppColors.textPrimary,
-                            fontSize: 12.5,
+                            fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         const Spacer(),
                         const Icon(
                           Icons.edit_calendar_outlined,
-                          color: AppColors.textSecondary,
-                          size: 16,
+                          color: AppColors.textTertiary,
+                          size: 18,
                         ),
                       ],
                     ),
                   ),
                 ),
 
-                const Gap(20),
+                const Gap(24),
 
                 // Appointment Time field
-                const Text(
+                Text(
                   'Appointment Time',
-                  style: TextStyle(
+                  style: GoogleFonts.inter(
                     color: AppColors.textSecondary,
-                    fontSize: 11.5,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const Gap(6),
+                const Gap(8),
                 InkWell(
                   onTap: _selectTime,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 12,
+                      horizontal: 16,
+                      vertical: 16,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.inputFill,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.divider),
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: AppColors.border),
+                      boxShadow: AppShadows.soft,
                     ),
                     child: Row(
                       children: [
                         const Icon(
                           Icons.access_time_rounded,
-                          color: AppColors.secondary,
-                          size: 18,
+                          color: AppColors.primary,
+                          size: 20,
                         ),
-                        const Gap(10),
+                        const Gap(12),
                         Text(
                           _formattedTime,
-                          style: const TextStyle(
+                          style: GoogleFonts.inter(
                             color: AppColors.textPrimary,
-                            fontSize: 12.5,
+                            fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         const Spacer(),
                         const Icon(
                           Icons.edit_outlined,
-                          color: AppColors.textSecondary,
-                          size: 16,
+                          color: AppColors.textTertiary,
+                          size: 18,
                         ),
                       ],
                     ),
                   ),
                 ),
 
-                const Gap(20),
+                const Gap(24),
 
                 // Problem Description (Optional) field
-                const Text(
+                Text(
                   'Problem Description (Optional)',
-                  style: TextStyle(
+                  style: GoogleFonts.inter(
                     color: AppColors.textSecondary,
-                    fontSize: 11.5,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const Gap(6),
-                TextFormField(
-                  controller: _descriptionController,
-                  maxLines: 4,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 12.5,
+                const Gap(8),
+                Container(
+                  decoration: BoxDecoration(
+                    boxShadow: AppShadows.soft,
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  decoration: InputDecoration(
-                    hintText: 'Please describe the issue in detail',
-                    hintStyle: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
+                  child: TextFormField(
+                    controller: _descriptionController,
+                    maxLines: 4,
+                    style: GoogleFonts.inter(
+                      color: AppColors.textPrimary,
+                      fontSize: 14,
                     ),
-                    filled: true,
-                    fillColor: AppColors.inputFill,
-                    contentPadding: const EdgeInsets.all(12),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: AppColors.divider),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: AppColors.divider),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: AppColors.primary),
+                    decoration: InputDecoration(
+                      hintText: 'Please describe the issue in detail',
+                      hintStyle: GoogleFonts.inter(
+                        color: AppColors.textTertiary,
+                        fontSize: 14,
+                      ),
+                      filled: true,
+                      fillColor: AppColors.surface,
+                      contentPadding: const EdgeInsets.all(16),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: const BorderSide(color: AppColors.border),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: const BorderSide(color: AppColors.border),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: const BorderSide(color: AppColors.primary),
+                      ),
                     ),
                   ),
                 ),
 
-                const Gap(24),
+                const Gap(32),
 
                 // Submit Request Button
                 BlocBuilder<ServicesBloc, ServicesState>(
@@ -657,12 +689,12 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                       text: 'Submit Request',
                       isLoading: isSubmitting,
                       onPressed: _submitForm,
-                      height: 44,
-                      borderRadius: 12,
+                      height: 52,
+                      borderRadius: 16,
                     );
                   },
                 ),
-                const Gap(20),
+                const Gap(32),
               ],
             ),
           ),

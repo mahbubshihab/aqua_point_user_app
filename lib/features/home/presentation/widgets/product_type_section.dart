@@ -1,8 +1,8 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/glass_card.dart';
+import '../../../../core/theme/app_shadows.dart';
 import '../../../products/domain/entities/product_entity.dart';
 import '../../../products/presentation/pages/category_shop_page.dart';
 import '../../../products/presentation/pages/shop_page.dart';
@@ -60,39 +60,17 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
             Expanded(
               child: Row(
                 children: [
-                  AnimatedBuilder(
-                    animation: _glowController,
-                    builder: (context, child) {
-                      final glow = _glowController.value;
-                      return Container(
-                        width: 4,
-                        height: 18,
-                        decoration: BoxDecoration(
-                          color: widget.accentColor,
-                          borderRadius: BorderRadius.circular(2),
-                          boxShadow: [
-                            BoxShadow(
-                              color: widget.accentColor.withValues(alpha: 0.3 + glow * 0.4),
-                              blurRadius: 4 + glow * 6,
-                              spreadRadius: 1,
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                  ),
+                  Icon(widget.icon, color: widget.accentColor, size: 24),
                   const Gap(8),
-                  Icon(widget.icon, color: widget.accentColor, size: 18),
-                  const Gap(6),
                   Flexible(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           widget.title,
-                          style: const TextStyle(
+                          style: GoogleFonts.outfit(
                             color: AppColors.textPrimary,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 0.2,
                           ),
@@ -104,18 +82,12 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
                           animation: _glowController,
                           builder: (context, child) {
                             return Container(
-                              margin: const EdgeInsets.only(top: 2),
-                              height: 1.5,
+                              margin: const EdgeInsets.only(top: 4),
+                              height: 2,
                               width: 30 + (_glowController.value * 20),
                               decoration: BoxDecoration(
-                                color: widget.accentColor.withValues(alpha: 0.7),
+                                color: widget.accentColor,
                                 borderRadius: BorderRadius.circular(1),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: widget.accentColor.withValues(alpha: 0.4),
-                                    blurRadius: 4,
-                                  ),
-                                ],
                               ),
                             );
                           }
@@ -153,9 +125,9 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
                   children: [
                     Text(
                       'View All',
-                      style: TextStyle(
+                      style: GoogleFonts.inter(
                         color: widget.accentColor,
-                        fontSize: 12.5,
+                        fontSize: 13,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -171,19 +143,19 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
             ),
           ],
         ),
-        const Gap(4),
+        const Gap(6),
         Padding(
-          padding: const EdgeInsets.only(left: 12.0),
+          padding: const EdgeInsets.only(left: 32.0),
           child: Text(
             widget.subtitle,
-            style: const TextStyle(
+            style: GoogleFonts.inter(
               color: AppColors.textSecondary,
-              fontSize: 11.5,
+              fontSize: 13,
               fontWeight: FontWeight.w400,
             ),
           ),
         ),
-        const Gap(12),
+        const Gap(16),
         // Product List or Empty State
         if (widget.products.isNotEmpty)
           SizedBox(
@@ -204,28 +176,30 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
             ),
           )
         else
-          GlassCard(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-            borderRadius: 16,
-            borderColor: widget.accentColor.withValues(alpha: 0.25),
-            fillColor: const Color(0x1F1A2236),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: AppShadows.soft,
+              border: Border.all(
+                color: AppColors.border,
+                width: 1,
+              ),
+            ),
             child: Row(
               children: [
                 Container(
-                  width: 38,
-                  height: 38,
+                  width: 44,
+                  height: 44,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: widget.accentColor.withValues(alpha: 0.12),
+                    color: widget.accentColor.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: widget.accentColor.withValues(alpha: 0.35),
-                      width: 1,
-                    ),
                   ),
                   child: Icon(
                     widget.icon,
-                    size: 20,
+                    size: 22,
                     color: widget.accentColor,
                   ),
                 ),
@@ -236,17 +210,17 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
                     children: [
                       Text(
                         'No ${widget.title} available',
-                        style: const TextStyle(
-                          fontSize: 13,
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: AppColors.textPrimary,
                         ),
                       ),
-                      const Gap(2),
+                      const Gap(4),
                       Text(
                         'Server query filter: type == ${widget.typeTag}',
-                        style: const TextStyle(
-                          fontSize: 11,
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
                           color: AppColors.textSecondary,
                         ),
                       ),

@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/services/bulk_sms_service.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/glass_card.dart';
+import '../../../../core/theme/app_gradients.dart';
+import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -71,313 +73,268 @@ class _LoginPageState extends State<LoginPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
-              backgroundColor: AppColors.accentRed,
+              backgroundColor: AppColors.error,
             ),
           );
         }
       },
       child: Scaffold(
         backgroundColor: AppColors.background,
-        body: Stack(
-          children: [
-            // Ambient glowing background orbs
-            Positioned(
-              top: -80,
-              right: -60,
-              child: Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.primary.withValues(alpha: 0.15),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.3),
-                      blurRadius: 130,
-                      spreadRadius: 60,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: -60,
-              left: -50,
-              child: Container(
-                width: 260,
-                height: 260,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.secondary.withValues(alpha: 0.12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.secondary.withValues(alpha: 0.25),
-                      blurRadius: 110,
-                      spreadRadius: 50,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            SafeArea(
-              child: Center(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Glowing Aqua Point Logo Badge
-                      GlassCard(
-                        borderRadius: 50.0,
-                        padding: const EdgeInsets.all(22.0),
-                        fillColor: const Color(0x22131826),
-                        borderColor: AppColors.primary.withValues(alpha: 0.6),
-                        borderWidth: 1.5,
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primary.withValues(alpha: 0.35),
-                            blurRadius: 24,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                        child: Image.asset(
-                          'assets/images/app_logo.png',
-                          width: 72,
-                          height: 72,
-                          fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(
-                            Icons.water_drop_rounded,
-                            size: 60,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-
-                      // AQUA POINT Bold Title
-                      Text(
-                        'AQUA POINT',
-                        style: GoogleFonts.outfit(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 3.0,
-                          color: Colors.white,
-                          shadows: [
-                            Shadow(
-                              color: AppColors.primary.withValues(alpha: 0.5),
-                              blurRadius: 16,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 40),
-
-                      // Glassmorphic Form Card
-                      GlassCard(
-                        borderRadius: 24.0,
-                        padding: const EdgeInsets.all(24.0),
-                        fillColor: const Color(0x281E293B),
-                        borderColor: AppColors.divider,
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Sign In',
-                                style: GoogleFonts.outfit(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-
-                              // Sleek Phone Input Box
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.inputFill,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(
-                                    color: _phoneError != null
-                                        ? AppColors.accentRed
-                                        : AppColors.divider,
-                                    width: 1.2,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    // Country Prefix
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 14,
-                                        vertical: 14,
-                                      ),
-                                      decoration: const BoxDecoration(
-                                        border: Border(
-                                          right: BorderSide(
-                                            color: AppColors.divider,
-                                            width: 1,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const Text(
-                                            '🇧🇩',
-                                            style: TextStyle(fontSize: 18),
-                                          ),
-                                          const SizedBox(width: 6),
-                                          Text(
-                                            '+880',
-                                            style: GoogleFonts.inter(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    // Input Field
-                                    Expanded(
-                                      child: TextField(
-                                        controller: _phoneController,
-                                        keyboardType: TextInputType.phone,
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter.digitsOnly,
-                                          LengthLimitingTextInputFormatter(11),
-                                        ],
-                                        style: GoogleFonts.inter(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
-                                          letterSpacing: 1.2,
-                                        ),
-                                        decoration: InputDecoration(
-                                          hintText: '01XXXXXXXXX',
-                                          hintStyle: GoogleFonts.inter(
-                                            color: AppColors.textSecondary.withValues(alpha: 0.4),
-                                            fontSize: 14,
-                                            letterSpacing: 1.2,
-                                          ),
-                                          border: InputBorder.none,
-                                          contentPadding: const EdgeInsets.symmetric(
-                                            horizontal: 14,
-                                            vertical: 14,
-                                          ),
-                                        ),
-                                        onChanged: (_) {
-                                          if (_phoneError != null) {
-                                            setState(() {
-                                              _phoneError = null;
-                                            });
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              if (_phoneError != null) ...[
-                                const SizedBox(height: 8),
-                                Text(
-                                  _phoneError!,
-                                  style: GoogleFonts.inter(
-                                    fontSize: 12,
-                                    color: AppColors.accentRed,
-                                  ),
-                                ),
-                              ],
-
-                              const SizedBox(height: 24),
-
-                              // Primary Button Send OTP with Cyan Gradient & Glow
-                              BlocBuilder<AuthBloc, AuthState>(
-                                builder: (context, state) {
-                                  final isLoading = state is AuthLoading;
-
-                                  return Container(
-                                    width: double.infinity,
-                                    height: 52,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16),
-                                      gradient: const LinearGradient(
-                                        colors: [
-                                          Color(0xFF00E5FF),
-                                          Color(0xFF0090B8),
-                                        ],
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: const Color(0xFF00E5FF).withValues(alpha: 0.35),
-                                          blurRadius: 16,
-                                          spreadRadius: 0,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Material(
-                                      color: Colors.transparent,
-                                      child: InkWell(
-                                        onTap: isLoading ? null : _onSendOtpPressed,
-                                        borderRadius: BorderRadius.circular(16),
-                                        child: Center(
-                                          child: isLoading
-                                              ? const SizedBox(
-                                                  width: 22,
-                                                  height: 22,
-                                                  child: CircularProgressIndicator(
-                                                    strokeWidth: 2.5,
-                                                    color: Colors.black,
-                                                  ),
-                                                )
-                                              : Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      'Send OTP',
-                                                      style: GoogleFonts.inter(
-                                                        fontSize: 16,
-                                                        fontWeight: FontWeight.w700,
-                                                        color: Colors.black,
-                                                        letterSpacing: 0.3,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(width: 8),
-                                                    const Icon(
-                                                      Icons.arrow_forward_rounded,
-                                                      size: 20,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ],
-                                                ),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Header Section with Wave
+              ClipPath(
+                clipper: _WaveClipper(),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.45,
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    gradient: AppGradients.primaryVertical,
+                  ),
+                  child: SafeArea(
+                    bottom: false,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.1),
+                                blurRadius: 20,
+                                offset: const Offset(0, 10),
                               ),
                             ],
                           ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Image.asset(
+                              'assets/images/app_logo.png',
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(
+                                Icons.water_drop_rounded,
+                                size: 40,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 20),
+                        Text(
+                          'AQUA POINT',
+                          style: GoogleFonts.outfit(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 2.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Pure Water, Better Life',
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white.withValues(alpha: 0.9),
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+
+              // Login Card
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Transform.translate(
+                  offset: const Offset(0, -40),
+                  child: AppCard(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Sign In',
+                            style: GoogleFonts.outfit(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Enter your phone number to continue',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                          const SizedBox(height: 32),
+
+                          // Phone Input
+                          Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.background,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: _phoneError != null
+                                    ? AppColors.error
+                                    : AppColors.border,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                // Country Prefix
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 16,
+                                  ),
+                                  decoration: const BoxDecoration(
+                                    border: Border(
+                                      right: BorderSide(
+                                        color: AppColors.border,
+                                        width: 1,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Text(
+                                        '🇧🇩',
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        '+880',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.textPrimary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                // Input Field
+                                Expanded(
+                                  child: TextField(
+                                    controller: _phoneController,
+                                    keyboardType: TextInputType.phone,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      LengthLimitingTextInputFormatter(11),
+                                    ],
+                                    style: GoogleFonts.inter(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.textPrimary,
+                                      letterSpacing: 1.0,
+                                    ),
+                                    decoration: InputDecoration(
+                                      hintText: '1XXXXXXXXX',
+                                      hintStyle: GoogleFonts.inter(
+                                        color: AppColors.textTertiary,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                      border: InputBorder.none,
+                                      contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 16,
+                                      ),
+                                    ),
+                                    onChanged: (_) {
+                                      if (_phoneError != null) {
+                                        setState(() {
+                                          _phoneError = null;
+                                        });
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (_phoneError != null) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              _phoneError!,
+                              style: GoogleFonts.inter(
+                                fontSize: 12,
+                                color: AppColors.error,
+                              ),
+                            ),
+                          ],
+
+                          const SizedBox(height: 32),
+
+                          BlocBuilder<AuthBloc, AuthState>(
+                            builder: (context, state) {
+                              final isLoading = state is AuthLoading;
+                              return AppButton(
+                                text: 'Send OTP',
+                                isLoading: isLoading,
+                                onPressed: isLoading ? null : _onSendOtpPressed,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
+class _WaveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.lineTo(0, size.height - 40);
+    
+    final firstControlPoint = Offset(size.width / 4, size.height);
+    final firstEndPoint = Offset(size.width / 2, size.height - 20);
+    path.quadraticBezierTo(
+      firstControlPoint.dx, 
+      firstControlPoint.dy, 
+      firstEndPoint.dx, 
+      firstEndPoint.dy,
+    );
+    
+    final secondControlPoint = Offset(size.width - (size.width / 4), size.height - 40);
+    final secondEndPoint = Offset(size.width, size.height - 10);
+    path.quadraticBezierTo(
+      secondControlPoint.dx, 
+      secondControlPoint.dy, 
+      secondEndPoint.dx, 
+      secondEndPoint.dy,
+    );
+    
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}

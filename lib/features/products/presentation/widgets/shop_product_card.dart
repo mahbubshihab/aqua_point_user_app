@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/glass_card.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../../orders/presentation/bloc/cart_bloc.dart';
 import '../../../orders/presentation/pages/checkout_page.dart';
 import '../../domain/entities/product_entity.dart';
@@ -35,7 +36,7 @@ class ShopProductCard extends StatelessWidget {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: AppColors.cardBackground,
+        backgroundColor: AppColors.surface,
         content: Row(
           children: [
             const Icon(Icons.check_circle_rounded, color: AppColors.accentGreen, size: 20),
@@ -43,7 +44,7 @@ class ShopProductCard extends StatelessWidget {
             Expanded(
               child: Text(
                 '${product.name} added to Cart',
-                style: const TextStyle(color: Colors.white, fontSize: 13),
+                style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 13),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -104,20 +105,13 @@ class ShopProductCard extends StatelessWidget {
   }
 
   Widget _buildCardContent(BuildContext context, String priceStr, String? originalPriceStr) {
-    return GlassCard(
+    return AppCard(
       padding: const EdgeInsets.all(10),
       borderRadius: 16,
-      fillColor: const Color(0xB31E293B),
-      borderWidth: 1.0,
-      borderColor: const Color(0x80334155),
-      borderGradient: const LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          Color(0x5000BCE1),
-          Color(0x40334155),
-        ],
-      ),
+      
+      
+      
+      
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -137,7 +131,7 @@ class ShopProductCard extends StatelessWidget {
                       height: 110,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: const Color(0x800F172A),
+                        color: AppColors.surface,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: ClipRRect(
@@ -152,7 +146,7 @@ class ShopProductCard extends StatelessWidget {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2.5),
                           decoration: BoxDecoration(
-                            color: const Color(0xCC0F172A),
+                            color: AppColors.surface,
                             borderRadius: BorderRadius.circular(7),
                             border: Border.all(color: const Color(0x6000BCE1), width: 0.8),
                           ),
@@ -163,8 +157,8 @@ class ShopProductCard extends StatelessWidget {
                               const Gap(2),
                               Text(
                                 '${product.rating}',
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                style: GoogleFonts.inter(
+                                  color: AppColors.textPrimary,
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -185,8 +179,8 @@ class ShopProductCard extends StatelessWidget {
                           ),
                           child: Text(
                             '-${(((product.originalPrice! - product.price) / product.originalPrice!) * 100).round()}%',
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: GoogleFonts.inter(
+                              color: AppColors.textPrimary,
                               fontSize: 9,
                               fontWeight: FontWeight.bold,
                             ),
@@ -202,7 +196,7 @@ class ShopProductCard extends StatelessWidget {
                   product.name,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: GoogleFonts.inter(
                     color: AppColors.textPrimary,
                     fontSize: 12.5,
                     fontWeight: FontWeight.bold,
@@ -215,7 +209,7 @@ class ShopProductCard extends StatelessWidget {
                   product.warrantyDetails,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: GoogleFonts.inter(
                     color: AppColors.accentGreen,
                     fontSize: 10,
                     fontWeight: FontWeight.w500,
@@ -229,7 +223,7 @@ class ShopProductCard extends StatelessWidget {
                   children: [
                     Text(
                       priceStr,
-                      style: const TextStyle(
+                      style: GoogleFonts.inter(
                         color: AppColors.primary,
                         fontSize: 14.5,
                         fontWeight: FontWeight.bold,
@@ -239,7 +233,7 @@ class ShopProductCard extends StatelessWidget {
                       const Gap(5),
                       Text(
                         originalPriceStr,
-                        style: const TextStyle(
+                        style: GoogleFonts.inter(
                           color: AppColors.textSecondary,
                           fontSize: 10.5,
                           decoration: TextDecoration.lineThrough,
@@ -299,11 +293,11 @@ class ShopProductCard extends StatelessWidget {
                     child: InkWell(
                       onTap: () => _onBuyNowPressed(context),
                       borderRadius: BorderRadius.circular(9),
-                      child: const Center(
+                      child: Center(
                         child: Text(
                           'Buy Now',
-                          style: TextStyle(
-                            color: Color(0xFF0F172A),
+                          style: GoogleFonts.inter(
+                            color: AppColors.textPrimary,
                             fontSize: 11.5,
                             fontWeight: FontWeight.bold,
                           ),
@@ -335,7 +329,7 @@ class ShopProductCard extends StatelessWidget {
 
   Widget _buildFallbackImage() {
     return Container(
-      color: AppColors.cardBackground,
+      color: AppColors.surface,
       child: const Center(
         child: Icon(
           Icons.water_drop_rounded,

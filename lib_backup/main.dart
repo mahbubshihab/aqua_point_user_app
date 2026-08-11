@@ -1,0 +1,119 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'core/constants/app_constants.dart';
+import 'core/services/bulk_sms_service.dart';
+import 'core/theme/app_theme.dart';
+import 'features/auth/data/datasources/auth_local_datasource.dart';
+import 'features/auth/data/datasources/auth_remote_datasource.dart';
+import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/auth/presentation/bloc/auth_event.dart';
+import 'features/home/data/datasources/home_remote_datasource.dart';
+import 'features/home/data/repositories/home_repository_impl.dart';
+import 'features/home/presentation/bloc/home_bloc.dart';
+import 'features/home/presentation/bloc/home_event.dart';
+import 'features/splash/presentation/pages/custom_splash_page.dart';
+import 'features/inbox_support/data/datasources/inbox_support_remote_datasource.dart';
+import 'features/inbox_support/data/repositories/inbox_support_repository_impl.dart';
+import 'features/inbox_support/domain/repositories/inbox_support_repository.dart';
+import 'features/inbox_support/presentation/bloc/inbox_support_bloc.dart';
+import 'features/inbox_support/presentation/bloc/inbox_support_event.dart';
+import 'features/products/data/datasources/products_remote_datasource.dart';
+import 'features/products/data/repositories/products_repository_impl.dart';
+import 'features/products/domain/repositories/products_repository.dart';
+import 'features/products/presentation/bloc/products_bloc.dart';
+import 'features/products/presentation/bloc/products_event.dart';
+import 'features/services/data/datasources/services_remote_datasource.dart';
+import 'features/services/data/repositories/services_repository_impl.dart';
+import 'features/services/domain/repositories/services_repository.dart';
+import 'features/services/presentation/bloc/services_bloc.dart';
+import 'features/services/presentation/bloc/services_event.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'features/orders/presentation/bloc/cart_bloc.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  try {
+    FirebaseFirestore.instance.settings = const Settings(
+      persistenceEnabled: true,
+      cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+    );
+  } catch (_) {}
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final homeRepository = HomeRepositoryImpl(
+      datasource: HomeRemoteDatasource(),
+    );
+    final servicesRepository = ServicesRepositoryImpl(
+      remoteDatasource: ServicesRemoteDatasourceImpl(),
+    );
+    final productsRepository = ProductsRepositoryImpl(
+      remoteDatasource: ProductsRemoteDatasourceImpl(),
+    );
+    final inboxSupportRepository = InboxSupportRepositoryImpl(
+      datasource: InboxSupportRemoteDatasource(),
+    );
+
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<ServicesRepository>.value(
+          value: servicesRepository,
+        ),
+        RepositoryProvider<ProductsRepository>.value(
+          value: productsRepository,
+        ),
+        RepositoryProvider<InboxSupportRepository>.value(
+          value: inboxSupportRepository,
+        ),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<AuthBloc>(
+            create: (context) => AuthBloc(
+              bulkSmsService: BulkSmsService(),
+              localDatasource: AuthLocalDatasource(),
+              remoteDatasource: AuthRemoteDatasource(),
+            )..add(const CheckAuthStatus()),
+          ),
+          BlocProvider<CartBloc>(
+            create: (context) => CartBloc(),
+          ),
+          BlocProvider<HomeBloc>(
+            create: (context) => HomeBloc(repository: homeRepository)
+              ..add(const LoadHomeData()),
+          ),
+          BlocProvider<ServicesBloc>(
+            create: (context) => ServicesBloc(repository: servicesRepository)
+              ..add(const LoadServicesHistory()),
+          ),
+          BlocProvider<ProductsBloc>(
+            create: (context) => ProductsBloc(repository: productsRepository)
+              ..add(const LoadProducts()),
+          ),
+          BlocProvider<InboxSupportBloc>(
+            create: (context) => InboxSupportBloc(repository: inboxSupportRepository)
+              ..add(const LoadInboxData()),
+          ),
+        ],
+        child: MaterialApp(
+          title: AppConstants.appTitle,
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.darkTheme,
+          home: const CustomSplashPage(),
+        ),
+      ),
+    );
+  }
+}
+

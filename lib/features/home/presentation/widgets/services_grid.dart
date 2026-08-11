@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/glass_card.dart';
+import '../../../../core/theme/app_shadows.dart';
 
 class ServiceTileData {
   final String title;
@@ -40,19 +41,19 @@ class ServicesGrid extends StatelessWidget {
             title: 'Water Reminder',
             description: 'Stay hydrated with alerts',
             icon: Icons.alarm_rounded,
-            color: AppColors.accentGreen,
+            color: AppColors.success,
           ),
           const ServiceTileData(
             title: 'Store Locator',
             description: 'Find nearest Aqua Point branch',
             icon: Icons.location_on_outlined,
-            color: AppColors.accentYellow,
+            color: AppColors.warning,
           ),
           const ServiceTileData(
             title: 'Transaction History',
             description: 'View orders and bills',
             icon: Icons.history_edu_rounded,
-            color: Color(0xFFA855F7),
+            color: AppColors.secondary,
           ),
         ];
 
@@ -60,27 +61,13 @@ class ServicesGrid extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Section Header
-        Row(
-          children: [
-            Container(
-              width: 4,
-              height: 16,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(width: 8),
-            const Text(
-              'Services & Features',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-                letterSpacing: 0.2,
-              ),
-            ),
-          ],
+        Text(
+          'Services & Features',
+          style: GoogleFonts.outfit(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+          ),
         ),
         const SizedBox(height: 12),
 
@@ -94,16 +81,23 @@ class ServicesGrid extends StatelessWidget {
             crossAxisCount: 2,
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
-            childAspectRatio: 1.45,
+            childAspectRatio: 1.35,
           ),
           itemBuilder: (context, index) {
             final item = list[index];
-            return RepaintBoundary(
-              child: GlassCard(
+            return GestureDetector(
+              onTap: item.onTap,
+              child: Container(
                 padding: const EdgeInsets.all(12),
-                borderRadius: 16,
-                onTap: item.onTap,
-                borderColor: item.color.withValues(alpha: 0.25),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: AppShadows.soft,
+                  border: Border.all(
+                    color: AppColors.border,
+                    width: 1,
+                  ),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -113,44 +107,39 @@ class ServicesGrid extends StatelessWidget {
                       children: [
                         // Rounded Icon Badge
                         Container(
-                          padding: const EdgeInsets.all(7),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: item.color.withValues(alpha: 0.14),
+                            color: item.color.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: item.color.withValues(alpha: 0.3),
-                              width: 1,
-                            ),
                           ),
-                          child: Icon(item.icon, size: 18, color: item.color),
+                          child: Icon(item.icon, size: 20, color: item.color),
                         ),
                         Icon(
                           Icons.chevron_right_rounded,
-                          size: 16,
-                          color: AppColors.textSecondary.withValues(alpha: 0.4),
+                          size: 18,
+                          color: AppColors.textTertiary,
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 12),
                     Text(
                       item.title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 11.5,
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textPrimary,
-                        letterSpacing: 0.1,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 4),
                     Text(
                       item.description,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: GoogleFonts.inter(
                         fontSize: 10,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w400,
                         color: AppColors.textSecondary,
                       ),
                     ),

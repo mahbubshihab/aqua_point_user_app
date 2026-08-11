@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_shadows.dart';
 import '../../../inbox_support/presentation/pages/chat_conversation_page.dart';
 import '../../../products/presentation/pages/shop_page.dart';
 
@@ -128,7 +129,7 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
         SnackBar(
           content: Row(
             children: [
-              const Icon(Icons.info_outline, color: AppColors.primary, size: 20),
+              const Icon(Icons.info_outline, color: AppColors.surface, size: 20),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -140,7 +141,7 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
               ),
             ],
           ),
-          backgroundColor: AppColors.cardBackground,
+          backgroundColor: AppColors.textPrimary,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           duration: const Duration(seconds: 2),
@@ -161,7 +162,7 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: 185,
+          height: 180,
           child: PageView.builder(
             controller: _pageController,
             itemCount: activeBanners.length,
@@ -177,32 +178,23 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: const Color(0x2B00E5FF),
-                      width: 1,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.35),
-                        blurRadius: 14,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: AppShadows.soft,
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(16),
                     child: Image.network(
                       banner.imageUrl,
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: double.infinity,
                       errorBuilder: (context, error, stackTrace) => Container(
-                        color: AppColors.cardBackground,
+                        color: AppColors.divider,
                         child: const Center(
                           child: Icon(
                             Icons.image_not_supported_rounded,
-                            color: AppColors.textSecondary,
+                            color: AppColors.textTertiary,
                             size: 40,
                           ),
                         ),
@@ -210,7 +202,7 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
                         return Container(
-                          color: AppColors.cardBackground,
+                          color: AppColors.divider,
                           child: const Center(
                             child: CircularProgressIndicator(
                               color: AppColors.primary,
@@ -227,29 +219,21 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
           ),
         ),
         if (activeBanners.length > 1) ...[
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
               activeBanners.length,
               (index) => AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
-                margin: const EdgeInsets.symmetric(horizontal: 3),
-                width: _currentIndex == index ? 22 : 6,
-                height: 6,
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                width: _currentIndex == index ? 24 : 8,
+                height: 8,
                 decoration: BoxDecoration(
                   color: _currentIndex == index
                       ? AppColors.primary
-                      : AppColors.textSecondary.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(3),
-                  boxShadow: _currentIndex == index
-                      ? [
-                          BoxShadow(
-                            color: AppColors.primary.withValues(alpha: 0.5),
-                            blurRadius: 6,
-                          ),
-                        ]
-                      : null,
+                      : AppColors.border,
+                  borderRadius: BorderRadius.circular(4),
                 ),
               ),
             ),
@@ -259,5 +243,3 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
     );
   }
 }
-
-

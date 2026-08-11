@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/glass_card.dart';
+import '../../../../core/theme/app_shadows.dart';
 import '../../domain/entities/client_entity.dart';
 
 class CorporateClientsMarquee extends StatelessWidget {
@@ -16,39 +17,43 @@ class CorporateClientsMarquee extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Trusted Corporate Clients',
-          style: TextStyle(
-            fontSize: 16,
+          style: GoogleFonts.outfit(
+            fontSize: 18,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
-            letterSpacing: -0.3,
           ),
         ),
-        const SizedBox(height: 2),
-        const Text(
+        const SizedBox(height: 4),
+        Text(
           'Organizations that rely on AQUA POINT water solutions',
-          style: TextStyle(
-            fontSize: 12,
+          style: GoogleFonts.inter(
+            fontSize: 13,
             color: AppColors.textSecondary,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         if (clients.isEmpty)
-          GlassCard(
+          Container(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            borderRadius: 16,
-            child: const Center(
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: AppShadows.soft,
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.business_rounded, color: AppColors.textSecondary, size: 20),
-                  SizedBox(width: 8),
+                  const Icon(Icons.business_rounded, color: AppColors.textSecondary, size: 20),
+                  const SizedBox(width: 8),
                   Text(
                     'Corporate partnerships coming soon',
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       color: AppColors.textSecondary,
-                      fontSize: 12,
+                      fontSize: 13,
                     ),
                   ),
                 ],
@@ -57,7 +62,7 @@ class CorporateClientsMarquee extends StatelessWidget {
           )
         else
           SizedBox(
-            height: 90,
+            height: 100,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
@@ -65,65 +70,68 @@ class CorporateClientsMarquee extends StatelessWidget {
               itemBuilder: (context, index) {
                 final client = clients[index];
                 return Padding(
-                  padding: const EdgeInsets.only(right: 12.0),
-                  child: GlassCard(
+                  padding: const EdgeInsets.only(right: 12.0, bottom: 4),
+                  child: Container(
+                    width: 140,
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                    borderRadius: 16,
-                    child: SizedBox(
-                      width: 140,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (client.logoUrl.isNotEmpty && client.logoUrl.startsWith('http'))
-                            Image.network(
-                              client.logoUrl,
-                              height: 32,
-                              width: 32,
-                              fit: BoxFit.contain,
-                              errorBuilder: (_, _, _) => const Icon(
-                                Icons.apartment_rounded,
-                                color: AppColors.primary,
-                                size: 28,
-                              ),
-                            )
-                          else
-                            Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary.withValues(alpha: 0.15),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.business_rounded,
-                                color: AppColors.primary,
-                                size: 20,
-                              ),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: AppShadows.soft,
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (client.logoUrl.isNotEmpty && client.logoUrl.startsWith('http'))
+                          Image.network(
+                            client.logoUrl,
+                            height: 36,
+                            width: 36,
+                            fit: BoxFit.contain,
+                            errorBuilder: (_, _, _) => const Icon(
+                              Icons.apartment_rounded,
+                              color: AppColors.primary,
+                              size: 28,
                             ),
-                          const SizedBox(height: 6),
-                          Text(
-                            client.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: AppColors.textPrimary,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 12,
+                          )
+                        else
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: const BoxDecoration(
+                              color: AppColors.primaryLight,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.business_rounded,
+                              color: AppColors.primary,
+                              size: 24,
                             ),
                           ),
-                          const SizedBox(height: 2),
-                          Text(
-                            client.industry,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: AppColors.textSecondary,
-                              fontSize: 10,
-                            ),
+                        const SizedBox(height: 8),
+                        Text(
+                          client.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          client.industry,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            color: AppColors.textSecondary,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 );

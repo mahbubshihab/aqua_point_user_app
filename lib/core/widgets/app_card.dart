@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'glass_card.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_shadows.dart';
 
-/// Styled Glassmorphic Card Container.
-/// Delegates to GlassCard for true glassmorphism styling across the application.
+/// Clean light-themed card container.
+/// Uses white background with soft shadow — no blur effects.
 class AppCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
@@ -20,7 +21,7 @@ class AppCard extends StatelessWidget {
     required this.child,
     this.padding = const EdgeInsets.all(16),
     this.margin,
-    this.borderRadius = 16.0,
+    this.borderRadius = 12.0,
     this.backgroundColor,
     this.borderColor,
     this.boxShadow,
@@ -31,17 +32,40 @@ class AppCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassCard(
-      padding: padding,
-      margin: margin,
-      borderRadius: borderRadius,
-      fillColor: backgroundColor ?? const Color(0x1F1A2236),
-      borderColor: borderColor ?? const Color(0x2B00E5FF),
-      boxShadow: boxShadow,
-      onTap: onTap,
+    Widget content = Container(
       width: width,
       height: height,
+      padding: padding,
+      decoration: BoxDecoration(
+        color: backgroundColor ?? AppColors.surface,
+        borderRadius: BorderRadius.circular(borderRadius),
+        border: Border.all(
+          color: borderColor ?? AppColors.border.withValues(alpha: 0.5),
+          width: 1,
+        ),
+        boxShadow: boxShadow ?? AppShadows.soft,
+      ),
       child: child,
     );
+
+    if (onTap != null) {
+      content = Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(borderRadius),
+          splashColor: AppColors.primary.withValues(alpha: 0.08),
+          highlightColor: AppColors.primary.withValues(alpha: 0.04),
+          child: content,
+        ),
+      );
+    }
+
+    if (margin != null) {
+      content = Padding(padding: margin!, child: content);
+    }
+
+    return content;
   }
 }

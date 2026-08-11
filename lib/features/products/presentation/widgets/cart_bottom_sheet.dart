@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../cart_manager.dart';
@@ -26,7 +27,7 @@ class CartBottomSheet extends StatelessWidget {
         return Container(
           height: MediaQuery.of(context).size.height * 0.75,
           decoration: const BoxDecoration(
-            color: AppColors.cardBackground,
+            color: AppColors.surface,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
             border: Border(top: BorderSide(color: AppColors.primary, width: 1.5)),
           ),
@@ -37,7 +38,7 @@ class CartBottomSheet extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.white24,
+                  color: AppColors.textPrimary.withValues(alpha: 0.24),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -49,10 +50,10 @@ class CartBottomSheet extends StatelessWidget {
                   children: [
                     const Icon(Icons.shopping_bag_outlined, color: AppColors.primary, size: 24),
                     const Gap(10),
-                    const Text(
+                    Text(
                       'Shopping Cart',
-                      style: TextStyle(
-                        color: Colors.white,
+                      style: GoogleFonts.outfit(
+                        color: AppColors.textPrimary,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -66,7 +67,7 @@ class CartBottomSheet extends StatelessWidget {
                       ),
                       child: Text(
                         '${cart.totalItemCount} items',
-                        style: const TextStyle(
+                        style: GoogleFonts.inter(
                           color: AppColors.primary,
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
@@ -76,7 +77,7 @@ class CartBottomSheet extends StatelessWidget {
                     const Spacer(),
                     IconButton(
                       onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.close, color: Colors.white60),
+                      icon: Icon(Icons.close, color: AppColors.textPrimary.withValues(alpha: 0.60)),
                     ),
                   ],
                 ),
@@ -95,18 +96,18 @@ class CartBottomSheet extends StatelessWidget {
                               color: AppColors.textSecondary.withValues(alpha: 0.5),
                             ),
                             const Gap(12),
-                            const Text(
+                            Text(
                               'Your cart is empty',
-                              style: TextStyle(
+                              style: GoogleFonts.outfit(
                                 color: AppColors.textSecondary,
                                 fontSize: 16,
                               ),
                             ),
                             const Gap(6),
-                            const Text(
+                            Text(
                               'Add water purifiers or filters to get started',
-                              style: TextStyle(
-                                color: Colors.white38,
+                              style: GoogleFonts.inter(
+                                color: AppColors.textPrimary.withValues(alpha: 0.38),
                                 fontSize: 12,
                               ),
                             ),
@@ -124,7 +125,7 @@ class CartBottomSheet extends StatelessWidget {
                           return Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: AppColors.inputFill,
+                              color: AppColors.background,
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(color: AppColors.divider),
                             ),
@@ -153,8 +154,8 @@ class CartBottomSheet extends StatelessWidget {
                                     children: [
                                       Text(
                                         product.name,
-                                        style: const TextStyle(
-                                          color: Colors.white,
+                                        style: GoogleFonts.inter(
+                                          color: AppColors.textPrimary,
                                           fontSize: 13.5,
                                           fontWeight: FontWeight.w600,
                                         ),
@@ -164,7 +165,7 @@ class CartBottomSheet extends StatelessWidget {
                                       const Gap(4),
                                       Text(
                                         '৳${product.price.toInt()}',
-                                        style: const TextStyle(
+                                        style: GoogleFonts.inter(
                                           color: AppColors.primary,
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
@@ -181,12 +182,12 @@ class CartBottomSheet extends StatelessWidget {
                                       onPressed: () {
                                         cart.updateQuantity(product, item.quantity - 1);
                                       },
-                                      icon: const Icon(Icons.remove_circle_outline, color: Colors.white60, size: 20),
+                                      icon: Icon(Icons.remove_circle_outline, color: AppColors.textPrimary.withValues(alpha: 0.60), size: 20),
                                     ),
                                     Text(
                                       '${item.quantity}',
-                                      style: const TextStyle(
-                                        color: Colors.white,
+                                      style: GoogleFonts.inter(
+                                        color: AppColors.textPrimary,
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -221,16 +222,16 @@ class CartBottomSheet extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
+                            Text(
                               'Grand Total:',
-                              style: TextStyle(
+                              style: GoogleFonts.inter(
                                 color: AppColors.textSecondary,
                                 fontSize: 14,
                               ),
                             ),
                             Text(
                               '৳${cart.grandTotal.toInt()}',
-                              style: const TextStyle(
+                              style: GoogleFonts.outfit(
                                 color: AppColors.primary,
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -254,19 +255,19 @@ class CartBottomSheet extends StatelessWidget {
                               Navigator.pop(context);
                               cart.clearCart();
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
+                                SnackBar(
                                   backgroundColor: AppColors.accentGreen,
                                   content: Text(
                                     '🎉 Checkout complete! Thank you for ordering from Aqua Point.',
-                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                    style: GoogleFonts.inter(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
                                   ),
                                   behavior: SnackBarBehavior.floating,
                                 ),
                               );
                             },
-                            child: const Text(
+                            child: Text(
                               'Proceed to Checkout',
-                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                              style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),

@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_shadows.dart';
 import '../../../auth/data/datasources/auth_local_datasource.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
@@ -76,8 +77,11 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Could not launch phone app for $phoneNumber'),
-            backgroundColor: AppColors.accentRed,
+            content: Text(
+              'Could not launch phone app for $phoneNumber',
+              style: GoogleFonts.inter(),
+            ),
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -98,12 +102,12 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
           .doc(_resolvedUserId)
           .collection('messages')
           .add({
-        'text': text,
-        'sender': 'user',
-        'senderName': 'Customer',
-        'createdAt': FieldValue.serverTimestamp(),
-        'isRead': false,
-      });
+            'text': text,
+            'sender': 'user',
+            'senderName': 'Customer',
+            'createdAt': FieldValue.serverTimestamp(),
+            'isRead': false,
+          });
 
       _messageController.clear();
       _scrollToBottom();
@@ -111,8 +115,11 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to send message: $e'),
-            backgroundColor: AppColors.accentRed,
+            content: Text(
+              'Failed to send message: $e',
+              style: GoogleFonts.inter(),
+            ),
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -161,12 +168,14 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.cardBackground,
-        elevation: 1,
-        shadowColor: AppColors.divider,
+        backgroundColor: AppColors.surface,
+        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded,
-              color: AppColors.textPrimary, size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: AppColors.textPrimary,
+            size: 20,
+          ),
           onPressed: () {
             if (Navigator.canPop(context)) {
               Navigator.pop(context);
@@ -182,55 +191,63 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.15),
+                    color: AppColors.primaryLight,
                     shape: BoxShape.circle,
                     border: Border.all(
-                        color: AppColors.primary.withValues(alpha: 0.4), width: 1.5),
+                      color: AppColors.primary.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
                   ),
                   child: const Center(
-                    child: Icon(Icons.support_agent_rounded,
-                        color: AppColors.primary, size: 24),
+                    child: Icon(
+                      Icons.support_agent_rounded,
+                      color: AppColors.primary,
+                      size: 24,
+                    ),
                   ),
                 ),
                 Positioned(
                   right: 0,
                   bottom: 0,
                   child: Container(
-                    width: 11,
-                    height: 11,
+                    width: 12,
+                    height: 12,
                     decoration: BoxDecoration(
-                      color: AppColors.accentGreen,
+                      color: AppColors.success,
                       shape: BoxShape.circle,
-                      border:
-                          Border.all(color: AppColors.cardBackground, width: 2),
+                      border: Border.all(color: AppColors.surface, width: 2),
                     ),
                   ),
                 ),
               ],
             ),
             const SizedBox(width: 12),
-            const Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Aqua Point Support',
-                    style: TextStyle(
+                    style: GoogleFonts.outfit(
                       color: AppColors.textPrimary,
                       fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                      fontSize: 16,
                     ),
                   ),
-                  SizedBox(height: 2),
+                  const SizedBox(height: 2),
                   Row(
                     children: [
-                      Icon(Icons.circle, color: AppColors.accentGreen, size: 8),
-                      SizedBox(width: 4),
+                      const Icon(
+                        Icons.circle,
+                        color: AppColors.success,
+                        size: 8,
+                      ),
+                      const SizedBox(width: 4),
                       Text(
                         'Online • 24/7 Support',
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           color: AppColors.textSecondary,
-                          fontSize: 11,
+                          fontSize: 12,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -247,11 +264,14 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
             child: IconButton(
               tooltip: 'Call Support Helpline',
               style: IconButton.styleFrom(
-                backgroundColor: AppColors.accentGreen.withValues(alpha: 0.15),
+                backgroundColor: AppColors.success.withValues(alpha: 0.15),
                 padding: const EdgeInsets.all(8),
               ),
-              icon: const Icon(Icons.phone_in_talk_rounded,
-                  color: AppColors.accentGreen, size: 20),
+              icon: const Icon(
+                Icons.phone_in_talk_rounded,
+                color: AppColors.success,
+                size: 20,
+              ),
               onPressed: () => _makeCall(helplinePhone),
             ),
           ),
@@ -263,32 +283,43 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
             // Info Header Banner
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              color: AppColors.cardBackground.withValues(alpha: 0.5),
+              color: AppColors.primaryLight.withValues(alpha: 0.5),
               child: Row(
                 children: [
-                  const Icon(Icons.info_outline_rounded,
-                      color: AppColors.primary, size: 16),
+                  const Icon(
+                    Icons.info_outline_rounded,
+                    color: AppColors.primary,
+                    size: 16,
+                  ),
                   const SizedBox(width: 8),
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'Our customer care team typically replies within a few minutes.',
-                      style:
-                          TextStyle(color: AppColors.textSecondary, fontSize: 11),
+                      style: GoogleFonts.inter(
+                        color: AppColors.textSecondary,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                   TextButton.icon(
                     onPressed: () => _makeCall(helplinePhone),
-                    icon: const Icon(Icons.phone_rounded,
-                        size: 12, color: AppColors.primary),
-                    label: const Text(
+                    icon: const Icon(
+                      Icons.phone_rounded,
+                      size: 14,
+                      color: AppColors.primary,
+                    ),
+                    label: Text(
                       'Helpline',
-                      style: TextStyle(
-                          fontSize: 11,
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.bold),
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero, minimumSize: const Size(50, 24)),
+                      padding: EdgeInsets.zero,
+                      minimumSize: const Size(50, 24),
+                    ),
                   ),
                 ],
               ),
@@ -298,7 +329,10 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
             Expanded(
               child: _resolvedUserId == null
                   ? const Center(
-                      child: CircularProgressIndicator(color: AppColors.primary))
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
+                      ),
+                    )
                   : StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('customers')
@@ -315,15 +349,19 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Icon(Icons.error_outline_rounded,
-                                      color: AppColors.accentRed, size: 40),
+                                  const Icon(
+                                    Icons.error_outline_rounded,
+                                    color: AppColors.error,
+                                    size: 40,
+                                  ),
                                   const SizedBox(height: 12),
                                   Text(
                                     'Failed to load messages: ${snapshot.error}',
                                     textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                        color: AppColors.textSecondary,
-                                        fontSize: 13),
+                                    style: GoogleFonts.inter(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 14,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -335,7 +373,8 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                             ConnectionState.waiting) {
                           return const Center(
                             child: CircularProgressIndicator(
-                                color: AppColors.primary),
+                              color: AppColors.primary,
+                            ),
                           );
                         }
 
@@ -350,9 +389,8 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                                 children: [
                                   Container(
                                     padding: const EdgeInsets.all(20),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.primary
-                                          .withValues(alpha: 0.1),
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.primaryLight,
                                       shape: BoxShape.circle,
                                     ),
                                     child: const Icon(
@@ -362,21 +400,21 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 16),
-                                  const Text(
+                                  Text(
                                     'Start a Conversation',
-                                    style: TextStyle(
+                                    style: GoogleFonts.outfit(
                                       color: AppColors.textPrimary,
-                                      fontSize: 18,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   const SizedBox(height: 8),
-                                  const Text(
+                                  Text(
                                     'Send us a message below and our support team will respond shortly.',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: GoogleFonts.inter(
                                       color: AppColors.textSecondary,
-                                      fontSize: 13,
+                                      fontSize: 14,
                                       height: 1.4,
                                     ),
                                   ),
@@ -390,13 +428,18 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                           controller: _scrollController,
                           reverse: true,
                           padding: const EdgeInsets.only(
-                              left: 16, right: 16, top: 16, bottom: 90),
+                            left: 16,
+                            right: 16,
+                            top: 16,
+                            bottom: 90,
+                          ),
                           itemCount: docs.length,
                           itemBuilder: (context, index) {
                             final data =
                                 docs[index].data() as Map<String, dynamic>;
-                            final sender =
-                                (data['sender'] ?? '').toString().toLowerCase();
+                            final sender = (data['sender'] ?? '')
+                                .toString()
+                                .toLowerCase();
                             final text = data['text'] as String? ?? '';
                             final createdAt = data['createdAt'];
                             final isUser =
@@ -415,15 +458,15 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
 
             // Sticky Bottom Input Bar
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: AppColors.cardBackground,
+                color: AppColors.surface,
                 border: const Border(
-                  top: BorderSide(color: Color(0x3300E5FF), width: 1),
+                  top: BorderSide(color: AppColors.border, width: 1),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, -3),
                   ),
@@ -434,31 +477,31 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                 children: [
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
-                        color: AppColors.inputFill,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: AppColors.primary.withValues(alpha: 0.35),
-                          width: 1,
-                        ),
+                        color: AppColors.background,
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: AppColors.border, width: 1),
                       ),
                       child: TextField(
                         controller: _messageController,
-                        style: const TextStyle(
+                        style: GoogleFonts.inter(
                           color: AppColors.textPrimary,
-                          fontSize: 14.5,
-                          height: 1.35,
+                          fontSize: 15,
+                          height: 1.4,
                         ),
                         minLines: 1,
                         maxLines: 4,
                         keyboardType: TextInputType.multiline,
                         textInputAction: TextInputAction.newline,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           hintText: 'Type your message...',
-                          hintStyle: TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 13.5,
+                          hintStyle: GoogleFonts.inter(
+                            color: AppColors.textTertiary,
+                            fontSize: 14,
                           ),
                           border: InputBorder.none,
                           enabledBorder: InputBorder.none,
@@ -467,37 +510,28 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                           errorBorder: InputBorder.none,
                           focusedErrorBorder: InputBorder.none,
                           isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 8),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 10,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 12),
                   GestureDetector(
                     onTap: _sendMessage,
                     child: Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF00E5FF), Color(0xFF0088FF)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
+                      width: 48,
+                      height: 48,
+                      decoration: const BoxDecoration(
+                        color: AppColors.primary,
                         shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF00E5FF).withValues(alpha: 0.4),
-                            blurRadius: 8,
-                            spreadRadius: 1,
-                          ),
-                        ],
                       ),
                       child: Center(
                         child: _isSending
                             ? const SizedBox(
-                                width: 18,
-                                height: 18,
+                                width: 20,
+                                height: 20,
                                 child: CircularProgressIndicator(
                                   color: Colors.white,
                                   strokeWidth: 2,
@@ -525,35 +559,38 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
     required bool isUser,
     required String timeStr,
   }) {
-    final userBgColor = AppColors.primary;
-    final adminBgColor = AppColors.cardBackground;
+    final userBgColor = AppColors.primaryLight;
+    final adminBgColor = AppColors.surface;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 16),
       child: Row(
-        mainAxisAlignment:
-            isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment: isUser
+            ? MainAxisAlignment.end
+            : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isUser) ...[
             Container(
-              width: 32,
-              height: 32,
-              margin: const EdgeInsets.only(right: 8),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.2),
+              width: 36,
+              height: 36,
+              margin: const EdgeInsets.only(right: 12),
+              decoration: const BoxDecoration(
+                color: AppColors.primaryLight,
                 shape: BoxShape.circle,
               ),
               child: const Center(
-                child: Icon(Icons.headset_mic_rounded,
-                    color: AppColors.primary, size: 18),
+                child: Icon(
+                  Icons.headset_mic_rounded,
+                  color: AppColors.primary,
+                  size: 18,
+                ),
               ),
             ),
           ],
           Flexible(
             child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 color: isUser ? userBgColor : adminBgColor,
                 borderRadius: BorderRadius.only(
@@ -563,56 +600,54 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                   bottomRight: Radius.circular(isUser ? 4 : 16),
                 ),
                 border: Border.all(
-                  color: isUser ? userBgColor : AppColors.cardBorder,
+                  color: isUser ? AppColors.primaryLight : AppColors.border,
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+                boxShadow: isUser ? null : AppShadows.soft,
               ),
               child: Column(
-                crossAxisAlignment:
-                    isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                crossAxisAlignment: isUser
+                    ? CrossAxisAlignment.end
+                    : CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (!isUser) ...[
-                    const Text(
+                    Text(
                       'Aqua Point Support',
-                      style: TextStyle(
-                        fontSize: 11,
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
                         fontWeight: FontWeight.bold,
                         color: AppColors.primary,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 6),
                   ],
                   Text(
                     text,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: isUser ? Colors.black : AppColors.textPrimary,
-                      fontWeight: isUser ? FontWeight.w600 : FontWeight.normal,
-                      height: 1.35,
+                    style: GoogleFonts.inter(
+                      fontSize: 15,
+                      color: AppColors.textPrimary,
+                      fontWeight: isUser ? FontWeight.w500 : FontWeight.normal,
+                      height: 1.4,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         timeStr,
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: isUser ? Colors.black54 : AppColors.textSecondary,
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          color: AppColors.textSecondary,
                         ),
                       ),
                       if (isUser) ...[
-                        const SizedBox(width: 4),
-                        const Icon(Icons.done_all_rounded,
-                            size: 12, color: Colors.black54),
+                        const SizedBox(width: 6),
+                        const Icon(
+                          Icons.done_all_rounded,
+                          size: 14,
+                          color: AppColors.primary,
+                        ),
                       ],
                     ],
                   ),

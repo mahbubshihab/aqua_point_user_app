@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -60,8 +61,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             Expanded(
               child: Text(
                 '${widget.product.name} added to cart!',
-                style: const TextStyle(
-                  color: Colors.white,
+                style: GoogleFonts.inter(
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -69,7 +70,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           ],
         ),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: const Color(0xFF1E293B),
+        backgroundColor: AppColors.surface,
         duration: const Duration(seconds: 3),
         action: SnackBarAction(
           label: 'View Cart',
@@ -116,9 +117,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textPrimary, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Product Details',
-          style: TextStyle(
+          style: GoogleFonts.outfit(
             color: AppColors.textPrimary,
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -155,8 +156,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         ),
                         child: Text(
                           '${cartState.totalItemCount}',
-                          style: const TextStyle(
-                            color: Colors.black,
+                          style: GoogleFonts.inter(
+                            color: Colors.white,
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
                           ),
@@ -191,7 +192,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       Expanded(
                         child: Text(
                           widget.product.name,
-                          style: const TextStyle(
+                          style: GoogleFonts.outfit(
                             color: AppColors.textPrimary,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -217,8 +218,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         ),
                         child: Text(
                           '৳${widget.product.price.toStringAsFixed(0)}',
-                          style: const TextStyle(
-                            color: Colors.black,
+                          style: GoogleFonts.outfit(
+                            color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -250,9 +251,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   const Gap(16),
 
                   // Specifications / Description
-                  const Text(
+                  Text(
                     'Overview & Specifications',
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       color: AppColors.textPrimary,
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -262,7 +263,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: AppColors.inputFill,
+                      color: AppColors.background,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(color: AppColors.divider),
                     ),
@@ -284,9 +285,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         'Select Quantity',
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           color: AppColors.textPrimary,
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
@@ -294,7 +295,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: AppColors.cardBackground,
+                          color: AppColors.surface,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: AppColors.divider),
                         ),
@@ -311,7 +312,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               padding: const EdgeInsets.symmetric(horizontal: 12),
                               child: Text(
                                 '$_quantity',
-                                style: const TextStyle(
+                                style: GoogleFonts.outfit(
                                   color: AppColors.textPrimary,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -344,7 +345,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: const BoxDecoration(
-              color: Color(0xF00D111D),
+              color: AppColors.surface,
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               border: Border(top: BorderSide(color: AppColors.divider)),
             ),
@@ -364,9 +365,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         ),
                       ),
                       icon: const Icon(Icons.add_shopping_cart_rounded, color: AppColors.primary, size: 18),
-                      label: const Text(
+                      label: Text(
                         'Add to Cart',
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           color: AppColors.primary,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
@@ -389,11 +390,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      icon: const Icon(Icons.flash_on_rounded, color: Colors.black, size: 18),
-                      label: const Text(
+                      icon: const Icon(Icons.flash_on_rounded, color: Colors.white, size: 18),
+                      label: Text(
                         'Buy Now',
-                        style: TextStyle(
-                          color: Colors.black,
+                        style: GoogleFonts.inter(
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
@@ -415,7 +416,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         width: double.infinity,
         height: 260,
         decoration: BoxDecoration(
-          color: AppColors.cardBackground,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: AppColors.divider),
         ),
@@ -431,7 +432,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           width: double.infinity,
           height: 260,
           decoration: BoxDecoration(
-            color: AppColors.cardBackground,
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: AppColors.divider),
           ),
@@ -470,14 +471,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.65),
+                      color: Colors.white.withValues(alpha: 0.65),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+                      border: Border.all(color: AppColors.textPrimary.withValues(alpha: 0.15)),
                     ),
                     child: Text(
                       '${_selectedImageIndex + 1}/${images.length}',
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: GoogleFonts.inter(
+                        color: AppColors.textPrimary,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
@@ -585,7 +586,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         const Gap(12),
         Text(
           title,
-          style: const TextStyle(
+          style: GoogleFonts.inter(
             color: AppColors.textSecondary,
             fontSize: 13,
           ),
@@ -593,7 +594,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         const Spacer(),
         Text(
           subtitle,
-          style: const TextStyle(
+          style: GoogleFonts.inter(
             color: AppColors.textPrimary,
             fontSize: 13,
             fontWeight: FontWeight.w600,
@@ -605,7 +606,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   Widget _buildFallbackThumbnail() {
     return Container(
-      color: AppColors.cardBackground,
+      color: AppColors.surface,
       child: const Icon(
         Icons.water_drop_rounded,
         size: 24,

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gap/gap.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/app_card.dart';
+import '../../../../core/theme/app_shadows.dart';
 import '../../../tools/presentation/pages/store_locator_page.dart';
 
 class StoresSection extends StatelessWidget {
@@ -29,20 +30,20 @@ class StoresSection extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Row(
+                Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.storefront_rounded,
                       color: AppColors.primary,
-                      size: 20,
+                      size: 24,
                     ),
-                    Gap(8),
+                    const Gap(8),
                     Text(
                       'Aqua Point Outlets',
-                      style: TextStyle(
+                      style: GoogleFonts.outfit(
                         color: AppColors.textPrimary,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
@@ -54,12 +55,12 @@ class StoresSection extends StatelessWidget {
                       MaterialPageRoute(builder: (_) => const StoreLocatorPage()),
                     );
                   },
-                  child: const Text(
+                  child: Text(
                     'View All',
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       color: AppColors.primary,
                       fontSize: 13,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -82,111 +83,115 @@ class StoresSection extends StatelessWidget {
 
                   return Container(
                     width: 260,
-                    margin: const EdgeInsets.only(right: 12),
-                    child: AppCard(
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primary.withValues(alpha: 0.15),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: const Icon(
-                                    Icons.location_on_rounded,
-                                    color: AppColors.primary,
-                                    size: 16,
-                                  ),
+                    margin: const EdgeInsets.only(right: 12, bottom: 4, top: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: AppShadows.soft,
+                      border: Border.all(
+                        color: AppColors.border,
+                        width: 1,
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primaryLight,
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                const Gap(8),
-                                Expanded(
-                                  child: Text(
-                                    name,
-                                    style: const TextStyle(
-                                      color: AppColors.textPrimary,
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                child: const Icon(
+                                  Icons.location_on_rounded,
+                                  color: AppColors.primary,
+                                  size: 16,
                                 ),
-                              ],
-                            ),
-                            Text(
-                              address,
-                              style: const TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: 11.5,
                               ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.access_time_rounded,
-                                      color: AppColors.textSecondary,
-                                      size: 13,
-                                    ),
-                                    const Gap(4),
-                                    Text(
-                                      hours,
-                                      style: const TextStyle(
-                                        color: AppColors.textSecondary,
-                                        fontSize: 10.5,
-                                      ),
-                                    ),
-                                  ],
+                              const Gap(8),
+                              Expanded(
+                                child: Text(
+                                  name,
+                                  style: GoogleFonts.inter(
+                                    color: AppColors.textPrimary,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                if (phone.isNotEmpty || mapUrl.isNotEmpty)
-                                  GestureDetector(
-                                    onTap: () async {
-                                      if (mapUrl.isNotEmpty) {
-                                        final uri = Uri.parse(mapUrl);
-                                        if (await canLaunchUrl(uri)) {
-                                          await launchUrl(uri);
-                                        }
-                                      } else if (phone.isNotEmpty) {
-                                        final uri = Uri.parse('tel:$phone');
-                                        if (await canLaunchUrl(uri)) {
-                                          await launchUrl(uri);
-                                        }
+                              ),
+                            ],
+                          ),
+                          Text(
+                            address,
+                            style: GoogleFonts.inter(
+                              color: AppColors.textSecondary,
+                              fontSize: 12,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.access_time_rounded,
+                                    color: AppColors.textSecondary,
+                                    size: 14,
+                                  ),
+                                  const Gap(4),
+                                  Text(
+                                    hours,
+                                    style: GoogleFonts.inter(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              if (phone.isNotEmpty || mapUrl.isNotEmpty)
+                                GestureDetector(
+                                  onTap: () async {
+                                    if (mapUrl.isNotEmpty) {
+                                      final uri = Uri.parse(mapUrl);
+                                      if (await canLaunchUrl(uri)) {
+                                        await launchUrl(uri);
                                       }
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.primary.withValues(alpha: 0.15),
-                                        borderRadius: BorderRadius.circular(6),
-                                        border: Border.all(
-                                          color: AppColors.primary.withValues(alpha: 0.3),
-                                        ),
-                                      ),
-                                      child: const Text(
-                                        'Directions',
-                                        style: TextStyle(
-                                          color: AppColors.primary,
-                                          fontSize: 10.5,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                    } else if (phone.isNotEmpty) {
+                                      final uri = Uri.parse('tel:$phone');
+                                      if (await canLaunchUrl(uri)) {
+                                        await launchUrl(uri);
+                                      }
+                                    }
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primaryLight,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      'Directions',
+                                      style: GoogleFonts.inter(
+                                        color: AppColors.primary,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ),
-                              ],
-                            ),
-                          ],
-                        ),
+                                ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   );

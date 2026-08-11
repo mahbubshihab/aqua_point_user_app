@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/glass_card.dart';
+import '../../../../core/theme/app_shadows.dart';
 import '../../../products/domain/entities/category_entity.dart';
 import '../../../products/presentation/pages/category_shop_page.dart';
 import '../../../products/presentation/pages/shop_page.dart';
@@ -27,34 +28,13 @@ class CategoriesSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Container(
-                  width: 4,
-                  height: 18,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(2),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: AppColors.primary,
-                        blurRadius: 6,
-                        spreadRadius: 1,
-                      ),
-                    ],
-                  ),
-                ),
-                const Gap(8),
-                const Text(
-                  'Categories',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.2,
-                  ),
-                ),
-              ],
+            Text(
+              'Categories',
+              style: GoogleFonts.outfit(
+                color: AppColors.textPrimary,
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+              ),
             ),
             InkWell(
               onTap: () {
@@ -64,21 +44,20 @@ class CategoriesSection extends StatelessWidget {
                 );
               },
               borderRadius: BorderRadius.circular(8),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Shop All',
-                      style: TextStyle(
+                      'See All',
+                      style: GoogleFonts.inter(
                         color: AppColors.primary,
-                        fontSize: 12.5,
+                        fontSize: 13,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    Gap(2),
-                    Icon(
+                    const Icon(
                       Icons.chevron_right_rounded,
                       color: AppColors.primary,
                       size: 18,
@@ -92,7 +71,7 @@ class CategoriesSection extends StatelessWidget {
         const Gap(12),
         // Horizontal Scrollable Category Cards List
         SizedBox(
-          height: 125,
+          height: 120,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(
@@ -152,8 +131,7 @@ class _CategoryCardState extends State<_CategoryCard> {
       padding: const EdgeInsets.only(right: 12.0),
       child: AnimatedScale(
         scale: _isPressed ? 0.95 : 1.0,
-        duration: const Duration(milliseconds: 120),
-        curve: Curves.easeOutCubic,
+        duration: const Duration(milliseconds: 100),
         child: GestureDetector(
           onTapDown: (_) => setState(() => _isPressed = true),
           onTapUp: (_) {
@@ -169,42 +147,27 @@ class _CategoryCardState extends State<_CategoryCard> {
             );
           },
           onTapCancel: () => setState(() => _isPressed = false),
-          child: GlassCard(
-            width: 105,
-            padding: const EdgeInsets.all(10),
-            borderRadius: 16,
-            fillColor: const Color(0x1F141A2D),
-            borderColor: AppColors.primary.withValues(alpha: 0.25),
-            borderWidth: 1,
+          child: Container(
+            width: 90,
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: AppShadows.soft,
+              border: Border.all(
+                color: AppColors.border,
+                width: 1,
+              ),
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Category Image / Icon Badge
                 Container(
-                  width: 52,
-                  height: 52,
+                  width: 50,
+                  height: 50,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.primary.withValues(alpha: 0.2),
-                        const Color(0xFF1E293B),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    border: Border.all(
-                      color: AppColors.primary.withValues(alpha: 0.35),
-                      width: 1.2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.15),
-                        blurRadius: 10,
-                        spreadRadius: 0,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
+                    color: AppColors.primaryLight,
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
@@ -241,39 +204,18 @@ class _CategoryCardState extends State<_CategoryCard> {
                   ),
                 ),
                 const Gap(8),
-                // Category Name
                 Text(
                   category.name,
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: GoogleFonts.inter(
                     color: AppColors.textPrimary,
-                    fontSize: 11.5,
+                    fontSize: 11,
                     fontWeight: FontWeight.w600,
-                    height: 1.15,
-                    letterSpacing: 0.1,
+                    height: 1.2,
                   ),
                 ),
-                if (category.productCount > 0) ...[
-                  const Gap(3),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      '${category.productCount} items',
-                      style: const TextStyle(
-                        color: AppColors.primary,
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
               ],
             ),
           ),

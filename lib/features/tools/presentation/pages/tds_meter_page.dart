@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/glass_card.dart';
+import '../../../../core/theme/app_shadows.dart';
 import '../../../../core/widgets/stat_badge.dart';
 import '../../../home/domain/entities/water_quality_entity.dart';
 
@@ -10,10 +11,7 @@ typedef WaterQualityDetailPage = TdsMeterPage;
 class TdsMeterPage extends StatefulWidget {
   final WaterQualityEntity? waterQuality;
 
-  const TdsMeterPage({
-    super.key,
-    this.waterQuality,
-  });
+  const TdsMeterPage({super.key, this.waterQuality});
 
   @override
   State<TdsMeterPage> createState() => _TdsMeterPageState();
@@ -54,9 +52,12 @@ class _TdsMeterPageState extends State<TdsMeterPage> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Live Water Analysis complete! Result: 99% Pure 💧'),
-        backgroundColor: AppColors.primary,
+      SnackBar(
+        content: Text(
+          'Live Water Analysis complete! Result: 99% Pure 💧',
+          style: GoogleFonts.inter(),
+        ),
+        backgroundColor: AppColors.success,
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -67,17 +68,21 @@ class _TdsMeterPageState extends State<TdsMeterPage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.surface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textPrimary, size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: AppColors.textPrimary,
+            size: 20,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Live TDS & Water Quality Gauge',
-          style: TextStyle(
+          style: GoogleFonts.outfit(
             color: AppColors.textPrimary,
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -85,28 +90,21 @@ class _TdsMeterPageState extends State<TdsMeterPage> {
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Water Purity Health Score Card
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
+                  colors: [AppColors.primary, AppColors.secondary],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.4)),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x3300E5FF),
-                    blurRadius: 16,
-                    spreadRadius: 1,
-                  ),
-                ],
+                boxShadow: AppShadows.medium,
               ),
               child: Row(
                 children: [
@@ -114,88 +112,144 @@ class _TdsMeterPageState extends State<TdsMeterPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'WATER PURITY HEALTH SCORE',
-                          style: TextStyle(
+                          style: GoogleFonts.inter(
                             fontSize: 11,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
+                            color: Colors.white.withValues(alpha: 0.9),
                             letterSpacing: 1.0,
                           ),
                         ),
-                        const Gap(6),
+                        const Gap(8),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.baseline,
                           textBaseline: TextBaseline.alphabetic,
                           children: [
                             Text(
                               '$_healthScore',
-                              style: const TextStyle(
-                                fontSize: 38,
+                              style: GoogleFonts.outfit(
+                                fontSize: 44,
                                 fontWeight: FontWeight.w900,
                                 color: Colors.white,
                               ),
                             ),
-                            const Text(
+                            Text(
                               '/100',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: AppColors.textSecondary,
+                              style: GoogleFonts.inter(
+                                fontSize: 18,
+                                color: Colors.white70,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
                         ),
-                        const Gap(4),
-                        Text(
-                          'Grade A+ • Safe & Safe Drinking Water',
-                          style: TextStyle(
-                            color: AppColors.accentGreen.withValues(alpha: 0.9),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
+                        const Gap(6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            'Grade A+ • Safe Drinking Water',
+                            style: GoogleFonts.inter(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  StatBadge.excellent(text: _status),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 16,
+                    ),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Column(
+                      children: [
+                        const Icon(
+                          Icons.verified_user_rounded,
+                          color: AppColors.primary,
+                          size: 32,
+                        ),
+                        const Gap(4),
+                        Text(
+                          _status,
+                          style: GoogleFonts.inter(
+                            color: AppColors.primary,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-            const Gap(16),
+            const Gap(20),
 
             // Live TDS Gauge Card
-            GlassCard(
-              padding: const EdgeInsets.all(20),
-              borderRadius: 20,
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: AppShadows.soft,
+                border: Border.all(color: AppColors.border),
+              ),
               child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Text(
-                        'Live TDS Gauge (Total Dissolved Solids)',
-                        style: TextStyle(
-                          fontSize: 13,
+                        'Live TDS Gauge',
+                        style: GoogleFonts.outfit(
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: AppColors.textPrimary,
                         ),
                       ),
-                      Icon(Icons.sensors_rounded, color: AppColors.primary, size: 18),
+                      const Icon(
+                        Icons.sensors_rounded,
+                        color: AppColors.primary,
+                        size: 20,
+                      ),
                     ],
                   ),
-                  const Gap(20),
+                  const Gap(8),
+                  Text(
+                    'Total Dissolved Solids in PPM',
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const Gap(32),
                   Stack(
                     alignment: Alignment.center,
                     children: [
                       SizedBox(
-                        width: 160,
-                        height: 160,
+                        width: 180,
+                        height: 180,
                         child: CircularProgressIndicator(
                           value: (_tds / 300).clamp(0.0, 1.0),
-                          strokeWidth: 14,
-                          backgroundColor: AppColors.inputFill,
-                          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                          strokeWidth: 16,
+                          backgroundColor: AppColors.background,
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                            AppColors.primary,
+                          ),
                           strokeCap: StrokeCap.round,
                         ),
                       ),
@@ -203,20 +257,22 @@ class _TdsMeterPageState extends State<TdsMeterPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           if (_isScanning)
-                            const CircularProgressIndicator(color: AppColors.primary)
+                            const CircularProgressIndicator(
+                              color: AppColors.primary,
+                            )
                           else ...[
                             Text(
                               '$_tds',
-                              style: const TextStyle(
-                                fontSize: 36,
+                              style: GoogleFonts.outfit(
+                                fontSize: 48,
                                 fontWeight: FontWeight.w900,
                                 color: AppColors.primary,
                               ),
                             ),
-                            const Text(
+                            Text(
                               'PPM',
-                              style: TextStyle(
-                                fontSize: 13,
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.textSecondary,
                               ),
@@ -226,47 +282,71 @@ class _TdsMeterPageState extends State<TdsMeterPage> {
                       ),
                     ],
                   ),
-                  const Gap(16),
+                  const Gap(32),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _TdsRangeLegend(range: '0 - 50', label: 'Pure (RO)', isCurrent: _tds <= 50),
-                      _TdsRangeLegend(range: '51 - 150', label: 'Ideal', isCurrent: _tds > 50 && _tds <= 150),
-                      _TdsRangeLegend(range: '151 - 300', label: 'Fair', isCurrent: _tds > 150 && _tds <= 300),
+                      _TdsRangeLegend(
+                        range: '0 - 50',
+                        label: 'Pure (RO)',
+                        isCurrent: _tds <= 50,
+                      ),
+                      _TdsRangeLegend(
+                        range: '51 - 150',
+                        label: 'Ideal',
+                        isCurrent: _tds > 50 && _tds <= 150,
+                      ),
+                      _TdsRangeLegend(
+                        range: '151 - 300',
+                        label: 'Fair',
+                        isCurrent: _tds > 150 && _tds <= 300,
+                      ),
                     ],
                   ),
-                  const Gap(16),
+                  const Gap(24),
                   SizedBox(
                     width: double.infinity,
+                    height: 52,
                     child: ElevatedButton.icon(
                       onPressed: _isScanning ? null : _simulateReTest,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                      icon: const Icon(Icons.sync_rounded, color: Colors.white, size: 18),
+                      icon: const Icon(
+                        Icons.sync_rounded,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                       label: Text(
-                        _isScanning ? 'Testing Water Quality...' : 'Re-Test Water Quality',
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        _isScanning
+                            ? 'Testing Water Quality...'
+                            : 'Re-Test Water Quality',
+                        style: GoogleFonts.inter(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            const Gap(16),
+            const Gap(24),
 
             // Detailed Water Parameters Breakdown Grid
-            const Text(
-              'Chemical & Mineral Breakdown Analysis',
-              style: TextStyle(
-                fontSize: 14,
+            Text(
+              'Chemical & Mineral Breakdown',
+              style: GoogleFonts.outfit(
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
             ),
-            const Gap(10),
+            const Gap(16),
 
             Row(
               children: [
@@ -274,26 +354,26 @@ class _TdsMeterPageState extends State<TdsMeterPage> {
                   child: _MetricDetailCard(
                     title: 'Iron (Fe)',
                     value: '$_iron mg/L',
-                    subtitle: 'Safe Limit: < 0.3 mg/L',
+                    subtitle: 'Safe Limit: < 0.3',
                     status: 'Excellent',
                     color: AppColors.primary,
                     icon: Icons.invert_colors_rounded,
                   ),
                 ),
-                const Gap(10),
+                const Gap(12),
                 Expanded(
                   child: _MetricDetailCard(
                     title: 'pH Level',
                     value: '$_ph pH',
-                    subtitle: 'Ideal: 6.5 - 8.5 pH',
-                    status: 'Optimal Neutral',
-                    color: AppColors.accentGreen,
+                    subtitle: 'Ideal: 6.5 - 8.5',
+                    status: 'Optimal',
+                    color: AppColors.success,
                     icon: Icons.science_rounded,
                   ),
                 ),
               ],
             ),
-            const Gap(10),
+            const Gap(12),
             Row(
               children: [
                 Expanded(
@@ -302,11 +382,11 @@ class _TdsMeterPageState extends State<TdsMeterPage> {
                     value: _hardness,
                     subtitle: '25 mg/L CaCO3',
                     status: 'Soft Water',
-                    color: AppColors.accentGold,
+                    color: AppColors.warning,
                     icon: Icons.bubble_chart_rounded,
                   ),
                 ),
-                const Gap(10),
+                const Gap(12),
                 Expanded(
                   child: _MetricDetailCard(
                     title: 'Chlorine',
@@ -319,55 +399,65 @@ class _TdsMeterPageState extends State<TdsMeterPage> {
                 ),
               ],
             ),
-            const Gap(16),
+            const Gap(24),
 
             // RO Membrane & Filter Health Card
-            GlassCard(
-              padding: const EdgeInsets.all(16),
-              borderRadius: 16,
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: AppShadows.soft,
+                border: Border.all(color: AppColors.border),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Text(
                         'RO Filter Health Status',
-                        style: TextStyle(
-                          fontSize: 13,
+                        style: GoogleFonts.outfit(
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: AppColors.textPrimary,
                         ),
                       ),
                       Text(
-                        '92% Good Condition',
-                        style: TextStyle(
-                          fontSize: 11.5,
+                        '92% Good',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.accentGreen,
+                          color: AppColors.success,
                         ),
                       ),
                     ],
                   ),
-                  const Gap(10),
+                  const Gap(16),
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(8),
                     child: const LinearProgressIndicator(
                       value: 0.92,
-                      minHeight: 8,
-                      backgroundColor: AppColors.inputFill,
-                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.accentGreen),
+                      minHeight: 10,
+                      backgroundColor: AppColors.background,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        AppColors.success,
+                      ),
                     ),
                   ),
-                  const Gap(8),
-                  const Text(
+                  const Gap(12),
+                  Text(
                     'Next scheduled filter maintenance in approximately 114 days.',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 11),
+                    style: GoogleFonts.inter(
+                      color: AppColors.textSecondary,
+                      fontSize: 13,
+                    ),
                   ),
                 ],
               ),
             ),
-            const Gap(24),
+            const Gap(32),
           ],
         ),
       ),
@@ -391,24 +481,29 @@ class _TdsRangeLegend extends StatelessWidget {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: isCurrent ? AppColors.primary : AppColors.inputFill,
+            color: isCurrent ? AppColors.primary : AppColors.background,
             borderRadius: BorderRadius.circular(8),
+            border: isCurrent ? null : Border.all(color: AppColors.border),
           ),
           child: Text(
             range,
-            style: TextStyle(
-              fontSize: 11,
+            style: GoogleFonts.inter(
+              fontSize: 12,
               fontWeight: FontWeight.bold,
               color: isCurrent ? Colors.white : AppColors.textSecondary,
             ),
           ),
         ),
-        const Gap(4),
+        const Gap(6),
         Text(
           label,
-          style: const TextStyle(fontSize: 10, color: AppColors.textSecondary),
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            color: AppColors.textSecondary,
+            fontWeight: isCurrent ? FontWeight.w600 : FontWeight.normal,
+          ),
         ),
       ],
     );
@@ -434,54 +529,68 @@ class _MetricDetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassCard(
-      padding: const EdgeInsets.all(14),
-      borderRadius: 14,
-      borderColor: color.withValues(alpha: 0.3),
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+        boxShadow: AppShadows.soft,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, color: color, size: 18),
-              const Gap(6),
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, color: color, size: 18),
+              ),
+              const Gap(10),
               Expanded(
                 child: Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary,
                   ),
                 ),
               ),
             ],
           ),
-          const Gap(8),
+          const Gap(16),
           Text(
             value,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
+            style: GoogleFonts.outfit(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
               color: color,
             ),
           ),
-          const Gap(2),
+          const Gap(4),
           Text(
             subtitle,
-            style: const TextStyle(fontSize: 10.5, color: AppColors.textSecondary),
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              color: AppColors.textSecondary,
+            ),
           ),
-          const Gap(6),
+          const Gap(10),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Text(
               status,
-              style: TextStyle(
-                fontSize: 10,
+              style: GoogleFonts.inter(
+                fontSize: 11,
                 fontWeight: FontWeight.bold,
                 color: color,
               ),

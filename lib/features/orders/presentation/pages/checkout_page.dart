@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
@@ -138,9 +139,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
           icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textPrimary, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Checkout',
-          style: TextStyle(
+          style: GoogleFonts.outfit(
             color: AppColors.textPrimary,
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -159,7 +160,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     Container(
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
-                        color: AppColors.cardBackground,
+                        color: AppColors.surface,
                         shape: BoxShape.circle,
                         border: Border.all(color: AppColors.divider),
                       ),
@@ -170,19 +171,19 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       ),
                     ),
                     const Gap(20),
-                    const Text(
+                    Text(
                       'Your Cart is Empty',
-                      style: TextStyle(
+                      style: GoogleFonts.outfit(
                         color: AppColors.textPrimary,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const Gap(6),
-                    const Text(
+                    Text(
                       'Add water purifiers or replacement filters to proceed with checkout.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: GoogleFonts.inter(
                         color: AppColors.textSecondary,
                         fontSize: 13,
                       ),
@@ -203,11 +204,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      icon: const Icon(Icons.water_drop_outlined, color: Colors.black),
-                      label: const Text(
+                      icon: const Icon(Icons.water_drop_outlined, color: Colors.white),
+                      label: Text(
                         'Explore Products',
-                        style: TextStyle(
-                          color: Colors.black,
+                        style: GoogleFonts.inter(
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -237,7 +238,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             children: [
                               TextFormField(
                                 controller: _nameController,
-                                style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+                                style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 14),
                                 decoration: const InputDecoration(
                                   labelText: 'Full Name *',
                                   hintText: 'Enter recipient name',
@@ -254,7 +255,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               TextFormField(
                                 controller: _phoneController,
                                 keyboardType: TextInputType.phone,
-                                style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+                                style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 14),
                                 decoration: const InputDecoration(
                                   labelText: 'Phone Number *',
                                   hintText: '017XXXXXXXX',
@@ -274,7 +275,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               TextFormField(
                                 controller: _addressController,
                                 maxLines: 2,
-                                style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+                                style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 14),
                                 decoration: const InputDecoration(
                                   labelText: 'Delivery Address *',
                                   hintText: 'House no, Road, Area, District',
@@ -290,7 +291,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               const Gap(12),
                               TextFormField(
                                 controller: _instructionsController,
-                                style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+                                style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 14),
                                 decoration: const InputDecoration(
                                   labelText: 'Delivery Instructions (Optional)',
                                   hintText: 'e.g. Leave with security guard, call before delivery',
@@ -319,7 +320,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                     width: 48,
                                     height: 48,
                                     decoration: BoxDecoration(
-                                      color: AppColors.inputFill,
+                                      color: AppColors.background,
                                       borderRadius: BorderRadius.circular(10),
                                       border: Border.all(color: AppColors.divider),
                                     ),
@@ -349,7 +350,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                       children: [
                                         Text(
                                           item.name,
-                                          style: const TextStyle(
+                                          style: GoogleFonts.inter(
                                             color: AppColors.textPrimary,
                                             fontSize: 13.5,
                                             fontWeight: FontWeight.bold,
@@ -360,7 +361,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                         const Gap(2),
                                         Text(
                                           '৳${item.price.toStringAsFixed(0)} each',
-                                          style: const TextStyle(
+                                          style: GoogleFonts.inter(
                                             color: AppColors.textSecondary,
                                             fontSize: 12,
                                           ),
@@ -375,7 +376,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                       Container(
                                         height: 32,
                                         decoration: BoxDecoration(
-                                          color: AppColors.inputFill,
+                                          color: AppColors.background,
                                           borderRadius: BorderRadius.circular(8),
                                           border: Border.all(color: AppColors.divider),
                                         ),
@@ -398,7 +399,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                             ),
                                             Text(
                                               '${item.quantity}',
-                                              style: const TextStyle(
+                                              style: GoogleFonts.inter(
                                                 color: AppColors.textPrimary,
                                                 fontSize: 12.5,
                                                 fontWeight: FontWeight.bold,
@@ -483,10 +484,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text('Subtotal', style: TextStyle(color: AppColors.textSecondary, fontSize: 13.5)),
+                                  Text('Subtotal', style: GoogleFonts.inter(color: AppColors.textSecondary, fontSize: 13.5)),
                                   Text(
                                     '৳${cartState.subtotal.toStringAsFixed(0)}',
-                                    style: const TextStyle(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w600),
+                                    style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w600),
                                   ),
                                 ],
                               ),
@@ -494,10 +495,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text('Shipping Fee (Fixed)', style: TextStyle(color: AppColors.textSecondary, fontSize: 13.5)),
+                                  Text('Shipping Fee (Fixed)', style: GoogleFonts.inter(color: AppColors.textSecondary, fontSize: 13.5)),
                                   Text(
                                     '৳${cartState.shippingFee.toStringAsFixed(0)}',
-                                    style: const TextStyle(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w600),
+                                    style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w600),
                                   ),
                                 ],
                               ),
@@ -505,13 +506,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text(
+                                  Text(
                                     'Total Amount',
-                                    style: TextStyle(color: AppColors.textPrimary, fontSize: 15, fontWeight: FontWeight.bold),
+                                    style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 15, fontWeight: FontWeight.bold),
                                   ),
                                   Text(
                                     '৳${cartState.totalAmount.toStringAsFixed(0)}',
-                                    style: const TextStyle(
+                                    style: GoogleFonts.outfit(
                                       color: AppColors.primary,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
@@ -532,7 +533,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: const BoxDecoration(
-                    color: Color(0xF00D111D),
+                    color: AppColors.surface,
                     borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                     border: Border(top: BorderSide(color: AppColors.divider)),
                   ),
@@ -544,16 +545,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Text(
+                            Text(
                               'Total Payable',
-                              style: TextStyle(
+                              style: GoogleFonts.inter(
                                 color: AppColors.textSecondary,
                                 fontSize: 11.5,
                               ),
                             ),
                             Text(
                               '৳${cartState.totalAmount.toStringAsFixed(0)}',
-                              style: const TextStyle(
+                              style: GoogleFonts.outfit(
                                 color: AppColors.primary,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -580,22 +581,22 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                     height: 22,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2.5,
-                                      color: Colors.black,
+                                      color: Colors.white,
                                     ),
                                   )
-                                : const Row(
+                                : Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         'Confirm Order',
-                                        style: TextStyle(
-                                          color: Colors.black,
+                                        style: GoogleFonts.inter(
+                                          color: Colors.white,
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Gap(6),
-                                      Icon(Icons.arrow_forward_rounded, color: Colors.black, size: 18),
+                                      const Gap(6),
+                                      const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 18),
                                     ],
                                   ),
                           ),
@@ -619,7 +620,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         const Gap(8),
         Text(
           title,
-          style: const TextStyle(
+          style: GoogleFonts.inter(
             color: AppColors.textPrimary,
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -663,7 +664,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 children: [
                   Text(
                     title,
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       color: AppColors.textPrimary,
                       fontSize: 13.5,
                       fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
@@ -672,7 +673,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   const Gap(2),
                   Text(
                     subtitle,
-                    style: const TextStyle(
+                    style: GoogleFonts.inter(
                       color: AppColors.textSecondary,
                       fontSize: 11.5,
                     ),

@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -30,59 +29,55 @@ class MainShellPage extends StatelessWidget {
               ChatConversationPage(),
             ],
           ),
-          bottomNavigationBar: ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Color(0xF00D111D),
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-                  border: Border(
-                    top: BorderSide(
-                      color: Color(0x3300E5FF),
-                      width: 1.5,
-                    ),
-                  ),
+          bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 20,
+                  spreadRadius: 0,
+                  offset: const Offset(0, -5),
                 ),
-                child: SafeArea(
-                  top: false,
-                  child: SizedBox(
-                    height: 64,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _NavBarItem(
-                          index: 0,
-                          currentIndex: currentIndex,
-                          icon: Icons.home_outlined,
-                          activeIcon: Icons.home_rounded,
-                          label: 'Home',
-                        ),
-                        _NavBarItem(
-                          index: 1,
-                          currentIndex: currentIndex,
-                          icon: Icons.history_outlined,
-                          activeIcon: Icons.history_rounded,
-                          label: 'History',
-                        ),
-                        _NavBarItem(
-                          index: 2,
-                          currentIndex: currentIndex,
-                          icon: Icons.water_drop_outlined,
-                          activeIcon: Icons.water_drop_rounded,
-                          label: 'Products',
-                        ),
-                        _NavBarItem(
-                          index: 3,
-                          currentIndex: currentIndex,
-                          icon: Icons.chat_bubble_outline_rounded,
-                          activeIcon: Icons.chat_bubble_rounded,
-                          label: 'Support',
-                        ),
-                      ],
+              ],
+            ),
+            child: SafeArea(
+              top: false,
+              child: SizedBox(
+                height: 64,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _NavBarItem(
+                      index: 0,
+                      currentIndex: currentIndex,
+                      icon: Icons.home_outlined,
+                      activeIcon: Icons.home_rounded,
+                      label: 'Home',
                     ),
-                  ),
+                    _NavBarItem(
+                      index: 1,
+                      currentIndex: currentIndex,
+                      icon: Icons.history_outlined,
+                      activeIcon: Icons.history_rounded,
+                      label: 'History',
+                    ),
+                    _NavBarItem(
+                      index: 2,
+                      currentIndex: currentIndex,
+                      icon: Icons.water_drop_outlined,
+                      activeIcon: Icons.water_drop_rounded,
+                      label: 'Products',
+                    ),
+                    _NavBarItem(
+                      index: 3,
+                      currentIndex: currentIndex,
+                      icon: Icons.chat_bubble_outline_rounded,
+                      activeIcon: Icons.chat_bubble_rounded,
+                      label: 'Support',
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -111,7 +106,6 @@ class _NavBarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isActive = index == currentIndex;
-    const activeColor = Color(0xFF00E5FF);
 
     return Expanded(
       child: Material(
@@ -127,8 +121,8 @@ class _NavBarItem extends StatelessWidget {
               context.read<HomeBloc>().add(SelectTab(index));
             }
           },
-          splashColor: activeColor.withValues(alpha: 0.1),
-          highlightColor: activeColor.withValues(alpha: 0.05),
+          splashColor: AppColors.primary.withValues(alpha: 0.1),
+          highlightColor: AppColors.primary.withValues(alpha: 0.05),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -136,45 +130,28 @@ class _NavBarItem extends StatelessWidget {
                 duration: const Duration(milliseconds: 200),
                 margin: const EdgeInsets.only(bottom: 4),
                 height: 3,
-                width: isActive ? 16 : 0,
+                width: isActive ? 20 : 0,
                 decoration: BoxDecoration(
-                  color: activeColor,
+                  color: AppColors.primary,
                   borderRadius: BorderRadius.circular(2),
-                  boxShadow: isActive
-                      ? const [
-                          BoxShadow(
-                            color: activeColor,
-                            blurRadius: 6,
-                            spreadRadius: 1,
-                          ),
-                        ]
-                      : null,
                 ),
               ),
               AnimatedScale(
-                scale: isActive ? 1.08 : 1.0,
+                scale: isActive ? 1.1 : 1.0,
                 duration: const Duration(milliseconds: 200),
                 child: Icon(
                   isActive ? activeIcon : icon,
-                  color: isActive ? activeColor : AppColors.textSecondary,
-                  size: 22,
+                  color: isActive ? AppColors.primary : AppColors.textTertiary,
+                  size: 24,
                 ),
               ),
-              const SizedBox(height: 3),
+              const SizedBox(height: 4),
               AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 200),
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-                  color: isActive ? activeColor : AppColors.textSecondary,
-                  shadows: isActive
-                      ? const [
-                          Shadow(
-                            color: Color(0x6600E5FF),
-                            blurRadius: 8,
-                          ),
-                        ]
-                      : null,
+                  color: isActive ? AppColors.primary : AppColors.textTertiary,
                 ),
                 child: Text(label),
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -42,8 +43,8 @@ class ProductItemCard extends StatelessWidget {
             Expanded(
               child: Text(
                 '${product.name} added to cart!',
-                style: const TextStyle(
-                  color: Colors.white,
+                style: GoogleFonts.inter(
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -51,7 +52,7 @@ class ProductItemCard extends StatelessWidget {
           ],
         ),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: const Color(0xFF1E293B),
+        backgroundColor: AppColors.surface,
         duration: const Duration(seconds: 3),
         action: SnackBarAction(
           label: 'View Cart',
@@ -108,7 +109,7 @@ class ProductItemCard extends StatelessWidget {
                   width: 72,
                   height: 72,
                   decoration: BoxDecoration(
-                    color: AppColors.inputFill,
+                    color: AppColors.background,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: AppColors.divider),
                   ),
@@ -128,7 +129,7 @@ class ProductItemCard extends StatelessWidget {
                           Expanded(
                             child: Text(
                               product.name,
-                              style: const TextStyle(
+                              style: GoogleFonts.inter(
                                 color: AppColors.textPrimary,
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -153,7 +154,7 @@ class ProductItemCard extends StatelessWidget {
                       const Gap(4),
                       Text(
                         '৳${product.price.toStringAsFixed(0)}',
-                        style: const TextStyle(
+                        style: GoogleFonts.inter(
                           color: AppColors.primary,
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
@@ -171,7 +172,7 @@ class ProductItemCard extends StatelessWidget {
                           Expanded(
                             child: Text(
                               product.warrantyDetails,
-                              style: const TextStyle(
+                              style: GoogleFonts.inter(
                                 color: AppColors.accentGreen,
                                 fontSize: 11.5,
                                 fontWeight: FontWeight.w600,
@@ -211,9 +212,9 @@ class ProductItemCard extends StatelessWidget {
                         color: AppColors.primary,
                         size: 15,
                       ),
-                      label: const Text(
+                      label: Text(
                         'Add to Cart',
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           color: AppColors.primary,
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -237,13 +238,13 @@ class ProductItemCard extends StatelessWidget {
                       ),
                       icon: const Icon(
                         Icons.flash_on_rounded,
-                        color: Colors.black,
+                        color: Colors.white,
                         size: 15,
                       ),
-                      label: const Text(
+                      label: Text(
                         'Buy Now',
-                        style: TextStyle(
-                          color: Colors.black,
+                        style: GoogleFonts.inter(
+                          color: Colors.white,
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/glass_card.dart';
+import '../../../../core/theme/app_shadows.dart';
 import '../../domain/entities/faq_entity.dart';
 
 class FaqsAccordion extends StatelessWidget {
@@ -16,34 +17,38 @@ class FaqsAccordion extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Frequently Asked Questions',
-          style: TextStyle(
-            fontSize: 16,
+          style: GoogleFonts.outfit(
+            fontSize: 18,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
-            letterSpacing: -0.3,
           ),
         ),
-        const SizedBox(height: 2),
-        const Text(
+        const SizedBox(height: 4),
+        Text(
           'Answers to common queries about servicing and purifiers',
-          style: TextStyle(
-            fontSize: 12,
+          style: GoogleFonts.inter(
+            fontSize: 13,
             color: AppColors.textSecondary,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         if (faqs.isEmpty)
-          GlassCard(
+          Container(
             padding: const EdgeInsets.all(20),
-            borderRadius: 16,
-            child: const Center(
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: AppShadows.soft,
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Center(
               child: Text(
                 'No FAQs available right now',
-                style: TextStyle(
+                style: GoogleFonts.inter(
                   color: AppColors.textSecondary,
-                  fontSize: 12,
+                  fontSize: 13,
                 ),
               ),
             ),
@@ -51,12 +56,16 @@ class FaqsAccordion extends StatelessWidget {
         else
           Column(
             children: faqs.map((faq) {
-              return GlassCard(
-                margin: const EdgeInsets.only(bottom: 8),
-                padding: EdgeInsets.zero,
-                borderRadius: 14,
+              return Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: AppShadows.soft,
+                  border: Border.all(color: AppColors.border),
+                ),
                 child: Theme(
-                  data: ThemeData.dark().copyWith(
+                  data: ThemeData.light().copyWith(
                     dividerColor: Colors.transparent,
                   ),
                   child: ExpansionTile(
@@ -64,36 +73,36 @@ class FaqsAccordion extends StatelessWidget {
                     collapsedIconColor: AppColors.textSecondary,
                     tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                     leading: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
+                      padding: const EdgeInsets.all(8),
+                      decoration: const BoxDecoration(
+                        color: AppColors.primaryLight,
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
                         Icons.help_outline_rounded,
                         color: AppColors.primary,
-                        size: 18,
+                        size: 20,
                       ),
                     ),
                     title: Text(
                       faq.question,
-                      style: const TextStyle(
-                        fontSize: 13.5,
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
                         color: AppColors.textPrimary,
                       ),
                     ),
                     children: [
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
                             faq.answer,
-                            style: const TextStyle(
-                              fontSize: 12,
+                            style: GoogleFonts.inter(
+                              fontSize: 13,
                               color: AppColors.textSecondary,
-                              height: 1.4,
+                              height: 1.5,
                             ),
                           ),
                         ),

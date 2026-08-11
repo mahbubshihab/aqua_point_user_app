@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
@@ -108,22 +109,22 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Row(
+            content: Row(
               children: [
                 Icon(Icons.check_circle_rounded, color: Color(0xFF10B981)),
                 SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     'Thank you! Your review has been submitted for approval.',
-                    style: TextStyle(
-                      color: Colors.white,
+                    style: GoogleFonts.inter(
+                      color: AppColors.textPrimary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
               ],
             ),
-            backgroundColor: const Color(0xFF1E293B),
+            backgroundColor: AppColors.surface,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -231,9 +232,9 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                       size: 20,
                     ),
                     const Gap(8),
-                    const Text(
+                    Text(
                       'Customer Reviews',
-                      style: TextStyle(
+                      style: GoogleFonts.outfit(
                         color: AppColors.textPrimary,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -260,7 +261,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                             const Gap(4),
                             Text(
                               avgRating.toStringAsFixed(1),
-                              style: const TextStyle(
+                              style: GoogleFonts.inter(
                                 color: Color(0xFFFFB800),
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12,
@@ -268,7 +269,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                             ),
                             Text(
                               ' (${reviews.length})',
-                              style: const TextStyle(
+                              style: GoogleFonts.inter(
                                 color: AppColors.textSecondary,
                                 fontSize: 12,
                               ),
@@ -287,7 +288,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppColors.inputFill,
+                      color: AppColors.background,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(color: AppColors.divider),
                     ),
@@ -299,18 +300,18 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                           size: 36,
                         ),
                         const Gap(8),
-                        const Text(
+                        Text(
                           'No approved reviews yet',
-                          style: TextStyle(
+                          style: GoogleFonts.inter(
                             color: AppColors.textPrimary,
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         const Gap(4),
-                        const Text(
+                        Text(
                           'Be the first to share your experience with this product!',
-                          style: TextStyle(
+                          style: GoogleFonts.inter(
                             color: AppColors.textSecondary,
                             fontSize: 12,
                           ),
@@ -335,7 +336,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                       return Container(
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
-                          color: AppColors.cardBackground,
+                          color: AppColors.surface,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(color: AppColors.divider),
                         ),
@@ -352,7 +353,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                                     name.isNotEmpty
                                         ? name[0].toUpperCase()
                                         : 'C',
-                                    style: const TextStyle(
+                                    style: GoogleFonts.inter(
                                       color: AppColors.primary,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 13,
@@ -367,7 +368,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                                     children: [
                                       Text(
                                         name,
-                                        style: const TextStyle(
+                                        style: GoogleFonts.inter(
                                           color: AppColors.textPrimary,
                                           fontSize: 13,
                                           fontWeight: FontWeight.bold,
@@ -375,7 +376,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                                       ),
                                       Text(
                                         _formatDate(dateVal),
-                                        style: const TextStyle(
+                                        style: GoogleFonts.inter(
                                           color: AppColors.textSecondary,
                                           fontSize: 11,
                                         ),
@@ -404,7 +405,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                               const Gap(10),
                               Text(
                                 commentVal,
-                                style: const TextStyle(
+                                style: GoogleFonts.inter(
                                   color: AppColors.textSecondary,
                                   fontSize: 13,
                                   height: 1.35,
@@ -428,7 +429,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.cardBackground,
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: AppColors.divider),
             boxShadow: const [
@@ -459,13 +460,13 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                       ),
                     ),
                     const Gap(12),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'Have you used this product?',
-                            style: TextStyle(
+                            style: GoogleFonts.inter(
                               color: AppColors.textPrimary,
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
@@ -473,7 +474,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                           ),
                           Text(
                             'Log in to submit your rating and review.',
-                            style: TextStyle(
+                            style: GoogleFonts.inter(
                               color: AppColors.textSecondary,
                               fontSize: 12,
                             ),
@@ -505,9 +506,9 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                       color: AppColors.primary,
                       size: 18,
                     ),
-                    label: const Text(
+                    label: Text(
                       'Log In to Review',
-                      style: TextStyle(
+                      style: GoogleFonts.inter(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
                         fontSize: 13,
@@ -521,7 +522,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Row(
+                      Row(
                         children: [
                           Icon(
                             Icons.edit_note_rounded,
@@ -531,7 +532,7 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                           Gap(8),
                           Text(
                             'Write a Product Review',
-                            style: TextStyle(
+                            style: GoogleFonts.inter(
                               color: AppColors.textPrimary,
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
@@ -555,13 +556,13 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                         ),
                         icon: const Icon(
                           Icons.add_rounded,
-                          color: Colors.black,
+                          color: Colors.white,
                           size: 16,
                         ),
-                        label: const Text(
+                        label: Text(
                           'Write Review',
-                          style: TextStyle(
-                            color: Colors.black,
+                          style: GoogleFonts.inter(
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
                           ),
@@ -573,9 +574,9 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         'Submit Product Review',
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           color: AppColors.textPrimary,
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
@@ -599,9 +600,9 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                   const Gap(10),
 
                   // Rating Picker
-                  const Text(
+                  Text(
                     'Your Rating:',
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       color: AppColors.textSecondary,
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -637,9 +638,9 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                   const Gap(14),
 
                   // Comment Text Field
-                  const Text(
+                  Text(
                     'Your Comment:',
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       color: AppColors.textSecondary,
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -649,18 +650,18 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                   TextField(
                     controller: _commentController,
                     maxLines: 3,
-                    style: const TextStyle(
+                    style: GoogleFonts.inter(
                       color: AppColors.textPrimary,
                       fontSize: 13,
                     ),
                     decoration: InputDecoration(
                       hintText: 'Share details of your experience with this product...',
-                      hintStyle: TextStyle(
+                      hintStyle: GoogleFonts.inter(
                         color: AppColors.textSecondary.withValues(alpha: 0.6),
                         fontSize: 13,
                       ),
                       filled: true,
-                      fillColor: AppColors.inputFill,
+                      fillColor: AppColors.background,
                       contentPadding: const EdgeInsets.all(12),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -696,18 +697,18 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                               height: 18,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2.5,
-                                color: Colors.black,
+                                color: Colors.white,
                               ),
                             )
                           : const Icon(
                               Icons.send_rounded,
-                              color: Colors.black,
+                              color: Colors.white,
                               size: 18,
                             ),
                       label: Text(
                         _isSubmitting ? 'Submitting...' : 'Submit Review',
-                        style: const TextStyle(
-                          color: Colors.black,
+                        style: GoogleFonts.inter(
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),

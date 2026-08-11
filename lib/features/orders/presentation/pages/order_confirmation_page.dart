@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -53,9 +54,9 @@ class OrderConfirmationPage extends StatelessWidget {
           elevation: 0,
           automaticallyImplyLeading: false,
           centerTitle: true,
-          title: const Text(
+          title: Text(
             'Order Confirmed',
-            style: TextStyle(
+            style: GoogleFonts.outfit(
               color: AppColors.textPrimary,
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -95,20 +96,20 @@ class OrderConfirmationPage extends StatelessWidget {
                 ),
               ),
               const Gap(16),
-              const Text(
+              Text(
                 'Order Placed Successfully!',
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: GoogleFonts.outfit(
                   color: AppColors.textPrimary,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const Gap(6),
-              const Text(
+              Text(
                 'Thank you for your purchase. We are preparing your shipment.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: GoogleFonts.inter(
                   color: AppColors.textSecondary,
                   fontSize: 13,
                 ),
@@ -123,16 +124,16 @@ class OrderConfirmationPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Order ID',
-                          style: TextStyle(
+                          style: GoogleFonts.inter(
                             color: AppColors.textSecondary,
                             fontSize: 13,
                           ),
                         ),
                         Text(
                           orderId,
-                          style: const TextStyle(
+                          style: GoogleFonts.inter(
                             color: AppColors.primary,
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
@@ -144,16 +145,16 @@ class OrderConfirmationPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Date & Time',
-                          style: TextStyle(
+                          style: GoogleFonts.inter(
                             color: AppColors.textSecondary,
                             fontSize: 13,
                           ),
                         ),
                         Text(
                           orderDate,
-                          style: const TextStyle(
+                          style: GoogleFonts.inter(
                             color: AppColors.textPrimary,
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
@@ -165,9 +166,9 @@ class OrderConfirmationPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Payment Method',
-                          style: TextStyle(
+                          style: GoogleFonts.inter(
                             color: AppColors.textSecondary,
                             fontSize: 13,
                           ),
@@ -181,9 +182,9 @@ class OrderConfirmationPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Status',
-                          style: TextStyle(
+                          style: GoogleFonts.inter(
                             color: AppColors.textSecondary,
                             fontSize: 13,
                           ),
@@ -205,13 +206,13 @@ class OrderConfirmationPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Row(
+                    Row(
                       children: [
-                        Icon(Icons.location_on_outlined, color: AppColors.primary, size: 18),
-                        Gap(8),
+                        const Icon(Icons.location_on_outlined, color: AppColors.primary, size: 18),
+                        const Gap(8),
                         Text(
                           'Shipping Address',
-                          style: TextStyle(
+                          style: GoogleFonts.inter(
                             color: AppColors.textPrimary,
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
@@ -222,7 +223,7 @@ class OrderConfirmationPage extends StatelessWidget {
                     const Gap(10),
                     Text(
                       customerName,
-                      style: const TextStyle(
+                      style: GoogleFonts.inter(
                         color: AppColors.textPrimary,
                         fontSize: 13.5,
                         fontWeight: FontWeight.w600,
@@ -231,7 +232,7 @@ class OrderConfirmationPage extends StatelessWidget {
                     const Gap(2),
                     Text(
                       phone,
-                      style: const TextStyle(
+                      style: GoogleFonts.inter(
                         color: AppColors.textSecondary,
                         fontSize: 12.5,
                       ),
@@ -239,7 +240,7 @@ class OrderConfirmationPage extends StatelessWidget {
                     const Gap(4),
                     Text(
                       deliveryAddress,
-                      style: const TextStyle(
+                      style: GoogleFonts.inter(
                         color: AppColors.textSecondary,
                         fontSize: 12.5,
                       ),
@@ -250,12 +251,12 @@ class OrderConfirmationPage extends StatelessWidget {
                         width: double.infinity,
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: AppColors.inputFill,
+                          color: AppColors.background,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           'Note: $deliveryInstructions',
-                          style: const TextStyle(
+                          style: GoogleFonts.inter(
                             color: AppColors.textPrimary,
                             fontSize: 11.5,
                             fontStyle: FontStyle.italic,
@@ -273,13 +274,13 @@ class OrderConfirmationPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Row(
+                    Row(
                       children: [
-                        Icon(Icons.shopping_bag_outlined, color: AppColors.primary, size: 18),
-                        Gap(8),
+                        const Icon(Icons.shopping_bag_outlined, color: AppColors.primary, size: 18),
+                        const Gap(8),
                         Text(
                           'Purchased Items',
-                          style: TextStyle(
+                          style: GoogleFonts.inter(
                             color: AppColors.textPrimary,
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
@@ -308,7 +309,7 @@ class OrderConfirmationPage extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 name,
-                                style: const TextStyle(
+                                style: GoogleFonts.inter(
                                   color: AppColors.textPrimary,
                                   fontSize: 13,
                                 ),
@@ -316,7 +317,7 @@ class OrderConfirmationPage extends StatelessWidget {
                             ),
                             Text(
                               'x$qty',
-                              style: const TextStyle(
+                              style: GoogleFonts.inter(
                                 color: AppColors.textSecondary,
                                 fontSize: 13,
                               ),
@@ -324,7 +325,7 @@ class OrderConfirmationPage extends StatelessWidget {
                             const Gap(12),
                             Text(
                               '৳${(price * qty).toStringAsFixed(0)}',
-                              style: const TextStyle(
+                              style: GoogleFonts.inter(
                                 color: AppColors.textPrimary,
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
@@ -338,13 +339,13 @@ class OrderConfirmationPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Subtotal',
-                          style: TextStyle(color: AppColors.textSecondary, fontSize: 12.5),
+                          style: GoogleFonts.inter(color: AppColors.textSecondary, fontSize: 12.5),
                         ),
                         Text(
                           '৳${subtotal.toStringAsFixed(0)}',
-                          style: const TextStyle(color: AppColors.textPrimary, fontSize: 12.5),
+                          style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 12.5),
                         ),
                       ],
                     ),
@@ -352,13 +353,13 @@ class OrderConfirmationPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Shipping Fee',
-                          style: TextStyle(color: AppColors.textSecondary, fontSize: 12.5),
+                          style: GoogleFonts.inter(color: AppColors.textSecondary, fontSize: 12.5),
                         ),
                         Text(
                           '৳${shippingFee.toStringAsFixed(0)}',
-                          style: const TextStyle(color: AppColors.textPrimary, fontSize: 12.5),
+                          style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 12.5),
                         ),
                       ],
                     ),
@@ -366,9 +367,9 @@ class OrderConfirmationPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Total Paid / Due',
-                          style: TextStyle(
+                          style: GoogleFonts.inter(
                             color: AppColors.textPrimary,
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
@@ -376,7 +377,7 @@ class OrderConfirmationPage extends StatelessWidget {
                         ),
                         Text(
                           '৳${totalAmount.toStringAsFixed(0)}',
-                          style: const TextStyle(
+                          style: GoogleFonts.outfit(
                             color: AppColors.primary,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -403,11 +404,11 @@ class OrderConfirmationPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  icon: const Icon(Icons.local_shipping_rounded, color: Colors.black),
-                  label: const Text(
+                  icon: const Icon(Icons.local_shipping_rounded, color: Colors.white),
+                  label: Text(
                     'Track Order Status',
-                    style: TextStyle(
-                      color: Colors.black,
+                    style: GoogleFonts.inter(
+                      color: Colors.white,
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
@@ -427,9 +428,9 @@ class OrderConfirmationPage extends StatelessWidget {
                     ),
                   ),
                   icon: const Icon(Icons.home_rounded, color: AppColors.textPrimary),
-                  label: const Text(
+                  label: Text(
                     'Back to Home',
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       color: AppColors.textPrimary,
                       fontSize: 14,
                       fontWeight: FontWeight.w600,

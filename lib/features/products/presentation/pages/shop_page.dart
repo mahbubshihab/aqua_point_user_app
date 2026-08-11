@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -48,13 +49,13 @@ class _ShopPageState extends State<ShopPage> {
         elevation: 0,
         leading: Navigator.canPop(context)
             ? IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.textPrimary, size: 20),
                 onPressed: () => Navigator.pop(context),
               )
             : null,
-        title: const Text(
+        title: Text(
           'Aqua Point Shop',
-          style: TextStyle(
+          style: GoogleFonts.outfit(
             color: AppColors.textPrimary,
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -75,7 +76,7 @@ class _ShopPageState extends State<ShopPage> {
                         MaterialPageRoute(builder: (_) => const CartPage()),
                       );
                     },
-                    icon: const Icon(Icons.shopping_bag_outlined, color: Colors.white, size: 24),
+                    icon: const Icon(Icons.shopping_bag_outlined, color: AppColors.textPrimary, size: 24),
                   ),
                   if (count > 0)
                     Positioned(
@@ -94,8 +95,8 @@ class _ShopPageState extends State<ShopPage> {
                         child: Text(
                           '$count',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.black,
+                          style: GoogleFonts.inter(
+                            color: Colors.white,
                             fontSize: 9.5,
                             fontWeight: FontWeight.bold,
                           ),
@@ -127,7 +128,7 @@ class _ShopPageState extends State<ShopPage> {
                     const Gap(12),
                     Text(
                       state.message,
-                      style: const TextStyle(color: AppColors.textSecondary),
+                      style: GoogleFonts.inter(color: AppColors.textSecondary),
                     ),
                     const Gap(16),
                     ElevatedButton(
@@ -153,13 +154,13 @@ class _ShopPageState extends State<ShopPage> {
                     child: Container(
                       height: 46,
                       decoration: BoxDecoration(
-                        color: const Color(0xB31E293B),
+                        color: AppColors.surface,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(color: const Color(0x80334155)),
                       ),
                       child: TextField(
                         controller: _searchController,
-                        style: const TextStyle(color: Colors.white, fontSize: 13.5),
+                        style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 13.5),
                         onChanged: (val) {
                           setState(() {
                             _searchQuery = val.trim();
@@ -167,7 +168,7 @@ class _ShopPageState extends State<ShopPage> {
                         },
                         decoration: InputDecoration(
                           hintText: 'Search RO purifiers, filters & spare parts...',
-                          hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 12.5),
+                          hintStyle: GoogleFonts.inter(color: AppColors.textSecondary, fontSize: 12.5),
                           prefixIcon: const Icon(Icons.search_rounded, color: AppColors.primary, size: 22),
                           suffixIcon: _searchQuery.isNotEmpty
                               ? GestureDetector(
@@ -194,7 +195,7 @@ class _ShopPageState extends State<ShopPage> {
                   Expanded(
                     child: RefreshIndicator(
                       color: AppColors.primary,
-                      backgroundColor: AppColors.cardBackground,
+                      backgroundColor: AppColors.surface,
                       onRefresh: () async {
                         context.read<ProductsBloc>().add(const LoadProducts());
                         await Future.delayed(const Duration(milliseconds: 600));
@@ -245,8 +246,8 @@ class _ShopPageState extends State<ShopPage> {
                 }
               },
               selectedColor: AppColors.primary,
-              backgroundColor: AppColors.cardBackground,
-              labelStyle: TextStyle(
+              backgroundColor: AppColors.surface,
+              labelStyle: GoogleFonts.inter(
                 color: isSelected ? Colors.black : AppColors.textSecondary,
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
@@ -315,7 +316,7 @@ class _ShopPageState extends State<ShopPage> {
               const Gap(12),
               Text(
                 _searchQuery.isNotEmpty ? 'No products match "$_searchQuery"' : 'No products found',
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                style: GoogleFonts.inter(color: AppColors.textSecondary, fontSize: 14),
               ),
             ],
           ),
@@ -346,7 +347,7 @@ class _ShopPageState extends State<ShopPage> {
                   const Gap(8),
                   Text(
                     categoryName,
-                    style: const TextStyle(
+                    style: GoogleFonts.outfit(
                       color: AppColors.textPrimary,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -369,14 +370,14 @@ class _ShopPageState extends State<ShopPage> {
                   );
                 },
                 borderRadius: BorderRadius.circular(8),
-                child: const Padding(
+                child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         'See All',
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           color: AppColors.primary,
                           fontSize: 12.5,
                           fontWeight: FontWeight.w600,
