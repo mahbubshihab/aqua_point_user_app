@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'core/constants/app_constants.dart';
+import 'core/services/app_update_service.dart';
 import 'core/services/bulk_sms_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_provider.dart';
@@ -41,6 +42,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await AppUpdateService.checkAndPurgeStaleDataOnUpdate();
   try {
     FirebaseFirestore.instance.settings = const Settings(
       persistenceEnabled: true,
