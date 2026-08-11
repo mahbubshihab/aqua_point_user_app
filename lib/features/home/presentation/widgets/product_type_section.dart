@@ -171,6 +171,14 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
                 itemBuilder: (context, index) {
                   final product = widget.products[index];
                   return _AnimatedProductCardWrapper(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ProductDetailPage(product: product),
+                        ),
+                      );
+                    },
                     child: ShopProductCard(
                       product: product,
                       isHorizontal: true,
@@ -195,29 +203,25 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
               child: Row(
                 children: [
                   Container(
-                    width: 36,
-                    height: 36,
-                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: widget.accentColor.withValues(alpha: 0.12),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
                       widget.icon,
-                      size: 18,
+                      size: 16,
                       color: widget.accentColor,
                     ),
                   ),
-                  const Gap(12),
+                  const Gap(10),
                   Expanded(
                     child: Text(
                       'No ${widget.title} Available',
                       style: GoogleFonts.inter(
-                        fontSize: 13,
+                        color: theme.colorScheme.onSurface,
+                        fontSize: 12.5,
                         fontWeight: FontWeight.w600,
-                        color: isDark
-                            ? Colors.white.withValues(alpha: 0.75)
-                            : AppColors.textSecondary,
                       ),
                     ),
                   ),
@@ -232,7 +236,12 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
 
 class _AnimatedProductCardWrapper extends StatefulWidget {
   final Widget child;
-  const _AnimatedProductCardWrapper({required this.child});
+  final VoidCallback? onTap;
+
+  const _AnimatedProductCardWrapper({
+    required this.child,
+    this.onTap,
+  });
 
   @override
   State<_AnimatedProductCardWrapper> createState() => _AnimatedProductCardWrapperState();
@@ -244,10 +253,11 @@ class _AnimatedProductCardWrapperState extends State<_AnimatedProductCardWrapper
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      behavior: HitTestBehavior.translucent,
+      behavior: HitTestBehavior.opaque,
       onTapDown: (_) => setState(() => _isPressed = true),
       onTapUp: (_) => setState(() => _isPressed = false),
       onTapCancel: () => setState(() => _isPressed = false),
+      onTap: widget.onTap,
       child: AnimatedScale(
         scale: _isPressed ? 0.96 : 1.0,
         duration: const Duration(milliseconds: 150),
