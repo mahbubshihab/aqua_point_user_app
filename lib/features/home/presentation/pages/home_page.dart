@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // 2. Promotional Banners (from database, 5s auto-scroll)
+                            // 2. Promotional Banners Slider
                             if (state.banners.isNotEmpty)
                               _AnimatedSection(
                                 animate: _startAnimations,
@@ -119,7 +119,7 @@ class _HomePageState extends State<HomePage> {
 
                             if (state.banners.isNotEmpty) const Gap(16),
 
-                            // 3. Quick Action Cards (Book Service, Shop, Water Reminder, Support)
+                            // 3. Quick Action Cards (Request Service, Shop, Support)
                             _AnimatedSection(
                               animate: _startAnimations,
                               delay: const Duration(milliseconds: 50),
@@ -128,7 +128,7 @@ class _HomePageState extends State<HomePage> {
 
                             const Gap(24),
 
-                            // 4. Dedicated My Products Section (displays product image & name) right under Quick Actions!
+                            // 4. My Products Section
                             _AnimatedSection(
                               animate: _startAnimations,
                               delay: const Duration(milliseconds: 100),
@@ -137,108 +137,102 @@ class _HomePageState extends State<HomePage> {
 
                             const Gap(24),
 
-                            // 5. Categories
-                            if (state.categories.isNotEmpty)
-                              _AnimatedSection(
-                                animate: _startAnimations,
-                                delay: const Duration(milliseconds: 150),
-                                child: CategoriesSection(
-                                  categories: state.categories,
-                                ),
+                            // 5. Categories Section (ALWAYS displayed)
+                            _AnimatedSection(
+                              animate: _startAnimations,
+                              delay: const Duration(milliseconds: 150),
+                              child: CategoriesSection(
+                                categories: state.categories,
                               ),
+                            ),
 
-                            if (state.categories.isNotEmpty) const Gap(24),
+                            const Gap(24),
 
-                            // 6. Product Type Sections
-                            if (state.openTypeProducts.isNotEmpty)
-                              _AnimatedSection(
-                                animate: _startAnimations,
-                                delay: const Duration(milliseconds: 200),
-                                child: ProductTypeSection(
-                                  title: 'Open Type Purifiers',
-                                  typeTag: 'open',
-                                  subtitle: 'Traditional open-top water purifiers',
-                                  icon: Icons.water_drop_rounded,
-                                  accentColor: AppColors.primary,
-                                  products: state.openTypeProducts,
-                                ),
+                            // 6. Type-wise Product Sections (directly below Categories - ALWAYS displayed)
+                            _AnimatedSection(
+                              animate: _startAnimations,
+                              delay: const Duration(milliseconds: 200),
+                              child: ProductTypeSection(
+                                title: 'Open Type Purifiers',
+                                typeTag: 'open',
+                                subtitle: 'Traditional open-top water purifiers',
+                                icon: Icons.water_drop_rounded,
+                                accentColor: AppColors.primary,
+                                products: state.openTypeProducts,
                               ),
+                            ),
 
-                            if (state.openTypeProducts.isNotEmpty) const Gap(24),
+                            const Gap(24),
 
-                            if (state.boxTypeProducts.isNotEmpty)
-                              _AnimatedSection(
-                                animate: _startAnimations,
-                                delay: const Duration(milliseconds: 300),
-                                child: ProductTypeSection(
-                                  title: 'Box Type Purifiers',
-                                  typeTag: 'box',
-                                  subtitle: 'Compact box-style water purifiers',
-                                  icon: Icons.inventory_2_rounded,
-                                  accentColor: AppColors.secondary,
-                                  products: state.boxTypeProducts,
-                                ),
+                            _AnimatedSection(
+                              animate: _startAnimations,
+                              delay: const Duration(milliseconds: 250),
+                              child: ProductTypeSection(
+                                title: 'Box Type Purifiers',
+                                typeTag: 'box',
+                                subtitle: 'Compact box-style water purifiers',
+                                icon: Icons.inventory_2_rounded,
+                                accentColor: AppColors.secondary,
+                                products: state.boxTypeProducts,
                               ),
+                            ),
 
-                            if (state.boxTypeProducts.isNotEmpty) const Gap(24),
+                            const Gap(24),
 
-                            if (state.hotColdNormalProducts.isNotEmpty)
-                              _AnimatedSection(
-                                animate: _startAnimations,
-                                delay: const Duration(milliseconds: 400),
-                                child: ProductTypeSection(
-                                  title: 'Hot Cold Normal',
-                                  typeTag: 'hot_cold_normal',
-                                  subtitle: 'Multi-temperature water dispensers',
-                                  icon: Icons.thermostat_rounded,
-                                  accentColor: AppColors.actionOrange,
-                                  products: state.hotColdNormalProducts,
-                                ),
+                            _AnimatedSection(
+                              animate: _startAnimations,
+                              delay: const Duration(milliseconds: 300),
+                              child: ProductTypeSection(
+                                title: 'Hot Cold Normal',
+                                typeTag: 'hot_cold_normal',
+                                subtitle: 'Multi-temperature water dispensers',
+                                icon: Icons.thermostat_rounded,
+                                accentColor: AppColors.actionOrange,
+                                products: state.hotColdNormalProducts,
                               ),
+                            ),
 
-                            if (state.hotColdNormalProducts.isNotEmpty) const Gap(24),
+                            const Gap(24),
 
-                            if (state.cabinetTypeProducts.isNotEmpty)
-                              _AnimatedSection(
-                                animate: _startAnimations,
-                                delay: const Duration(milliseconds: 500),
-                                child: ProductTypeSection(
-                                  title: 'Cabinet Type',
-                                  typeTag: 'cabinet',
-                                  subtitle: 'Premium cabinet-style purifiers',
-                                  icon: Icons.kitchen_rounded,
-                                  accentColor: AppColors.actionPurple,
-                                  products: state.cabinetTypeProducts,
-                                ),
+                            _AnimatedSection(
+                              animate: _startAnimations,
+                              delay: const Duration(milliseconds: 350),
+                              child: ProductTypeSection(
+                                title: 'Cabinet Type',
+                                typeTag: 'cabinet',
+                                subtitle: 'Premium cabinet-style purifiers',
+                                icon: Icons.kitchen_rounded,
+                                accentColor: AppColors.actionPurple,
+                                products: state.cabinetTypeProducts,
                               ),
+                            ),
 
-                            if (state.cabinetTypeProducts.isNotEmpty) const Gap(24),
+                            const Gap(24),
 
-                            // 7. Blogs & News (at the bottom)
-                            if (state.blogs.isNotEmpty)
-                              _AnimatedSection(
-                                animate: _startAnimations,
-                                delay: const Duration(milliseconds: 600),
-                                child: BlogsNewsSection(
-                                  blogs: state.blogs,
-                                  onViewAllTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => BlogsNewsPage(initialBlogs: state.blogs),
-                                      ),
-                                    );
-                                  },
-                                  onBlogTap: (blog) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => BlogsNewsPage(initialBlogs: state.blogs),
-                                      ),
-                                    );
-                                  },
-                                ),
+                            // 7. Blogs & News Section (at the end - ALWAYS displayed)
+                            _AnimatedSection(
+                              animate: _startAnimations,
+                              delay: const Duration(milliseconds: 400),
+                              child: BlogsNewsSection(
+                                blogs: state.blogs,
+                                onViewAllTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => BlogsNewsPage(initialBlogs: state.blogs),
+                                    ),
+                                  );
+                                },
+                                onBlogTap: (blog) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => BlogsNewsPage(initialBlogs: state.blogs),
+                                    ),
+                                  );
+                                },
                               ),
+                            ),
 
                             // 8. Bottom Padding
                             const Gap(100),

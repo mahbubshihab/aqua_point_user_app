@@ -15,12 +15,19 @@ class CategoriesSection extends StatelessWidget {
     required this.categories,
   });
 
+  static const List<CategoryEntity> _defaultCategories = [
+    CategoryEntity(id: 'cat_ro', name: 'RO Purifiers'),
+    CategoryEntity(id: 'cat_filter', name: 'Filters & Cartridges'),
+    CategoryEntity(id: 'cat_parts', name: 'Spare Parts'),
+    CategoryEntity(id: 'cat_service', name: 'Services'),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    if (categories.isEmpty) return const SizedBox.shrink();
-
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+
+    final displayCategories = categories.isNotEmpty ? categories : _defaultCategories;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,9 +78,9 @@ class CategoriesSection extends StatelessWidget {
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-            itemCount: categories.length,
+            itemCount: displayCategories.length,
             itemBuilder: (context, index) {
-              final category = categories[index];
+              final category = displayCategories[index];
               return _CategoryCard(category: category);
             },
           ),
