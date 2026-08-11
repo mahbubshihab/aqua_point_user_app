@@ -5,10 +5,11 @@ import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/stat_badge.dart';
+import '../../../home/presentation/bloc/home_bloc.dart';
+import '../../../home/presentation/bloc/home_event.dart';
 import '../../../home/presentation/pages/main_shell_page.dart';
 import '../../../services/presentation/bloc/services_bloc.dart';
 import '../../../services/presentation/bloc/services_event.dart';
-import '../../../services/presentation/pages/services_history_page.dart';
 
 class OrderConfirmationPage extends StatelessWidget {
   final String orderId;
@@ -475,19 +476,17 @@ class OrderConfirmationPage extends StatelessWidget {
   }
 
   void _navigateToTrackOrder(BuildContext context) {
-    try {
-      context.read<ServicesBloc>().add(const LoadServicesHistory());
-    } catch (_) {}
+    final servicesBloc = context.read<ServicesBloc>();
+    final homeBloc = context.read<HomeBloc>();
+
+    servicesBloc.add(const LoadServicesHistory());
+    servicesBloc.add(const SelectHistoryTab(1));
+    homeBloc.add(const SelectTab(1));
 
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(
-        builder: (_) => BlocProvider.value(
-          value: context.read<ServicesBloc>(),
-          child: const ServicesHistoryPage(initialTabIndex: 1),
-        ),
-      ),
-      (route) => route.isFirst,
+      MaterialPageRoute(builder: (_) => const MainShellPage()),
+      (route) => false,
     );
   }
 

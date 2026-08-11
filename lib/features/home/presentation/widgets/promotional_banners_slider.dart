@@ -87,9 +87,10 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
           Navigator.push(context, MaterialPageRoute(builder: (_) => const ShopPage()));
           return;
         } else if (route.contains('service') || route.contains('repair') || route.contains('request')) {
+          final servicesBloc = context.read<ServicesBloc>();
           Navigator.push(context, MaterialPageRoute(
             builder: (_) => BlocProvider.value(
-              value: context.read<ServicesBloc>(),
+              value: servicesBloc,
               child: const CreateServiceRequestPage(),
             ),
           ));

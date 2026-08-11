@@ -60,11 +60,12 @@ class _ServicesHistoryPageState extends State<ServicesHistoryPage>
   }
 
   void _navigateToCreateRequest() {
+    final bloc = context.read<ServicesBloc>();
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => BlocProvider.value(
-          value: context.read<ServicesBloc>(),
+          value: bloc,
           child: const CreateServiceRequestPage(),
         ),
       ),

@@ -47,11 +47,12 @@ class QuickActionGrid extends StatelessWidget {
                 ? [const Color(0xFF0284C7).withValues(alpha: 0.25), const Color(0xFF00BCE1).withValues(alpha: 0.1)]
                 : [const Color(0xFFE0F2FE), const Color(0xFFBAE6FD)],
             onTap: () {
+              final servicesBloc = context.read<ServicesBloc>();
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => BlocProvider.value(
-                    value: context.read<ServicesBloc>(),
+                    value: servicesBloc,
                     child: const CreateServiceRequestPage(),
                   ),
                 ),
