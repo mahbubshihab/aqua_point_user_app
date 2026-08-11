@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../inbox_support/presentation/pages/chat_conversation_page.dart';
 import '../../../products/presentation/pages/shop_page.dart';
@@ -11,12 +12,14 @@ class QuickActionItem {
   final String label;
   final IconData icon;
   final Color iconColor;
+  final List<Color> gradientColors;
   final VoidCallback? onTap;
 
   const QuickActionItem({
     required this.label,
     required this.icon,
     required this.iconColor,
+    required this.gradientColors,
     this.onTap,
   });
 }
@@ -37,9 +40,12 @@ class QuickActionGrid extends StatelessWidget {
     final actionItems = items ??
         [
           QuickActionItem(
-            label: 'Request a Service',
-            icon: Icons.home_repair_service_rounded,
-            iconColor: isDark ? const Color(0xFF00BCE1) : AppColors.primary,
+            label: 'Request Service',
+            icon: Icons.build_circle_rounded,
+            iconColor: isDark ? const Color(0xFF00BCE1) : const Color(0xFF0284C7),
+            gradientColors: isDark
+                ? [const Color(0xFF0284C7).withValues(alpha: 0.25), const Color(0xFF00BCE1).withValues(alpha: 0.1)]
+                : [const Color(0xFFE0F2FE), const Color(0xFFBAE6FD)],
             onTap: () {
               Navigator.push(
                 context,
@@ -53,9 +59,12 @@ class QuickActionGrid extends StatelessWidget {
             },
           ),
           QuickActionItem(
-            label: 'Shop',
+            label: 'Shop Parts',
             icon: Icons.shopping_bag_rounded,
-            iconColor: isDark ? const Color(0xFF10B981) : AppColors.success,
+            iconColor: isDark ? const Color(0xFF10B981) : const Color(0xFF059669),
+            gradientColors: isDark
+                ? [const Color(0xFF059669).withValues(alpha: 0.25), const Color(0xFF10B981).withValues(alpha: 0.1)]
+                : [const Color(0xFFD1FAE5), const Color(0xFFA7F3D0)],
             onTap: () {
               Navigator.push(
                 context,
@@ -66,9 +75,12 @@ class QuickActionGrid extends StatelessWidget {
             },
           ),
           QuickActionItem(
-            label: 'Support',
+            label: 'Support 24/7',
             icon: Icons.support_agent_rounded,
-            iconColor: isDark ? const Color(0xFF3B82F6) : AppColors.secondary,
+            iconColor: isDark ? const Color(0xFFA78BFA) : const Color(0xFF7C3AED),
+            gradientColors: isDark
+                ? [const Color(0xFF7C3AED).withValues(alpha: 0.25), const Color(0xFFA78BFA).withValues(alpha: 0.1)]
+                : [const Color(0xFFEDE9FE), const Color(0xFFDDD6FE)],
             onTap: () {
               Navigator.push(
                 context,
@@ -84,9 +96,9 @@ class QuickActionGrid extends StatelessWidget {
       crossAxisCount: 3,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-      childAspectRatio: 0.95,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      childAspectRatio: 1.18,
       children: actionItems.map((item) {
         return QuickActionTile(item: item);
       }).toList(),
@@ -117,12 +129,14 @@ class _QuickActionTileState extends State<QuickActionTile> {
 
     final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
     final cardBgColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
+    final borderColor = isDark
+        ? item.iconColor.withValues(alpha: 0.3)
+        : item.iconColor.withValues(alpha: 0.2);
 
     return AnimatedScale(
       scale: _isPressed ? 0.92 : 1.0,
-      duration: const Duration(milliseconds: 100),
-      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 120),
+      curve: Curves.easeOutCubic,
       child: GestureDetector(
         onTapDown: (_) => setState(() => _isPressed = true),
         onTapUp: (_) {
@@ -133,21 +147,22 @@ class _QuickActionTileState extends State<QuickActionTile> {
         },
         onTapCancel: () => setState(() => _isPressed = false),
         child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
           decoration: BoxDecoration(
             color: cardBgColor,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: borderColor, width: 1),
+            border: Border.all(color: borderColor, width: 1.2),
             boxShadow: isDark
                 ? [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.25),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
+                      color: item.iconColor.withValues(alpha: 0.15),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
                     ),
                   ]
                 : [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
+                      color: Colors.black.withValues(alpha: 0.04),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -156,33 +171,42 @@ class _QuickActionTileState extends State<QuickActionTile> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Glowing Icon Badge
               Container(
-                width: 46,
-                height: 46,
+                width: 40,
+                height: 40,
                 decoration: BoxDecoration(
-                  color: item.iconColor.withValues(alpha: isDark ? 0.18 : 0.12),
-                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: item.gradientColors,
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: item.iconColor.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
                 ),
-                child: Icon(
-                  item.icon,
-                  color: item.iconColor,
-                  size: 24,
+                child: Center(
+                  child: Icon(
+                    item.icon,
+                    color: item.iconColor,
+                    size: 22,
+                  ),
                 ),
               ),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6),
-                child: Text(
-                  item.label,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: textColorPrimary,
-                    height: 1.2,
-                  ),
+              const Gap(6),
+
+              // Compact Text Label
+              Text(
+                item.label,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.outfit(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: textColorPrimary,
                 ),
               ),
             ],
