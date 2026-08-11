@@ -50,7 +50,23 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: const Duration(milliseconds: 600),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, 20 * (1 - value)),
+            child: child,
+          ),
+        );
+      },
+      child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Section Header
@@ -69,7 +85,7 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
                         Text(
                           widget.title,
                           style: GoogleFonts.outfit(
-                            color: AppColors.textPrimary,
+                            color: theme.colorScheme.onSurface,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 0.2,
@@ -149,7 +165,7 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
           child: Text(
             widget.subtitle,
             style: GoogleFonts.inter(
-              color: AppColors.textSecondary,
+              color: isDark ? AppColors.darkTextSecondary : AppColors.textSecondary,
               fontSize: 13,
               fontWeight: FontWeight.w400,
             ),
@@ -179,11 +195,11 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
           Container(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(16),
-              boxShadow: AppShadows.soft,
+              boxShadow: isDark ? [] : AppShadows.soft,
               border: Border.all(
-                color: AppColors.border,
+                color: isDark ? AppColors.darkBorder : AppColors.border,
                 width: 1,
               ),
             ),
@@ -213,7 +229,7 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
                         style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                          color: theme.colorScheme.onSurface,
                         ),
                       ),
                       const Gap(4),
@@ -221,7 +237,7 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
                         'Server query filter: type == ${widget.typeTag}',
                         style: GoogleFonts.inter(
                           fontSize: 12,
-                          color: AppColors.textSecondary,
+                          color: isDark ? AppColors.darkTextSecondary : AppColors.textSecondary,
                         ),
                       ),
                     ],
@@ -231,6 +247,7 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
             ),
           ),
       ],
+      ),
     );
   }
 }
@@ -248,6 +265,9 @@ class _AnimatedProductCardWrapperState extends State<_AnimatedProductCardWrapper
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTapDown: (_) => setState(() => _isPressed = true),

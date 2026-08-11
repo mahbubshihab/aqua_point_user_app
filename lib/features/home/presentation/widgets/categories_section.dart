@@ -17,31 +17,28 @@ class CategoriesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (categories.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    if (categories.isEmpty) return const SizedBox.shrink();
+
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Section Header
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               'Categories',
               style: GoogleFonts.outfit(
-                color: AppColors.textPrimary,
+                color: theme.colorScheme.onSurface,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
             ),
             InkWell(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const ShopPage()),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const ShopPage()));
               },
               borderRadius: BorderRadius.circular(8),
               child: Padding(
@@ -52,14 +49,14 @@ class CategoriesSection extends StatelessWidget {
                     Text(
                       'See All',
                       style: GoogleFonts.inter(
-                        color: AppColors.primary,
+                        color: theme.colorScheme.primary,
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const Icon(
+                    Icon(
                       Icons.chevron_right_rounded,
-                      color: AppColors.primary,
+                      color: theme.colorScheme.primary,
                       size: 18,
                     ),
                   ],
@@ -69,14 +66,11 @@ class CategoriesSection extends StatelessWidget {
           ],
         ),
         const Gap(12),
-        // Horizontal Scrollable Category Cards List
         SizedBox(
           height: 120,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics(),
-            ),
+            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
             itemCount: categories.length,
             itemBuilder: (context, index) {
               final category = categories[index];
@@ -91,7 +85,6 @@ class CategoriesSection extends StatelessWidget {
 
 class _CategoryCard extends StatefulWidget {
   final CategoryEntity category;
-
   const _CategoryCard({required this.category});
 
   @override
@@ -103,29 +96,21 @@ class _CategoryCardState extends State<_CategoryCard> {
 
   IconData _getCategoryFallbackIcon(String name) {
     final lowerName = name.toLowerCase();
-    if (lowerName.contains('purifier') || lowerName.contains('ro')) {
-      return Icons.water_drop_rounded;
-    } else if (lowerName.contains('filter') || lowerName.contains('cartridge')) {
-      return Icons.filter_alt_rounded;
-    } else if (lowerName.contains('part') ||
-        lowerName.contains('spare') ||
-        lowerName.contains('fitting')) {
-      return Icons.build_rounded;
-    } else if (lowerName.contains('softener') || lowerName.contains('plant')) {
-      return Icons.invert_colors_rounded;
-    } else if (lowerName.contains('service') || lowerName.contains('maintenance')) {
-      return Icons.home_repair_service_rounded;
-    } else if (lowerName.contains('dispenser') || lowerName.contains('tap')) {
-      return Icons.local_drink_rounded;
-    }
+    if (lowerName.contains('purifier') || lowerName.contains('ro')) return Icons.water_drop_rounded;
+    if (lowerName.contains('filter') || lowerName.contains('cartridge')) return Icons.filter_alt_rounded;
+    if (lowerName.contains('part') || lowerName.contains('spare') || lowerName.contains('fitting')) return Icons.build_rounded;
+    if (lowerName.contains('softener') || lowerName.contains('plant')) return Icons.invert_colors_rounded;
+    if (lowerName.contains('service') || lowerName.contains('maintenance')) return Icons.home_repair_service_rounded;
+    if (lowerName.contains('dispenser') || lowerName.contains('tap')) return Icons.local_drink_rounded;
     return Icons.category_rounded;
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final category = widget.category;
-    final bool hasImage =
-        category.imageUrl != null && category.imageUrl!.isNotEmpty;
+    final bool hasImage = category.imageUrl != null && category.imageUrl!.isNotEmpty;
 
     return Padding(
       padding: const EdgeInsets.only(right: 12.0),
@@ -151,11 +136,11 @@ class _CategoryCardState extends State<_CategoryCard> {
             width: 90,
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(16),
-              boxShadow: AppShadows.soft,
+              boxShadow: isDark ? [] : AppShadows.soft,
               border: Border.all(
-                color: AppColors.border,
+                color: isDark ? AppColors.darkBorder : AppColors.border,
                 width: 1,
               ),
             ),
@@ -166,7 +151,9 @@ class _CategoryCardState extends State<_CategoryCard> {
                   width: 50,
                   height: 50,
                   decoration: BoxDecoration(
-                    color: AppColors.primaryLight,
+                    color: isDark 
+                        ? AppColors.primary.withValues(alpha: 0.15)
+                        : AppColors.primaryLight,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: ClipRRect(
@@ -177,13 +164,13 @@ class _CategoryCardState extends State<_CategoryCard> {
                             fit: BoxFit.cover,
                             loadingBuilder: (context, child, loadingProgress) {
                               if (loadingProgress == null) return child;
-                              return const Center(
+                              return Center(
                                 child: SizedBox(
                                   width: 16,
                                   height: 16,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    color: AppColors.primary,
+                                    color: theme.colorScheme.primary,
                                   ),
                                 ),
                               );
@@ -191,14 +178,14 @@ class _CategoryCardState extends State<_CategoryCard> {
                             errorBuilder: (context, error, stackTrace) {
                               return Icon(
                                 _getCategoryFallbackIcon(category.name),
-                                color: AppColors.primary,
+                                color: theme.colorScheme.primary,
                                 size: 24,
                               );
                             },
                           )
                         : Icon(
                             _getCategoryFallbackIcon(category.name),
-                            color: AppColors.primary,
+                            color: theme.colorScheme.primary,
                             size: 24,
                           ),
                   ),
@@ -210,7 +197,7 @@ class _CategoryCardState extends State<_CategoryCard> {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.inter(
-                    color: AppColors.textPrimary,
+                    color: theme.colorScheme.onSurface,
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                     height: 1.2,

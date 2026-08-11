@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,8 +21,13 @@ class _CustomSplashPageState extends State<CustomSplashPage>
     with TickerProviderStateMixin {
   late AnimationController _mainController;
   late AnimationController _pulseController;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _scaleAnimation;
+  late AnimationController _floatController;
+  late AnimationController _dotsController;
+  late AnimationController _shimmerController;
+
+  late Animation<double> _logoScale;
+  late Animation<double> _logoFade;
+  late Animation<double> _textFade;
   late Animation<double> _pulseAnimation;
 
   bool _navigated = false;
@@ -33,34 +39,53 @@ class _CustomSplashPageState extends State<CustomSplashPage>
 
     _mainController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 1200),
     );
 
     _pulseController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 1500),
     )..repeat(reverse: true);
 
-    _fadeAnimation = CurvedAnimation(
-      parent: _mainController,
-      curve: Curves.easeOut,
+    _floatController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 3000),
+    )..repeat(reverse: true);
+
+    _dotsController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat();
+
+    _shimmerController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
     );
 
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+    _logoFade = CurvedAnimation(
+      parent: _mainController,
+      curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+    );
+
+    _logoScale = Tween<double>(begin: 0.6, end: 1.0).animate(
       CurvedAnimation(
         parent: _mainController,
-        curve: Curves.easeOutBack,
+        curve: const Interval(0.0, 0.7, curve: Curves.easeOutBack),
       ),
     );
 
-    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.08).animate(
-      CurvedAnimation(
-        parent: _pulseController,
-        curve: Curves.easeInOut,
-      ),
+    _textFade = CurvedAnimation(
+      parent: _mainController,
+      curve: const Interval(0.3, 1.0, curve: Curves.easeOut),
     );
 
-    _mainController.forward();
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.15).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+
+    _mainController.forward().then((_) {
+      _shimmerController.forward();
+    });
 
     // Fallback timer to check auth state after 1.8 seconds in case stream didn't trigger listener
     _fallbackTimer = Timer(const Duration(milliseconds: 1800), () {
@@ -83,10 +108,7 @@ class _CustomSplashPageState extends State<CustomSplashPage>
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => targetPage,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
+          return FadeTransition(opacity: animation, child: child);
         },
         transitionDuration: const Duration(milliseconds: 500),
       ),
@@ -98,6 +120,9 @@ class _CustomSplashPageState extends State<CustomSplashPage>
     _fallbackTimer?.cancel();
     _mainController.dispose();
     _pulseController.dispose();
+    _floatController.dispose();
+    _dotsController.dispose();
+    _shimmerController.dispose();
     super.dispose();
   }
 
@@ -116,104 +141,195 @@ class _CustomSplashPageState extends State<CustomSplashPage>
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.background,
         body: Stack(
           children: [
-            // Ambient light background with a subtle gradient
+            // 1. Background Gradient
             Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [AppColors.surface, AppColors.primaryLight],
+                  colors: [Color(0xFF0A1628), Color(0xFF0066FF)],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
               ),
             ),
+            
+            // Subtle Radial Glow
+            Center(
+              child: Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      Colors.white.withValues(alpha: 0.15),
+                      Colors.transparent,
+                    ],
+                    stops: const [0.0, 1.0],
+                  ),
+                ),
+              ),
+            ),
+
+            // 2. Floating Water Drops
+            ..._buildFloatingDrops(),
 
             // Content
             Center(
-              child: FadeTransition(
-                opacity: _fadeAnimation,
-                child: ScaleTransition(
-                  scale: _scaleAnimation,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Animated Logo Badge
-                      ScaleTransition(
-                        scale: _pulseAnimation,
-                        child: Container(
-                          width: 120,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: AppGradients.primary,
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.primary.withValues(alpha: 0.3),
-                                blurRadius: 24,
-                                spreadRadius: 4,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(24.0),
-                            child: Image.asset(
-                              'assets/images/app_logo.png',
-                              fit: BoxFit.contain,
-                              color: Colors.white,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  const Icon(
-                                Icons.water_drop_rounded,
-                                size: 56,
-                                color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Logo with pulsing ring and entrance animation
+                  AnimatedBuilder(
+                    animation: _mainController,
+                    builder: (context, child) {
+                      return Opacity(
+                        opacity: _logoFade.value,
+                        child: Transform.scale(
+                          scale: _logoScale.value,
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: AnimatedBuilder(
+                      animation: _pulseController,
+                      builder: (context, child) {
+                        return Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // Glowing Ring
+                            Transform.scale(
+                              scale: _pulseAnimation.value,
+                              child: Container(
+                                width: 140,
+                                height: 140,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.2),
+                                    width: 2,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.white.withValues(alpha: 0.1),
+                                      blurRadius: 20,
+                                      spreadRadius: 10,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
+                            // Logo Container
+                            ClipOval(
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    width: 140,
+                                    height: 140,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white.withValues(alpha: 0.1),
+                                      border: Border.all(
+                                        color: Colors.white.withValues(alpha: 0.3),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(28.0),
+                                      child: Image.asset(
+                                        'assets/images/app_logo.png',
+                                        fit: BoxFit.contain,
+                                        color: Colors.white,
+                                        errorBuilder: (context, error, stackTrace) =>
+                                            const Icon(
+                                          Icons.water_drop_rounded,
+                                          size: 64,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  // Shimmer Effect
+                                  Positioned.fill(
+                                    child: AnimatedBuilder(
+                                      animation: _shimmerController,
+                                      builder: (context, child) {
+                                        return Transform.translate(
+                                          offset: Offset(
+                                            -140 + (_shimmerController.value * 280),
+                                            0,
+                                          ),
+                                          child: Transform.rotate(
+                                            angle: 0.5,
+                                            child: Container(
+                                              width: 30,
+                                              height: 200,
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    Colors.transparent,
+                                                    Colors.white.withValues(alpha: 0.4),
+                                                    Colors.transparent,
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(height: 40),
+
+                  // Texts
+                  AnimatedBuilder(
+                    animation: _textFade,
+                    builder: (context, child) {
+                      return Opacity(
+                        opacity: _textFade.value,
+                        child: child,
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        Text(
+                          'AQUA POINT',
+                          style: GoogleFonts.outfit(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2.0,
+                            color: Colors.white,
                           ),
                         ),
-                      ),
-
-                      const SizedBox(height: 32),
-
-                      // Brand Name
-                      Text(
-                        'AQUA POINT',
-                        style: GoogleFonts.outfit(
-                          fontSize: 34,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 3.0,
-                          color: AppColors.primary,
+                        const SizedBox(height: 8),
+                        Text(
+                          'Pure Water, Better Life',
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0.5,
+                            color: Colors.white.withValues(alpha: 0.8),
+                          ),
                         ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      // Tagline
-                      Text(
-                        'Pure Water, Better Life',
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 1.0,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-
-                      const SizedBox(height: 56),
-
-                      // Circular Progress Indicator
-                      const SizedBox(
-                        width: 40,
-                        height: 40,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 3,
-                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
+
+                  const SizedBox(height: 60),
+
+                  // Animated Dots
+                  _buildAnimatedDots(),
+                ],
               ),
             ),
 
@@ -222,20 +338,93 @@ class _CustomSplashPageState extends State<CustomSplashPage>
               bottom: 32,
               left: 0,
               right: 0,
-              child: Text(
-                'v1.0.0',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  color: AppColors.textTertiary,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 1.0,
-                ),
+              child: AnimatedBuilder(
+                animation: _textFade,
+                builder: (context, child) {
+                  return Opacity(
+                    opacity: _textFade.value,
+                    child: Text(
+                      'v1.0.0',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: Colors.white.withValues(alpha: 0.5),
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  List<Widget> _buildFloatingDrops() {
+    final drops = [
+      {'left': 40.0, 'top': 150.0, 'size': 20.0, 'delay': 0.0},
+      {'left': 300.0, 'top': 250.0, 'size': 14.0, 'delay': 0.4},
+      {'left': 80.0, 'top': 500.0, 'size': 24.0, 'delay': 0.8},
+      {'left': 280.0, 'top': 600.0, 'size': 18.0, 'delay': 0.2},
+    ];
+
+    return drops.map((drop) {
+      return AnimatedBuilder(
+        animation: _floatController,
+        builder: (context, child) {
+          final offset = math.sin((_floatController.value * 2 * math.pi) + drop['delay']!) * 15;
+          return Positioned(
+            left: drop['left'],
+            top: drop['top']! + offset,
+            child: Opacity(
+              opacity: 0.15,
+              child: Icon(
+                Icons.water_drop,
+                color: Colors.white,
+                size: drop['size'],
+              ),
+            ),
+          );
+        },
+      );
+    }).toList();
+  }
+
+  Widget _buildAnimatedDots() {
+    return AnimatedBuilder(
+      animation: _dotsController,
+      builder: (context, child) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(3, (index) {
+            final delay = index * 0.2;
+            double scale = 1.0;
+            
+            double normalizedTime = (_dotsController.value - delay) % 1.0;
+            if (normalizedTime < 0) normalizedTime += 1.0;
+            
+            if (normalizedTime < 0.4) {
+              scale = 1.0 + math.sin(normalizedTime * math.pi / 0.4) * 0.5;
+            }
+
+            return Transform.scale(
+              scale: scale,
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.8),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            );
+          }),
+        );
+      },
     );
   }
 }

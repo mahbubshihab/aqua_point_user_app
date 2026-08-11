@@ -22,13 +22,14 @@ class PromotionalBannersSlider extends StatefulWidget {
   });
 
   @override
-  State<PromotionalBannersSlider> createState() => _PromotionalBannersSliderState();
+  State<PromotionalBannersSlider> createState() =>
+      _PromotionalBannersSliderState();
 }
 
 class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
   late PageController _pageController;
   int _currentIndex = 0;
-  Timer? _timer;
+  Timer? _autoScrollTimer;
 
   List<BannerEntity> get _activeBanners =>
       widget.banners.where((b) => b.isActive).toList();
@@ -37,37 +38,36 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: 0);
-    _startAutoPlay();
+    _startAutoScroll();
   }
 
   @override
   void didUpdateWidget(covariant PromotionalBannersSlider oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.banners != widget.banners) {
-      _startAutoPlay();
+      _startAutoScroll();
     }
   }
 
-  void _startAutoPlay() {
-    _timer?.cancel();
+  void _startAutoScroll() {
+    _autoScrollTimer?.cancel();
     final activeList = _activeBanners;
     if (activeList.length > 1) {
-      _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
-        if (_pageController.hasClients) {
-          final nextPage = (_currentIndex + 1) % activeList.length;
-          _pageController.animateToPage(
-            nextPage,
-            duration: const Duration(milliseconds: 600),
-            curve: Curves.fastOutSlowIn,
-          );
-        }
+      _autoScrollTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+        if (!mounted || !_pageController.hasClients) return;
+        final nextPage = (_currentIndex + 1) % activeList.length;
+        _pageController.animateToPage(
+          nextPage,
+          duration: const Duration(milliseconds: 800),
+          curve: Curves.easeInOutCubic,
+        );
       });
     }
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _autoScrollTimer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
@@ -84,40 +84,24 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
       } else {
         final route = cta.toLowerCase();
         if (route.contains('shop') || route.contains('product') || route.contains('store')) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const ShopPage()),
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const ShopPage()));
           return;
         } else if (route.contains('service') || route.contains('repair') || route.contains('request')) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider.value(
-                value: context.read<ServicesBloc>(),
-                child: const CreateServiceRequestPage(),
-              ),
+          Navigator.push(context, MaterialPageRoute(
+            builder: (_) => BlocProvider.value(
+              value: context.read<ServicesBloc>(),
+              child: const CreateServiceRequestPage(),
             ),
-          );
+          ));
           return;
-
         } else if (route.contains('help') || route.contains('support')) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const ChatConversationPage()),
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const ChatConversationPage()));
           return;
         } else if (route.contains('water') || route.contains('reminder')) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const WaterReminderPage()),
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const WaterReminderPage()));
           return;
         } else if (route.contains('tds')) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const TdsMeterPage()),
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const TdsMeterPage()));
           return;
         }
       }
@@ -129,7 +113,7 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
         SnackBar(
           content: Row(
             children: [
-              const Icon(Icons.info_outline, color: AppColors.surface, size: 20),
+              const Icon(Icons.info_outline, color: Colors.white, size: 20),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -153,10 +137,10 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
   @override
   Widget build(BuildContext context) {
     final activeBanners = _activeBanners;
+    if (activeBanners.isEmpty) return const SizedBox.shrink();
 
-    if (activeBanners.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,20 +151,27 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
             controller: _pageController,
             itemCount: activeBanners.length,
             onPageChanged: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
+              setState(() => _currentIndex = index);
             },
             itemBuilder: (context, index) {
               final banner = activeBanners[index];
               return GestureDetector(
                 onTap: () => _handleBannerTap(context, banner),
-                child: Container(
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 400),
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   decoration: BoxDecoration(
-                    color: AppColors.surface,
+                    color: theme.colorScheme.surface,
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: AppShadows.soft,
+                    boxShadow: [
+                      BoxShadow(
+                        color: isDark
+                            ? Colors.black.withValues(alpha: 0.3)
+                            : Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
@@ -190,11 +181,11 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
                       width: double.infinity,
                       height: double.infinity,
                       errorBuilder: (context, error, stackTrace) => Container(
-                        color: AppColors.divider,
-                        child: const Center(
+                        color: isDark ? AppColors.darkSurfaceVariant : AppColors.divider,
+                        child: Center(
                           child: Icon(
                             Icons.image_not_supported_rounded,
-                            color: AppColors.textTertiary,
+                            color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
                             size: 40,
                           ),
                         ),
@@ -202,10 +193,10 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
                         return Container(
-                          color: AppColors.divider,
-                          child: const Center(
+                          color: isDark ? AppColors.darkSurfaceVariant : AppColors.divider,
+                          child: Center(
                             child: CircularProgressIndicator(
-                              color: AppColors.primary,
+                              color: theme.colorScheme.primary,
                               strokeWidth: 2,
                             ),
                           ),
@@ -226,13 +217,14 @@ class _PromotionalBannersSliderState extends State<PromotionalBannersSlider> {
               activeBanners.length,
               (index) => AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
                 margin: const EdgeInsets.symmetric(horizontal: 4),
                 width: _currentIndex == index ? 24 : 8,
                 height: 8,
                 decoration: BoxDecoration(
                   color: _currentIndex == index
-                      ? AppColors.primary
-                      : AppColors.border,
+                      ? theme.colorScheme.primary
+                      : (isDark ? AppColors.darkBorder : AppColors.border),
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
