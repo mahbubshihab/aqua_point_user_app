@@ -553,6 +553,8 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           backgroundColor: AppColors.primary,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 14, vertical: 8),
