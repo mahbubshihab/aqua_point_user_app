@@ -58,44 +58,54 @@ class _ProductsPageState extends State<ProductsPage> {
         actions: [
           BlocBuilder<CartBloc, CartState>(
             builder: (context, cartState) {
-              return Stack(
-                alignment: Alignment.center,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.shopping_cart_outlined, color: textColorPrimary),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const CartPage()),
-                      );
-                    },
-                  ),
-                  if (cartState.totalItemCount > 0)
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: accentColor,
-                          shape: BoxShape.circle,
-                        ),
-                        constraints: const BoxConstraints(
-                          minWidth: 16,
-                          minHeight: 16,
-                        ),
-                        child: Text(
-                          '${cartState.totalItemCount}',
-                          style: GoogleFonts.inter(
-                            color: isDark ? const Color(0xFF020810) : Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CartPage()),
+                  );
+                },
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.shopping_cart_outlined, color: textColorPrimary),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const CartPage()),
+                        );
+                      },
+                    ),
+                    if (cartState.totalItemCount > 0)
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: IgnorePointer(
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: accentColor,
+                              shape: BoxShape.circle,
+                            ),
+                            constraints: const BoxConstraints(
+                              minWidth: 16,
+                              minHeight: 16,
+                            ),
+                            child: Text(
+                              '${cartState.totalItemCount}',
+                              style: GoogleFonts.inter(
+                                color: isDark ? const Color(0xFF020810) : Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               );
             },
           ),
