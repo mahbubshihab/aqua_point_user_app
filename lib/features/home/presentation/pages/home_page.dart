@@ -137,7 +137,7 @@ class _HomePageState extends State<HomePage> {
 
                             const Gap(24),
 
-                            // 5. Categories Section (ALWAYS displayed)
+                            // 5. Categories Section
                             _AnimatedSection(
                               animate: _startAnimations,
                               delay: const Duration(milliseconds: 150),
@@ -148,21 +148,20 @@ class _HomePageState extends State<HomePage> {
 
                             const Gap(24),
 
-                            // 6. Type-wise Product Sections (directly below Categories - ALWAYS displayed)
+                            // 6. Type-wise Product Sections (directly below Categories - VERY MINIMAL)
                             _AnimatedSection(
                               animate: _startAnimations,
                               delay: const Duration(milliseconds: 200),
                               child: ProductTypeSection(
                                 title: 'Open Type Purifiers',
                                 typeTag: 'open',
-                                subtitle: 'Traditional open-top water purifiers',
                                 icon: Icons.water_drop_rounded,
                                 accentColor: AppColors.primary,
                                 products: state.openTypeProducts,
                               ),
                             ),
 
-                            const Gap(24),
+                            const Gap(20),
 
                             _AnimatedSection(
                               animate: _startAnimations,
@@ -170,14 +169,13 @@ class _HomePageState extends State<HomePage> {
                               child: ProductTypeSection(
                                 title: 'Box Type Purifiers',
                                 typeTag: 'box',
-                                subtitle: 'Compact box-style water purifiers',
                                 icon: Icons.inventory_2_rounded,
                                 accentColor: AppColors.secondary,
                                 products: state.boxTypeProducts,
                               ),
                             ),
 
-                            const Gap(24),
+                            const Gap(20),
 
                             _AnimatedSection(
                               animate: _startAnimations,
@@ -185,14 +183,13 @@ class _HomePageState extends State<HomePage> {
                               child: ProductTypeSection(
                                 title: 'Hot Cold Normal',
                                 typeTag: 'hot_cold_normal',
-                                subtitle: 'Multi-temperature water dispensers',
                                 icon: Icons.thermostat_rounded,
                                 accentColor: AppColors.actionOrange,
                                 products: state.hotColdNormalProducts,
                               ),
                             ),
 
-                            const Gap(24),
+                            const Gap(20),
 
                             _AnimatedSection(
                               animate: _startAnimations,
@@ -200,7 +197,6 @@ class _HomePageState extends State<HomePage> {
                               child: ProductTypeSection(
                                 title: 'Cabinet Type',
                                 typeTag: 'cabinet',
-                                subtitle: 'Premium cabinet-style purifiers',
                                 icon: Icons.kitchen_rounded,
                                 accentColor: AppColors.actionPurple,
                                 products: state.cabinetTypeProducts,
@@ -209,7 +205,7 @@ class _HomePageState extends State<HomePage> {
 
                             const Gap(24),
 
-                            // 7. Blogs & News Section (at the end - ALWAYS displayed)
+                            // 7. Blogs & News Section (at the end)
                             _AnimatedSection(
                               animate: _startAnimations,
                               delay: const Duration(milliseconds: 400),

@@ -11,7 +11,7 @@ import '../../../products/presentation/widgets/shop_product_card.dart';
 class ProductTypeSection extends StatefulWidget {
   final String title;
   final String typeTag;
-  final String subtitle;
+  final String? subtitle;
   final IconData icon;
   final Color accentColor;
   final List<ProductEntity> products;
@@ -20,7 +20,7 @@ class ProductTypeSection extends StatefulWidget {
     super.key,
     required this.title,
     required this.typeTag,
-    required this.subtitle,
+    this.subtitle,
     required this.icon,
     this.accentColor = AppColors.primary,
     required this.products,
@@ -67,186 +67,164 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
         );
       },
       child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Section Header
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Section Header (Very Minimal: Icon, Title & View All)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    Icon(widget.icon, color: widget.accentColor, size: 22),
+                    const Gap(8),
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.title,
+                            style: GoogleFonts.outfit(
+                              color: theme.colorScheme.onSurface,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.2,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          // Animated underline indicator
+                          AnimatedBuilder(
+                            animation: _glowController,
+                            builder: (context, child) {
+                              return Container(
+                                margin: const EdgeInsets.only(top: 3),
+                                height: 2,
+                                width: 24 + (_glowController.value * 16),
+                                decoration: BoxDecoration(
+                                  color: widget.accentColor,
+                                  borderRadius: BorderRadius.circular(1),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  if (widget.products.isNotEmpty) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => CategoryShopPage(
+                          categoryName: widget.title,
+                          products: widget.products,
+                        ),
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ShopPage()),
+                    );
+                  }
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'View All',
+                        style: GoogleFonts.inter(
+                          color: widget.accentColor,
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const Gap(2),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        color: widget.accentColor,
+                        size: 18,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const Gap(12),
+          // Product List or Minimal Empty State
+          if (widget.products.isNotEmpty)
+            SizedBox(
+              height: 235,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                itemCount: widget.products.length,
+                itemBuilder: (context, index) {
+                  final product = widget.products[index];
+                  return _AnimatedProductCardWrapper(
+                    child: ShopProductCard(
+                      product: product,
+                      isHorizontal: true,
+                    ),
+                  );
+                },
+              ),
+            )
+          else
+            // Minimal Compact Empty State Card
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: isDark ? [] : AppShadows.soft,
+                border: Border.all(
+                  color: isDark ? AppColors.darkBorder : AppColors.border,
+                  width: 1,
+                ),
+              ),
               child: Row(
                 children: [
-                  Icon(widget.icon, color: widget.accentColor, size: 24),
-                  const Gap(8),
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.title,
-                          style: GoogleFonts.outfit(
-                            color: theme.colorScheme.onSurface,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.2,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        // Animated underline
-                        AnimatedBuilder(
-                          animation: _glowController,
-                          builder: (context, child) {
-                            return Container(
-                              margin: const EdgeInsets.only(top: 4),
-                              height: 2,
-                              width: 30 + (_glowController.value * 20),
-                              decoration: BoxDecoration(
-                                color: widget.accentColor,
-                                borderRadius: BorderRadius.circular(1),
-                              ),
-                            );
-                          }
-                        ),
-                      ],
+                  Container(
+                    width: 36,
+                    height: 36,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: widget.accentColor.withValues(alpha: 0.12),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      widget.icon,
+                      size: 18,
+                      color: widget.accentColor,
+                    ),
+                  ),
+                  const Gap(12),
+                  Expanded(
+                    child: Text(
+                      'No ${widget.title} Available',
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.75)
+                            : AppColors.textSecondary,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-            InkWell(
-              onTap: () {
-                if (widget.products.isNotEmpty) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => CategoryShopPage(
-                        categoryName: widget.title,
-                        products: widget.products,
-                      ),
-                    ),
-                  );
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const ShopPage()),
-                  );
-                }
-              },
-              borderRadius: BorderRadius.circular(8),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'View All',
-                      style: GoogleFonts.inter(
-                        color: widget.accentColor,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const Gap(2),
-                    Icon(
-                      Icons.chevron_right_rounded,
-                      color: widget.accentColor,
-                      size: 18,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-        const Gap(6),
-        Padding(
-          padding: const EdgeInsets.only(left: 32.0),
-          child: Text(
-            widget.subtitle,
-            style: GoogleFonts.inter(
-              color: isDark ? AppColors.darkTextSecondary : AppColors.textSecondary,
-              fontSize: 13,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ),
-        const Gap(16),
-        // Product List or Empty State
-        if (widget.products.isNotEmpty)
-          SizedBox(
-            height: 235,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              itemCount: widget.products.length,
-              itemBuilder: (context, index) {
-                final product = widget.products[index];
-                return _AnimatedProductCardWrapper(
-                  child: ShopProductCard(
-                    product: product,
-                    isHorizontal: true,
-                  ),
-                );
-              },
-            ),
-          )
-        else
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surface,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: isDark ? [] : AppShadows.soft,
-              border: Border.all(
-                color: isDark ? AppColors.darkBorder : AppColors.border,
-                width: 1,
-              ),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: widget.accentColor.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    widget.icon,
-                    size: 22,
-                    color: widget.accentColor,
-                  ),
-                ),
-                const Gap(12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'No ${widget.title} available',
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                      const Gap(4),
-                      Text(
-                        'Server query filter: type == ${widget.typeTag}',
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          color: isDark ? AppColors.darkTextSecondary : AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-      ],
+        ],
       ),
     );
   }
@@ -265,9 +243,6 @@ class _AnimatedProductCardWrapperState extends State<_AnimatedProductCardWrapper
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTapDown: (_) => setState(() => _isPressed = true),
