@@ -172,14 +172,6 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
                 itemBuilder: (context, index) {
                   final product = widget.products[index];
                   return _AnimatedProductCardWrapper(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ProductDetailPage(product: product),
-                        ),
-                      );
-                    },
                     child: ShopProductCard(
                       product: product,
                       isHorizontal: true,
@@ -237,11 +229,9 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
 
 class _AnimatedProductCardWrapper extends StatefulWidget {
   final Widget child;
-  final VoidCallback? onTap;
 
   const _AnimatedProductCardWrapper({
     required this.child,
-    this.onTap,
   });
 
   @override
@@ -253,12 +243,10 @@ class _AnimatedProductCardWrapperState extends State<_AnimatedProductCardWrapper
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTapDown: (_) => setState(() => _isPressed = true),
-      onTapUp: (_) => setState(() => _isPressed = false),
-      onTapCancel: () => setState(() => _isPressed = false),
-      onTap: widget.onTap,
+    return Listener(
+      onPointerDown: (_) => setState(() => _isPressed = true),
+      onPointerUp: (_) => setState(() => _isPressed = false),
+      onPointerCancel: (_) => setState(() => _isPressed = false),
       child: AnimatedScale(
         scale: _isPressed ? 0.96 : 1.0,
         duration: const Duration(milliseconds: 150),
