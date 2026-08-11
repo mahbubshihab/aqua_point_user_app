@@ -129,7 +129,7 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
                   } else {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const ShopPage()),
+                      MaterialPageRoute(builder: (_) => ShopPage()),
                     );
                   }
                 },
