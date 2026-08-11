@@ -77,7 +77,6 @@ class _HomePageState extends State<HomePage> {
             }
 
             if (state is HomeLoaded) {
-              final topPadding = MediaQuery.paddingOf(context).top;
               return RefreshIndicator(
                 color: theme.colorScheme.primary,
                 backgroundColor: theme.colorScheme.surface,
@@ -91,10 +90,15 @@ class _HomePageState extends State<HomePage> {
                   ),
                   slivers: [
                     // 1. Sticky Header Banner
-                    SliverPersistentHeader(
+                    SliverAppBar(
                       pinned: true,
-                      delegate: _StickyHeaderDelegate(
-                        topPadding: topPadding,
+                      floating: false,
+                      elevation: 0,
+                      scrolledUnderElevation: 0,
+                      toolbarHeight: 76.0,
+                      backgroundColor: Colors.transparent,
+                      automaticallyImplyLeading: false,
+                      flexibleSpace: HomeHeaderBanner(
                         onProfileTap: () {
                           Navigator.push(
                             context,
@@ -250,40 +254,6 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-  }
-}
-
-/// Custom delegate for pinning HomeHeaderBanner in CustomScrollView
-class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final double topPadding;
-  final VoidCallback onProfileTap;
-
-  _StickyHeaderDelegate({
-    required this.topPadding,
-    required this.onProfileTap,
-  });
-
-  @override
-  double get minExtent => topPadding + 76.0;
-
-  @override
-  double get maxExtent => topPadding + 76.0;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return HomeHeaderBanner(
-      onProfileTap: onProfileTap,
-    );
-  }
-
-  @override
-  bool shouldRebuild(covariant _StickyHeaderDelegate oldDelegate) {
-    return oldDelegate.topPadding != topPadding ||
-        oldDelegate.onProfileTap != onProfileTap;
   }
 }
 
