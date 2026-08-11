@@ -5,7 +5,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_shadows.dart';
 import '../../../products/domain/entities/product_entity.dart';
 import '../../../products/presentation/pages/category_shop_page.dart';
-import '../../../products/presentation/pages/shop_page.dart';
+import '../../../products/presentation/pages/product_detail_page.dart';
 import '../../../products/presentation/widgets/shop_product_card.dart';
 
 class ProductTypeSection extends StatefulWidget {
