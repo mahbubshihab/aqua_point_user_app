@@ -61,6 +61,7 @@ class ProductItemCard extends StatelessWidget {
           label: 'View Cart',
           textColor: const Color(0xFF00BCE1),
           onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const CartPage()),

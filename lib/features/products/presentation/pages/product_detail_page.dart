@@ -77,6 +77,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           label: 'View Cart',
           textColor: const Color(0xFF00E5FF),
           onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const CartPage()),
