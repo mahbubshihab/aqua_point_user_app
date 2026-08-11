@@ -103,20 +103,21 @@ class ProductItemCard extends StatelessWidget {
     final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
     final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
 
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ProductDetailPage(product: product),
-          ),
-        );
-      },
-      child: AppCard(
-        margin: const EdgeInsets.only(bottom: 12),
-        child: Column(
-          children: [
-            Row(
+    return AppCard(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ProductDetailPage(product: product),
+                ),
+              );
+            },
+            borderRadius: BorderRadius.circular(12),
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Photo Thumbnail
@@ -221,75 +222,75 @@ class ProductItemCard extends StatelessWidget {
                 ),
               ],
             ),
-            const Gap(12),
-            Divider(color: borderColor, height: 1),
-            const Gap(10),
+          ),
+          const Gap(12),
+          Divider(color: borderColor, height: 1),
+          const Gap(10),
 
-            // Functional Action Buttons
-            Row(
-              children: [
-                Expanded(
-                  child: SizedBox(
-                    height: 36,
-                    child: OutlinedButton.icon(
-                      onPressed: () => _onAddToCart(context),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        side: BorderSide(color: accentColor, width: 1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+          // Functional Action Buttons
+          Row(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  height: 36,
+                  child: OutlinedButton.icon(
+                    onPressed: () => _onAddToCart(context),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      side: BorderSide(color: accentColor, width: 1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      icon: Icon(
-                        Icons.add_shopping_cart_rounded,
+                    ),
+                    icon: Icon(
+                      Icons.add_shopping_cart_rounded,
+                      color: accentColor,
+                      size: 15,
+                    ),
+                    label: Text(
+                      'Add to Cart',
+                      style: GoogleFonts.inter(
                         color: accentColor,
-                        size: 15,
-                      ),
-                      label: Text(
-                        'Add to Cart',
-                        style: GoogleFonts.inter(
-                          color: accentColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
                 ),
-                const Gap(10),
-                Expanded(
-                  child: SizedBox(
-                    height: 36,
-                    child: ElevatedButton.icon(
-                      onPressed: () => _onBuyNow(context),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        backgroundColor: accentColor,
-                        foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+              ),
+              const Gap(10),
+              Expanded(
+                child: SizedBox(
+                  height: 36,
+                  child: ElevatedButton.icon(
+                    onPressed: () => _onBuyNow(context),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      backgroundColor: accentColor,
+                      foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      icon: Icon(
-                        Icons.flash_on_rounded,
+                    ),
+                    icon: Icon(
+                      Icons.flash_on_rounded,
+                      color: isDark ? const Color(0xFF020810) : Colors.white,
+                      size: 15,
+                    ),
+                    label: Text(
+                      'Buy Now',
+                      style: GoogleFonts.inter(
                         color: isDark ? const Color(0xFF020810) : Colors.white,
-                        size: 15,
-                      ),
-                      label: Text(
-                        'Buy Now',
-                        style: GoogleFonts.inter(
-                          color: isDark ? const Color(0xFF020810) : Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

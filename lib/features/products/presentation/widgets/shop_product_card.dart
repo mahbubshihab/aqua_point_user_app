@@ -134,162 +134,168 @@ class ShopProductCard extends StatelessWidget {
     return AppCard(
       padding: const EdgeInsets.all(10),
       borderRadius: 16,
-      child: InkWell(
-        onTap: () => _navigateToDetail(context),
-        borderRadius: BorderRadius.circular(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Product Image Container
-            Container(
-              height: 110,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: imgBg,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: _buildProductImage(imgBg, accentColor),
-              ),
-            ),
-            const Gap(8),
-
-            // Product Name / Title
-            Text(
-              product.name,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.inter(
-                color: textColorPrimary,
-                fontSize: 12.5,
-                fontWeight: FontWeight.bold,
-                height: 1.2,
-              ),
-            ),
-            const Gap(4),
-
-            // Warranty Text
-            Text(
-              product.warrantyDetails,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.inter(
-                color: AppColors.accentGreen,
-                fontSize: 10.5,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const Gap(6),
-
-            // Price Row
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          InkWell(
+            onTap: () => _navigateToDetail(context),
+            borderRadius: BorderRadius.circular(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  priceStr,
-                  style: GoogleFonts.inter(
-                    color: accentColor,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
+                // Product Image Container
+                Container(
+                  height: 110,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: imgBg,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: _buildProductImage(imgBg, accentColor),
                   ),
                 ),
-                if (originalPriceStr != null) ...[
-                  const Gap(5),
-                  Text(
-                    originalPriceStr,
-                    style: GoogleFonts.inter(
-                      color: textColorSecondary,
-                      fontSize: 10.5,
-                      decoration: TextDecoration.lineThrough,
-                    ),
+                const Gap(8),
+
+                // Product Name / Title
+                Text(
+                  product.name,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.inter(
+                    color: textColorPrimary,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.bold,
+                    height: 1.2,
                   ),
-                ],
+                ),
+                const Gap(4),
+
+                // Warranty Text
+                Text(
+                  product.warrantyDetails,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.inter(
+                    color: AppColors.accentGreen,
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const Gap(6),
+
+                // Price Row
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    Text(
+                      priceStr,
+                      style: GoogleFonts.inter(
+                        color: accentColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (originalPriceStr != null) ...[
+                      const Gap(5),
+                      Text(
+                        originalPriceStr,
+                        style: GoogleFonts.inter(
+                          color: textColorSecondary,
+                          fontSize: 10.5,
+                          decoration: TextDecoration.lineThrough,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ],
             ),
+          ),
 
-            // Show Cart & Buy Now action buttons ONLY if NOT in minimal view (e.g. on full Shop catalog page)
-            if (!isMinimalView) ...[
-              const Gap(10),
-              Row(
-                children: [
-                  // Add to Cart Icon Button
-                  Material(
-                    color: isDark
-                        ? const Color(0xFF00BCE1).withValues(alpha: 0.15)
-                        : const Color(0x2000BCE1),
+          // Show Cart & Buy Now action buttons ONLY if NOT in minimal view (e.g. on full Shop catalog page)
+          if (!isMinimalView) ...[
+            const Gap(10),
+            Row(
+              children: [
+                // Add to Cart Icon Button
+                Material(
+                  color: isDark
+                      ? const Color(0xFF00BCE1).withValues(alpha: 0.15)
+                      : const Color(0x2000BCE1),
+                  borderRadius: BorderRadius.circular(9),
+                  child: InkWell(
+                    onTap: () => _onAddToCart(context),
                     borderRadius: BorderRadius.circular(9),
-                    child: InkWell(
-                      onTap: () => _onAddToCart(context),
-                      borderRadius: BorderRadius.circular(9),
-                      child: Container(
-                        padding: const EdgeInsets.all(7),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(9),
-                          border: Border.all(
-                            color: isDark
-                                ? const Color(0xFF00BCE1).withValues(alpha: 0.3)
-                                : const Color(0x6000BCE1),
-                          ),
+                    child: Container(
+                      padding: const EdgeInsets.all(7),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(9),
+                        border: Border.all(
+                          color: isDark
+                              ? const Color(0xFF00BCE1).withValues(alpha: 0.3)
+                              : const Color(0x6000BCE1),
                         ),
-                        child: Icon(
-                          Icons.add_shopping_cart_rounded,
-                          color: accentColor,
-                          size: 16,
-                        ),
+                      ),
+                      child: Icon(
+                        Icons.add_shopping_cart_rounded,
+                        color: accentColor,
+                        size: 16,
                       ),
                     ),
                   ),
-                  const Gap(6),
-                  // Buy Now Button
-                  Expanded(
-                    child: Container(
-                      height: 32,
-                      decoration: BoxDecoration(
+                ),
+                const Gap(6),
+                // Buy Now Button
+                Expanded(
+                  child: Container(
+                    height: 32,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(9),
+                      gradient: isDark
+                          ? const LinearGradient(
+                              colors: [Color(0xFF0088FF), Color(0xFF00BCE1)],
+                            )
+                          : const LinearGradient(
+                              colors: [Color(0xFF00BCE1), Color(0xFF0089A8)],
+                            ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: isDark
+                              ? const Color(0xFF00BCE1).withValues(alpha: 0.35)
+                              : const Color(0x4000BCE1),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => _onBuyNowPressed(context),
                         borderRadius: BorderRadius.circular(9),
-                        gradient: isDark
-                            ? const LinearGradient(
-                                colors: [Color(0xFF0088FF), Color(0xFF00BCE1)],
-                              )
-                            : const LinearGradient(
-                                colors: [Color(0xFF00BCE1), Color(0xFF0089A8)],
-                              ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: isDark
-                                ? const Color(0xFF00BCE1).withValues(alpha: 0.35)
-                                : const Color(0x4000BCE1),
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () => _onBuyNowPressed(context),
-                          borderRadius: BorderRadius.circular(9),
-                          child: Center(
-                            child: Text(
-                              'Buy Now',
-                              style: GoogleFonts.inter(
-                                color: isDark ? const Color(0xFF020810) : Colors.white,
-                                fontSize: 11.5,
-                                fontWeight: FontWeight.bold,
-                              ),
+                        child: Center(
+                          child: Text(
+                            'Buy Now',
+                            style: GoogleFonts.inter(
+                              color: isDark ? const Color(0xFF020810) : Colors.white,
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ],
-        ),
+        ],
       ),
     );
   }
