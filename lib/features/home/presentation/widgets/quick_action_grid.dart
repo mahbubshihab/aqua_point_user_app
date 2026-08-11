@@ -59,7 +59,7 @@ class QuickActionGrid extends StatelessWidget {
             },
           ),
           QuickActionItem(
-            label: 'Shop Parts',
+            label: 'Shop',
             icon: Icons.shopping_bag_rounded,
             iconColor: isDark ? const Color(0xFF10B981) : const Color(0xFF059669),
             gradientColors: isDark
@@ -75,7 +75,7 @@ class QuickActionGrid extends StatelessWidget {
             },
           ),
           QuickActionItem(
-            label: 'Support 24/7',
+            label: 'Support',
             icon: Icons.support_agent_rounded,
             iconColor: isDark ? const Color(0xFFA78BFA) : const Color(0xFF7C3AED),
             gradientColors: isDark
@@ -197,7 +197,7 @@ class _QuickActionTileState extends State<QuickActionTile> {
               ),
               const Gap(6),
 
-              // Compact Text Label
+              // Compact Minimal Text Label
               Text(
                 item.label,
                 textAlign: TextAlign.center,

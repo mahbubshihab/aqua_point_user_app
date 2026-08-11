@@ -74,7 +74,7 @@ class _MyProductsSectionState extends State<MyProductsSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Section Header: "My Products" & "+ Add Custom Product"
+        // Section Header: "My Products" & "View All"
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -161,14 +161,14 @@ class _MyProductsSectionState extends State<MyProductsSection> {
 
               // Display custom added products in horizontal card slider
               return SizedBox(
-                height: 180,
+                height: 165,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
                   itemCount: docs.length,
                   itemBuilder: (context, index) {
                     final data = docs[index].data() as Map<String, dynamic>;
-                    final name = (data['name'] ?? 'Custom Product').toString();
+                    final name = (data['name'] ?? 'Purifier').toString();
                     final photoUrl = (data['photoUrl'] ?? data['imageUrl']) as String?;
 
                     return _buildConnectedDeviceCard(
@@ -189,7 +189,7 @@ class _MyProductsSectionState extends State<MyProductsSection> {
   Widget _buildLoadingCard(bool isDark) {
     return Container(
       width: double.infinity,
-      height: 160,
+      height: 145,
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
         borderRadius: BorderRadius.circular(20),
@@ -228,43 +228,17 @@ class _MyProductsSectionState extends State<MyProductsSection> {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Left Column: Status, Device Name & Action
+            // Left Column: Status & Name
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Connected Device Label
-                  Text(
-                    'Connected Device',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white.withValues(alpha: 0.7),
-                      letterSpacing: 0.3,
-                    ),
-                  ),
-                  const Gap(6),
-
-                  // Product Name
-                  Text(
-                    name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.outfit(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      height: 1.25,
-                    ),
-                  ),
-                  const Gap(8),
-
-                  // Water Flow Active Indicator
+                  // Minimal Active Indicator Badge
                   Row(
                     children: [
                       Container(
@@ -277,7 +251,7 @@ class _MyProductsSectionState extends State<MyProductsSection> {
                       ),
                       const Gap(6),
                       Text(
-                        'Water Flow Active',
+                        'Connected Device',
                         style: GoogleFonts.inter(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -285,6 +259,20 @@ class _MyProductsSectionState extends State<MyProductsSection> {
                         ),
                       ),
                     ],
+                  ),
+                  const Gap(6),
+
+                  // Minimal Product Name
+                  Text(
+                    name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.outfit(
+                      fontSize: 19,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      height: 1.2,
+                    ),
                   ),
                 ],
               ),
@@ -294,8 +282,8 @@ class _MyProductsSectionState extends State<MyProductsSection> {
 
             // Right Image Display
             Container(
-              width: 100,
-              height: 100,
+              width: 90,
+              height: 90,
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(16),
@@ -327,7 +315,7 @@ class _MyProductsSectionState extends State<MyProductsSection> {
       child: Icon(
         Icons.water_drop_rounded,
         color: Colors.white.withValues(alpha: 0.9),
-        size: 48,
+        size: 44,
       ),
     );
   }
@@ -354,7 +342,7 @@ class _MyProductsSectionState extends State<MyProductsSection> {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Row(
           children: [
             Expanded(
@@ -369,21 +357,13 @@ class _MyProductsSectionState extends State<MyProductsSection> {
                       color: Colors.white.withValues(alpha: 0.7),
                     ),
                   ),
-                  const Gap(6),
+                  const Gap(4),
                   Text(
-                    'No Custom Product Added',
+                    'No Device Connected',
                     style: GoogleFonts.outfit(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
-                    ),
-                  ),
-                  const Gap(4),
-                  Text(
-                    'Add your custom water purifier to view it here.',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: Colors.white.withValues(alpha: 0.8),
                     ),
                   ),
                   const Gap(12),
@@ -414,7 +394,7 @@ class _MyProductsSectionState extends State<MyProductsSection> {
                           ),
                           const Gap(6),
                           Text(
-                            'Add Custom Product',
+                            'Add Product',
                             style: GoogleFonts.inter(
                               color: Colors.white,
                               fontSize: 12,
@@ -430,8 +410,8 @@ class _MyProductsSectionState extends State<MyProductsSection> {
             ),
             const Gap(12),
             Container(
-              width: 80,
-              height: 80,
+              width: 74,
+              height: 74,
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
@@ -444,7 +424,7 @@ class _MyProductsSectionState extends State<MyProductsSection> {
                 child: Icon(
                   Icons.water_drop_outlined,
                   color: Colors.white.withValues(alpha: 0.9),
-                  size: 40,
+                  size: 36,
                 ),
               ),
             ),
