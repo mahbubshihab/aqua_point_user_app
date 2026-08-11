@@ -674,6 +674,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: PageView.builder(
+                  key: PageStorageKey<String>('product_gallery_${widget.product.id}'),
                   controller: _pageController,
                   itemCount: images.length,
                   onPageChanged: (index) {
