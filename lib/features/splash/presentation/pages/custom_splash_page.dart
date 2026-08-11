@@ -137,7 +137,7 @@ class _CustomSplashPageState extends State<CustomSplashPage>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Pulsing Logo Icon
+                    // Uncropped Pulsing Logo Icon (Exact match to Login Screen)
                     AnimatedBuilder(
                       animation: _pulseController,
                       builder: (context, child) {
@@ -147,10 +147,10 @@ class _CustomSplashPageState extends State<CustomSplashPage>
                             Transform.scale(
                               scale: 1.0 + (_pulseController.value * 0.08),
                               child: Container(
-                                width: 100,
-                                height: 100,
+                                width: 90,
+                                height: 90,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
+                                  borderRadius: BorderRadius.circular(26),
                                   border: Border.all(
                                     color: textColorAccent.withValues(alpha: 0.35),
                                     width: 1.5,
@@ -159,10 +159,10 @@ class _CustomSplashPageState extends State<CustomSplashPage>
                               ),
                             ),
                             Container(
-                              width: 86,
-                              height: 86,
+                              width: 76,
+                              height: 76,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(26),
+                                borderRadius: BorderRadius.circular(22),
                                 gradient: isDark
                                     ? const LinearGradient(
                                         colors: [Color(0xFF0A1628), Color(0xFF0D2035)],
@@ -188,12 +188,12 @@ class _CustomSplashPageState extends State<CustomSplashPage>
                               child: Center(
                                 child: Image.asset(
                                   'assets/images/app_logo.png',
-                                  width: 50,
-                                  height: 50,
+                                  width: 44,
+                                  height: 44,
                                   fit: BoxFit.contain,
                                   errorBuilder: (context, error, stackTrace) => Icon(
                                     Icons.water_drop_rounded,
-                                    size: 44,
+                                    size: 38,
                                     color: textColorAccent,
                                   ),
                                 ),
@@ -203,7 +203,7 @@ class _CustomSplashPageState extends State<CustomSplashPage>
                         );
                       },
                     ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 24),
 
                     // Brand Title: AQUA POINT
                     RichText(
@@ -213,23 +213,23 @@ class _CustomSplashPageState extends State<CustomSplashPage>
                           TextSpan(
                             text: 'AQUA ',
                             style: GoogleFonts.outfit(
-                              fontSize: 32,
+                              fontSize: 30,
                               fontWeight: FontWeight.w900,
-                              letterSpacing: 4.0,
+                              letterSpacing: 3.5,
                               color: textColorPrimary,
                             ),
                           ),
                           TextSpan(
                             text: 'POINT',
                             style: GoogleFonts.outfit(
-                              fontSize: 32,
+                              fontSize: 30,
                               fontWeight: FontWeight.w900,
-                              letterSpacing: 4.0,
+                              letterSpacing: 3.5,
                               color: textColorAccent,
                               shadows: [
                                 Shadow(
                                   color: textColorAccent.withValues(alpha: 0.6),
-                                  blurRadius: 20,
+                                  blurRadius: 18,
                                 ),
                               ],
                             ),
@@ -243,15 +243,15 @@ class _CustomSplashPageState extends State<CustomSplashPage>
                       'Pure Water, Better Life',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.inter(
-                        fontSize: 14,
+                        fontSize: 13,
                         fontWeight: FontWeight.w400,
                         letterSpacing: 0.5,
-                        color: textColorPrimary.withValues(alpha: 0.8),
+                        color: textColorPrimary.withValues(alpha: 0.75),
                       ),
                     ),
-                    const SizedBox(height: 48),
+                    const SizedBox(height: 40),
 
-                    // Animated Dots
+                    // Animated Loading Dots
                     _buildAnimatedDots(textColorAccent),
                   ],
                 ),
