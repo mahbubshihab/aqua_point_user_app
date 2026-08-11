@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/services/bulk_sms_service.dart';
+import '../../../../core/theme/theme_provider.dart';
 import '../../../../core/widgets/rain_and_waves_background.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
@@ -103,277 +105,344 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
         body: RainAndWavesBackground(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Logo Icon with Pulsing Cyan Ring
-                    AnimatedBuilder(
-                      animation: _pulseController,
-                      builder: (context, child) {
-                        return Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Transform.scale(
-                              scale: 1.0 + (_pulseController.value * 0.08),
-                              child: Container(
-                                width: 90,
-                                height: 90,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(26),
-                                  border: Border.all(
-                                    color: textColorAccent.withValues(alpha: 0.35),
-                                    width: 1.5,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 76,
-                              height: 76,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(22),
-                                gradient: isDark
-                                    ? const LinearGradient(
-                                        colors: [Color(0xFF0A1628), Color(0xFF0D2035)],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      )
-                                    : const LinearGradient(
-                                        colors: [Color(0xFFE0F2FE), Color(0xFFBAE6FD)],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
-                                border: Border.all(
-                                  color: textColorAccent.withValues(alpha: 0.45),
-                                  width: 1.5,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: textColorAccent.withValues(alpha: 0.3),
-                                    blurRadius: 24,
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: Image.asset(
-                                  'assets/images/app_logo.png',
-                                  width: 44,
-                                  height: 44,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) => Icon(
-                                    Icons.water_drop_rounded,
-                                    size: 38,
-                                    color: textColorAccent,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Brand Title: AQUA POINT
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'AQUA ',
-                            style: GoogleFonts.outfit(
-                              fontSize: 30,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 3.5,
-                              color: textColorPrimary,
-                            ),
-                          ),
-                          TextSpan(
-                            text: 'POINT',
-                            style: GoogleFonts.outfit(
-                              fontSize: 30,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 3.5,
-                              color: textColorAccent,
-                              shadows: [
-                                Shadow(
-                                  color: textColorAccent.withValues(alpha: 0.6),
-                                  blurRadius: 18,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-
-                    Text(
-                      'Pure Water, Better Life',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.inter(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 0.5,
-                        color: textColorPrimary.withValues(alpha: 0.75),
-                      ),
-                    ),
-                    const SizedBox(height: 36),
-
-                    // Phone Input Container (Floating directly on body)
-                    Container(
-                      decoration: BoxDecoration(
-                        color: inputBg,
+          child: Stack(
+            children: [
+              // Theme Toggle Button in Top Right Corner
+              Positioned(
+                top: 16,
+                right: 16,
+                child: Consumer<ThemeProvider>(
+                  builder: (context, themeProvider, child) {
+                    return Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          themeProvider.toggleTheme();
+                        },
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: _phoneError != null
-                              ? const Color(0xFFEF4444)
-                              : inputBorder,
-                          width: 1.5,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2),
-                            blurRadius: 20,
-                            offset: const Offset(0, 8),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? const Color(0xFF0D1B2E).withValues(alpha: 0.8)
+                                : Colors.white.withValues(alpha: 0.9),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: textColorAccent.withValues(alpha: 0.4),
+                              width: 1.2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: textColorAccent.withValues(alpha: 0.2),
+                                blurRadius: 12,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          // Country Code Prefix
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                right: BorderSide(
-                                  color: inputBorder,
-                                  width: 1,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                themeProvider.isDarkMode
+                                    ? Icons.wb_sunny_rounded
+                                    : Icons.nightlight_round,
+                                color: themeProvider.isDarkMode
+                                    ? const Color(0xFFFFB703)
+                                    : const Color(0xFF0088FF),
+                                size: 20,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                themeProvider.isDarkMode ? 'Light' : 'Dark',
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: textColorPrimary,
                                 ),
                               ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Text('🇧🇩', style: TextStyle(fontSize: 18)),
-                                const SizedBox(width: 8),
-                                Text(
-                                  '+880',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    color: textColorPrimary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          // Number Input
-                          Expanded(
-                            child: TextField(
-                              controller: _phoneController,
-                              keyboardType: TextInputType.phone,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                                LengthLimitingTextInputFormatter(11),
-                              ],
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: textColorPrimary,
-                                letterSpacing: 1.0,
-                              ),
-                              decoration: InputDecoration(
-                                hintText: '1XXXXXXXXX',
-                                hintStyle: GoogleFonts.inter(
-                                  color: isDark
-                                      ? Colors.white.withValues(alpha: 0.35)
-                                      : const Color(0xFF94A3B8),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                                border: InputBorder.none,
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                              ),
-                              onChanged: (_) {
-                                if (_phoneError != null) {
-                                  setState(() {
-                                    _phoneError = null;
-                                  });
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    if (_phoneError != null) ...[
-                      const SizedBox(height: 8),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          _phoneError!,
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            color: const Color(0xFFEF4444),
-                            fontWeight: FontWeight.w500,
+                            ],
                           ),
                         ),
                       ),
-                    ],
-
-                    const SizedBox(height: 24),
-
-                    // Send OTP Button
-                    BlocBuilder<AuthBloc, AuthState>(
-                      builder: (context, state) {
-                        final isLoading = state is AuthLoading;
-                        return SizedBox(
-                          width: double.infinity,
-                          height: 52,
-                          child: ElevatedButton(
-                            onPressed: isLoading ? null : _onSendOtpPressed,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: textColorAccent,
-                              foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
-                              elevation: 10,
-                              shadowColor: textColorAccent.withValues(alpha: 0.45),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                            child: isLoading
-                                ? SizedBox(
-                                    width: 22,
-                                    height: 22,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2.5,
-                                      color: isDark ? const Color(0xFF020810) : Colors.white,
-                                    ),
-                                  )
-                                : Text(
-                                    'Send OTP',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
-            ),
+
+              // Main Form Content
+              Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Logo Icon with Pulsing Cyan Ring
+                        AnimatedBuilder(
+                          animation: _pulseController,
+                          builder: (context, child) {
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Transform.scale(
+                                  scale: 1.0 + (_pulseController.value * 0.08),
+                                  child: Container(
+                                    width: 90,
+                                    height: 90,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(26),
+                                      border: Border.all(
+                                        color: textColorAccent.withValues(alpha: 0.35),
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width: 76,
+                                  height: 76,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(22),
+                                    gradient: isDark
+                                        ? const LinearGradient(
+                                            colors: [Color(0xFF0A1628), Color(0xFF0D2035)],
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                          )
+                                        : const LinearGradient(
+                                            colors: [Color(0xFFE0F2FE), Color(0xFFBAE6FD)],
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                          ),
+                                    border: Border.all(
+                                      color: textColorAccent.withValues(alpha: 0.45),
+                                      width: 1.5,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: textColorAccent.withValues(alpha: 0.3),
+                                        blurRadius: 24,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Center(
+                                    child: Image.asset(
+                                      'assets/images/app_logo.png',
+                                      width: 44,
+                                      height: 44,
+                                      fit: BoxFit.contain,
+                                      errorBuilder: (context, error, stackTrace) => Icon(
+                                        Icons.water_drop_rounded,
+                                        size: 38,
+                                        color: textColorAccent,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 24),
+
+                        // Brand Title: AQUA POINT
+                        RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'AQUA ',
+                                style: GoogleFonts.outfit(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 3.5,
+                                  color: textColorPrimary,
+                                ),
+                              ),
+                              TextSpan(
+                                text: 'POINT',
+                                style: GoogleFonts.outfit(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 3.5,
+                                  color: textColorAccent,
+                                  shadows: [
+                                    Shadow(
+                                      color: textColorAccent.withValues(alpha: 0.6),
+                                      blurRadius: 18,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+
+                        Text(
+                          'Pure Water, Better Life',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0.5,
+                            color: textColorPrimary.withValues(alpha: 0.75),
+                          ),
+                        ),
+                        const SizedBox(height: 36),
+
+                        // Phone Input Container
+                        Container(
+                          decoration: BoxDecoration(
+                            color: inputBg,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: _phoneError != null
+                                  ? const Color(0xFFEF4444)
+                                  : inputBorder,
+                              width: 1.5,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.2),
+                                blurRadius: 20,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              // Country Code Prefix
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    right: BorderSide(
+                                      color: inputBorder,
+                                      width: 1,
+                                    ),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text('🇧🇩', style: TextStyle(fontSize: 18)),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      '+880',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                        color: textColorPrimary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              // Number Input
+                              Expanded(
+                                child: TextField(
+                                  controller: _phoneController,
+                                  keyboardType: TextInputType.phone,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    LengthLimitingTextInputFormatter(11),
+                                  ],
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: textColorPrimary,
+                                    letterSpacing: 1.0,
+                                  ),
+                                  decoration: InputDecoration(
+                                    hintText: '1XXXXXXXXX',
+                                    hintStyle: GoogleFonts.inter(
+                                      color: isDark
+                                          ? Colors.white.withValues(alpha: 0.35)
+                                          : const Color(0xFF94A3B8),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    border: InputBorder.none,
+                                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                                  ),
+                                  onChanged: (_) {
+                                    if (_phoneError != null) {
+                                      setState(() {
+                                        _phoneError = null;
+                                      });
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        if (_phoneError != null) ...[
+                          const SizedBox(height: 8),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              _phoneError!,
+                              style: GoogleFonts.inter(
+                                fontSize: 12,
+                                color: const Color(0xFFEF4444),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+
+                        const SizedBox(height: 24),
+
+                        // Send OTP Button
+                        BlocBuilder<AuthBloc, AuthState>(
+                          builder: (context, state) {
+                            final isLoading = state is AuthLoading;
+                            return SizedBox(
+                              width: double.infinity,
+                              height: 52,
+                              child: ElevatedButton(
+                                onPressed: isLoading ? null : _onSendOtpPressed,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: textColorAccent,
+                                  foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
+                                  elevation: 10,
+                                  shadowColor: textColorAccent.withValues(alpha: 0.45),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                                child: isLoading
+                                    ? SizedBox(
+                                        width: 22,
+                                        height: 22,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2.5,
+                                          color: isDark ? const Color(0xFF020810) : Colors.white,
+                                        ),
+                                      )
+                                    : Text(
+                                        'Send OTP',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
