@@ -52,8 +52,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
     context.read<CartBloc>().add(AddToCart(cartItem));
 
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
       SnackBar(
         content: Row(
           children: [
@@ -72,12 +73,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         ),
         behavior: SnackBarBehavior.floating,
         backgroundColor: theme.colorScheme.surface,
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 2),
+        dismissDirection: DismissDirection.down,
         action: SnackBarAction(
           label: 'View Cart',
           textColor: const Color(0xFF00E5FF),
           onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            messenger.hideCurrentSnackBar();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const CartPage()),
@@ -86,6 +88,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         ),
       ),
     );
+
+    Future.delayed(const Duration(seconds: 2), () {
+      messenger.hideCurrentSnackBar();
+    });
   }
 
   void _onBuyNow(BuildContext context) {

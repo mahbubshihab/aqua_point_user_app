@@ -36,8 +36,9 @@ class ProductItemCard extends StatelessWidget {
 
     context.read<CartBloc>().add(AddToCart(cartItem));
 
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
       SnackBar(
         content: Row(
           children: [
@@ -56,12 +57,13 @@ class ProductItemCard extends StatelessWidget {
         ),
         behavior: SnackBarBehavior.floating,
         backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 2),
+        dismissDirection: DismissDirection.down,
         action: SnackBarAction(
           label: 'View Cart',
           textColor: const Color(0xFF00BCE1),
           onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            messenger.hideCurrentSnackBar();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const CartPage()),
@@ -70,6 +72,10 @@ class ProductItemCard extends StatelessWidget {
         ),
       ),
     );
+
+    Future.delayed(const Duration(seconds: 2), () {
+      messenger.hideCurrentSnackBar();
+    });
   }
 
   void _onBuyNow(BuildContext context) {

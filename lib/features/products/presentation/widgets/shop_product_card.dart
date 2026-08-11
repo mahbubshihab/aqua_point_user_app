@@ -38,8 +38,9 @@ class ShopProductCard extends StatelessWidget {
 
     context.read<CartBloc>().add(AddToCart(cartItem));
 
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
       SnackBar(
         backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
         content: Row(
@@ -61,8 +62,13 @@ class ShopProductCard extends StatelessWidget {
         ),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
+        dismissDirection: DismissDirection.down,
       ),
     );
+
+    Future.delayed(const Duration(seconds: 2), () {
+      messenger.hideCurrentSnackBar();
+    });
   }
 
   void _onBuyNowPressed(BuildContext context) {
