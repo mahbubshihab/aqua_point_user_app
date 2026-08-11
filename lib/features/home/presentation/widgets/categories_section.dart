@@ -25,7 +25,6 @@ class CategoriesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     final displayCategories = categories.isNotEmpty ? categories : _defaultCategories;
 
@@ -133,6 +132,7 @@ class _CategoryCardState extends State<_CategoryCard> {
               MaterialPageRoute(
                 builder: (_) => CategoryShopPage(
                   categoryName: category.name,
+                  categoryId: category.id,
                   products: const [],
                 ),
               ),
