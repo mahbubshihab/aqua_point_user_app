@@ -135,7 +135,7 @@ class _CustomSplashPageState extends State<CustomSplashPage>
                 },
                 child: Container(
                   width: double.infinity,
-                  maxWidth: 360,
+                  constraints: const BoxConstraints(maxWidth: 360),
                   padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 40),
                   decoration: BoxDecoration(
                     color: const Color(0xFF081223).withValues(alpha: 0.85),

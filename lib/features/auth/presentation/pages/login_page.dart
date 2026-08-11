@@ -113,7 +113,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
               child: Container(
                 width: double.infinity,
-                maxWidth: 380,
+                constraints: const BoxConstraints(maxWidth: 380),
                 padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 36),
                 decoration: BoxDecoration(
                   color: cardBg,
