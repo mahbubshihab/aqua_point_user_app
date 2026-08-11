@@ -220,34 +220,48 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _showAddAddressDialog() {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textColorSecondary = isDark ? Colors.white60 : const Color(0xFF64748B);
+    final surfaceColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final inputBg = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
+    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
+    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+
     final controller = TextEditingController();
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        backgroundColor: AppColors.surface,
+        backgroundColor: surfaceColor,
         title: Text(
           'Add New Address',
           style: GoogleFonts.outfit(
-            color: AppColors.textPrimary,
+            color: textColorPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
         content: TextField(
           controller: controller,
           autofocus: true,
-          style: GoogleFonts.inter(color: AppColors.textPrimary),
+          style: GoogleFonts.inter(color: textColorPrimary),
           decoration: InputDecoration(
             hintText: 'Enter complete address',
-            hintStyle: GoogleFonts.inter(color: AppColors.textTertiary),
+            hintStyle: GoogleFonts.inter(color: textColorSecondary),
             filled: true,
-            fillColor: AppColors.background,
+            fillColor: inputBg,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: borderColor),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: borderColor),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: accentColor),
             ),
           ),
         ),
@@ -256,7 +270,7 @@ class _ProfilePageState extends State<ProfilePage> {
             onPressed: () => Navigator.pop(dialogContext),
             child: Text(
               'Cancel',
-              style: GoogleFonts.inter(color: AppColors.textSecondary),
+              style: GoogleFonts.inter(color: textColorSecondary),
             ),
           ),
           TextButton(
@@ -269,7 +283,7 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Text(
               'Save',
               style: GoogleFonts.inter(
-                color: AppColors.primary,
+                color: accentColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -407,20 +421,34 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textColorSecondary = isDark
+        ? Colors.white.withValues(alpha: 0.65)
+        : const Color(0xFF64748B);
+    final cardBgColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final primaryCardBg = isDark
+        ? const Color(0xFF0F2942)
+        : const Color(0xFFE0F2FE);
+    final cardBorderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
+    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+
     if (_isLoading) {
-      return const Scaffold(
-        backgroundColor: AppColors.background,
+      return Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
         body: Center(
-          child: CircularProgressIndicator(color: AppColors.primary),
+          child: CircularProgressIndicator(color: accentColor),
         ),
       );
     }
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: RefreshIndicator(
-        color: AppColors.primary,
-        backgroundColor: AppColors.surface,
+        color: accentColor,
+        backgroundColor: theme.cardColor,
         onRefresh: () async {
           await _loadProfile();
           await _loadAddresses();
@@ -434,12 +462,18 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               // Gradient Header
               Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppColors.primary, AppColors.secondary],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+                decoration: BoxDecoration(
+                  gradient: isDark
+                      ? const LinearGradient(
+                          colors: [Color(0xFF0F172A), Color(0xFF0284C7)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : const LinearGradient(
+                          colors: [AppColors.primary, AppColors.secondary],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
                 ),
                 padding: EdgeInsets.only(
                   top: MediaQuery.of(context).padding.top + 16,
@@ -491,11 +525,18 @@ class _ProfilePageState extends State<ProfilePage> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(color: Colors.white, width: 4),
-                              boxShadow: AppShadows.medium,
+                              boxShadow: isDark
+                                  ? [
+                                      BoxShadow(
+                                        color: accentColor.withValues(alpha: 0.35),
+                                        blurRadius: 16,
+                                      ),
+                                    ]
+                                  : AppShadows.medium,
                             ),
                             child: CircleAvatar(
                               radius: 50,
-                              backgroundColor: AppColors.surface,
+                              backgroundColor: cardBgColor,
                               backgroundImage: _avatarUrl != null
                                   ? NetworkImage(_avatarUrl!)
                                   : null,
@@ -508,7 +549,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       style: GoogleFonts.outfit(
                                         fontSize: 36,
                                         fontWeight: FontWeight.bold,
-                                        color: AppColors.primary,
+                                        color: accentColor,
                                       ),
                                     )
                                   : null,
@@ -539,13 +580,13 @@ class _ProfilePageState extends State<ProfilePage> {
                               right: 0,
                               child: Container(
                                 padding: const EdgeInsets.all(8),
-                                decoration: const BoxDecoration(
-                                  color: AppColors.surface,
+                                decoration: BoxDecoration(
+                                  color: cardBgColor,
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Icon(
+                                child: Icon(
                                   Icons.camera_alt,
-                                  color: AppColors.primary,
+                                  color: accentColor,
                                   size: 20,
                                 ),
                               ),
@@ -588,7 +629,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         style: GoogleFonts.outfit(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                          color: textColorPrimary,
                         ),
                       ),
                       const Gap(16),
@@ -596,6 +637,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         label: 'Full Name',
                         controller: _nameController,
                         hintText: 'Enter your name',
+                        isDark: isDark,
                       ),
                       const Gap(16),
                       _buildTextField(
@@ -603,6 +645,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         controller: _emailController,
                         hintText: 'Enter your email',
                         keyboardType: TextInputType.emailAddress,
+                        isDark: isDark,
                       ),
                       const Gap(24),
                       SizedBox(
@@ -610,17 +653,18 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: ElevatedButton(
                           onPressed: _isSaving ? null : _saveProfile,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
+                            backgroundColor: accentColor,
+                            foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                           child: _isSaving
-                              ? const SizedBox(
+                              ? SizedBox(
                                   width: 24,
                                   height: 24,
                                   child: CircularProgressIndicator(
-                                    color: Colors.white,
+                                    color: isDark ? const Color(0xFF020810) : Colors.white,
                                     strokeWidth: 2,
                                   ),
                                 )
@@ -629,7 +673,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                   style: GoogleFonts.inter(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.white,
                                   ),
                                 ),
                         ),
@@ -641,6 +684,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           icon: Icons.email_outlined,
                           title: 'Email Address',
                           subtitle: _emailController.text,
+                          isDark: isDark,
                         ),
                         const Gap(16),
                       ],
@@ -653,7 +697,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Text(
                           'Saved Addresses',
                           style: GoogleFonts.outfit(
-                            color: AppColors.textPrimary,
+                            color: textColorPrimary,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -668,16 +712,16 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             child: Row(
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.add_circle_outline_rounded,
-                                  color: AppColors.primary,
+                                  color: accentColor,
                                   size: 18,
                                 ),
                                 const Gap(4),
                                 Text(
                                   'Add New',
                                   style: GoogleFonts.inter(
-                                    color: AppColors.primary,
+                                    color: accentColor,
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -691,11 +735,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     const Gap(16),
 
                     if (_isLoadingAddresses)
-                      const Center(
+                      Center(
                         child: Padding(
-                          padding: EdgeInsets.all(12.0),
+                          padding: const EdgeInsets.all(12.0),
                           child: CircularProgressIndicator(
-                            color: AppColors.primary,
+                            color: accentColor,
                             strokeWidth: 2,
                           ),
                         ),
@@ -704,22 +748,29 @@ class _ProfilePageState extends State<ProfilePage> {
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: AppColors.surface,
+                          color: cardBgColor,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: AppColors.border),
-                          boxShadow: AppShadows.soft,
+                          border: Border.all(color: cardBorderColor),
+                          boxShadow: isDark
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.2),
+                                    blurRadius: 8,
+                                  ),
+                                ]
+                              : AppShadows.soft,
                         ),
                         child: Row(
                           children: [
                             Container(
                               padding: const EdgeInsets.all(12),
-                              decoration: const BoxDecoration(
-                                color: AppColors.primaryLight,
+                              decoration: BoxDecoration(
+                                color: accentColor.withValues(alpha: 0.15),
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.location_off_outlined,
-                                color: AppColors.primary,
+                                color: accentColor,
                                 size: 24,
                               ),
                             ),
@@ -728,7 +779,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               child: Text(
                                 'No saved addresses yet. Tap "+ Add New" to add one.',
                                 style: GoogleFonts.inter(
-                                  color: AppColors.textSecondary,
+                                  color: textColorSecondary,
                                   fontSize: 14,
                                 ),
                               ),
@@ -749,17 +800,22 @@ class _ProfilePageState extends State<ProfilePage> {
                           return Container(
                             margin: const EdgeInsets.only(bottom: 12),
                             decoration: BoxDecoration(
-                              color: isPrimary
-                                  ? AppColors.primaryLight
-                                  : AppColors.surface,
+                              color: isPrimary ? primaryCardBg : cardBgColor,
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
                                 color: isPrimary
-                                    ? AppColors.primary.withValues(alpha: 0.3)
-                                    : AppColors.border,
+                                    ? accentColor.withValues(alpha: 0.5)
+                                    : cardBorderColor,
                                 width: 1,
                               ),
-                              boxShadow: AppShadows.soft,
+                              boxShadow: isDark
+                                  ? [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: 0.2),
+                                        blurRadius: 8,
+                                      ),
+                                    ]
+                                  : AppShadows.soft,
                             ),
                             child: Material(
                               color: Colors.transparent,
@@ -777,7 +833,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       Radio<bool>(
                                         value: true,
                                         groupValue: isPrimary,
-                                        activeColor: AppColors.primary,
+                                        activeColor: accentColor,
                                         onChanged: (_) {
                                           if (!isPrimary) {
                                             _setPrimaryAddress(
@@ -796,7 +852,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             Text(
                                               addressStr,
                                               style: GoogleFonts.inter(
-                                                color: AppColors.textPrimary,
+                                                color: textColorPrimary,
                                                 fontSize: 15,
                                                 fontWeight: isPrimary
                                                     ? FontWeight.w600
@@ -812,14 +868,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                                       vertical: 2,
                                                     ),
                                                 decoration: BoxDecoration(
-                                                  color: AppColors.primary,
+                                                  color: accentColor,
                                                   borderRadius:
                                                       BorderRadius.circular(4),
                                                 ),
                                                 child: Text(
                                                   'Primary',
                                                   style: GoogleFonts.inter(
-                                                    color: Colors.white,
+                                                    color: isDark ? const Color(0xFF020810) : Colors.white,
                                                     fontSize: 10,
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -871,7 +927,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                     ),
-                    const Gap(40),
+                    const Gap(100),
                   ],
                 ),
               ),
@@ -886,24 +942,40 @@ class _ProfilePageState extends State<ProfilePage> {
     required IconData icon,
     required String title,
     required String subtitle,
+    required bool isDark,
   }) {
+    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textColorSecondary = isDark
+        ? Colors.white.withValues(alpha: 0.65)
+        : const Color(0xFF64748B);
+    final cardBgColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final cardBorderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
+    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: cardBgColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
-        boxShadow: AppShadows.soft,
+        border: Border.all(color: cardBorderColor),
+        boxShadow: isDark
+            ? [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 8,
+                ),
+              ]
+            : AppShadows.soft,
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(12),
-            decoration: const BoxDecoration(
-              color: AppColors.primaryLight,
+            decoration: BoxDecoration(
+              color: accentColor.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: AppColors.primary, size: 24),
+            child: Icon(icon, color: accentColor, size: 24),
           ),
           const Gap(16),
           Expanded(
@@ -913,7 +985,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Text(
                   title,
                   style: GoogleFonts.inter(
-                    color: AppColors.textSecondary,
+                    color: textColorSecondary,
                     fontSize: 12,
                   ),
                 ),
@@ -921,7 +993,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Text(
                   subtitle,
                   style: GoogleFonts.inter(
-                    color: AppColors.textPrimary,
+                    color: textColorPrimary,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
@@ -939,14 +1011,21 @@ class _ProfilePageState extends State<ProfilePage> {
     required TextEditingController controller,
     TextInputType? keyboardType,
     String? hintText,
+    required bool isDark,
   }) {
+    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textColorSecondary = isDark ? Colors.white60 : const Color(0xFF64748B);
+    final inputBgColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final cardBorderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
+    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
           style: GoogleFonts.inter(
-            color: AppColors.textPrimary,
+            color: textColorPrimary,
             fontSize: 14,
             fontWeight: FontWeight.w600,
           ),
@@ -955,13 +1034,13 @@ class _ProfilePageState extends State<ProfilePage> {
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
-          style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 15),
+          style: GoogleFonts.inter(color: textColorPrimary, fontSize: 15),
           decoration: InputDecoration(
             filled: true,
-            fillColor: AppColors.surface,
+            fillColor: inputBgColor,
             hintText: hintText,
             hintStyle: GoogleFonts.inter(
-              color: AppColors.textTertiary,
+              color: textColorSecondary,
               fontSize: 14,
             ),
             contentPadding: const EdgeInsets.symmetric(
@@ -970,15 +1049,15 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: cardBorderColor),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: cardBorderColor),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.primary),
+              borderSide: BorderSide(color: accentColor),
             ),
           ),
         ),
