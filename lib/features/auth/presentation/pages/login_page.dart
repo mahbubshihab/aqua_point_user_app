@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import '../../../../core/services/bulk_sms_service.dart';
-import '../../../../core/theme/theme_provider.dart';
+import '../../../../core/widgets/animated_theme_toggle_button.dart';
 import '../../../../core/widgets/rain_and_waves_background.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
@@ -107,66 +106,11 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         body: RainAndWavesBackground(
           child: Stack(
             children: [
-              // Theme Toggle Button in Top Right Corner
-              Positioned(
+              // Ultra-Smooth Animated Theme Toggle Button in Top Right
+              const Positioned(
                 top: 16,
                 right: 16,
-                child: Consumer<ThemeProvider>(
-                  builder: (context, themeProvider, child) {
-                    return Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () {
-                          themeProvider.toggleTheme();
-                        },
-                        borderRadius: BorderRadius.circular(16),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: isDark
-                                ? const Color(0xFF0D1B2E).withValues(alpha: 0.8)
-                                : Colors.white.withValues(alpha: 0.9),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: textColorAccent.withValues(alpha: 0.4),
-                              width: 1.2,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: textColorAccent.withValues(alpha: 0.2),
-                                blurRadius: 12,
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                themeProvider.isDarkMode
-                                    ? Icons.wb_sunny_rounded
-                                    : Icons.nightlight_round,
-                                color: themeProvider.isDarkMode
-                                    ? const Color(0xFFFFB703)
-                                    : const Color(0xFF0088FF),
-                                size: 20,
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                themeProvider.isDarkMode ? 'Light' : 'Dark',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: textColorPrimary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                child: AnimatedThemeToggleButton(),
               ),
 
               // Main Form Content

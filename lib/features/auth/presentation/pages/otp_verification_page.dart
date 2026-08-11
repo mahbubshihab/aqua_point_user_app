@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
-import 'package:provider/provider.dart';
-import '../../../../core/theme/theme_provider.dart';
+import '../../../../core/widgets/animated_theme_toggle_button.dart';
 import '../../../../core/widgets/rain_and_waves_background.dart';
 import '../../../home/presentation/pages/main_shell_page.dart';
 import '../bloc/auth_bloc.dart';
@@ -221,63 +220,8 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                       onPressed: () => Navigator.pop(context),
                     ),
 
-                    // Theme Toggle Button
-                    Consumer<ThemeProvider>(
-                      builder: (context, themeProvider, child) {
-                        return Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              themeProvider.toggleTheme();
-                            },
-                            borderRadius: BorderRadius.circular(16),
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 300),
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: isDark
-                                    ? const Color(0xFF0D1B2E).withValues(alpha: 0.8)
-                                    : Colors.white.withValues(alpha: 0.9),
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(
-                                  color: textColorAccent.withValues(alpha: 0.4),
-                                  width: 1.2,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: textColorAccent.withValues(alpha: 0.2),
-                                    blurRadius: 12,
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    themeProvider.isDarkMode
-                                        ? Icons.wb_sunny_rounded
-                                        : Icons.nightlight_round,
-                                    color: themeProvider.isDarkMode
-                                        ? const Color(0xFFFFB703)
-                                        : const Color(0xFF0088FF),
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    themeProvider.isDarkMode ? 'Light' : 'Dark',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: textColorPrimary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                    // Ultra-Smooth Theme Toggle Button
+                    const AnimatedThemeToggleButton(),
                   ],
                 ),
               ),

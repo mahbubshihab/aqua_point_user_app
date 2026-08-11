@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_gradients.dart';
 import '../../../../core/theme/theme_provider.dart';
+import '../../../../core/widgets/animated_theme_toggle_button.dart';
 import '../../../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../../../features/auth/presentation/bloc/auth_state.dart';
 
@@ -100,7 +101,7 @@ class HomeHeaderBanner extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildThemeToggle(context, isDarkMode),
+                const AnimatedThemeToggleButton(showLabel: false),
                 const SizedBox(width: 12),
                 _buildProfileAvatar(userId),
               ],

@@ -125,7 +125,6 @@ class MyApp extends StatelessWidget {
           ],
           child: Consumer<ThemeProvider>(
             builder: (context, themeProvider, _) {
-              // Update system UI based on theme
               final isDark = themeProvider.isDarkMode;
               SystemChrome.setSystemUIOverlayStyle(
                 SystemUiOverlayStyle(
@@ -143,6 +142,14 @@ class MyApp extends StatelessWidget {
                 theme: AppTheme.lightTheme,
                 darkTheme: AppTheme.darkTheme,
                 themeMode: themeProvider.themeMode,
+                builder: (context, child) {
+                  return AnimatedTheme(
+                    data: isDark ? AppTheme.darkTheme : AppTheme.lightTheme,
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                    child: child ?? const SizedBox.shrink(),
+                  );
+                },
                 home: const CustomSplashPage(),
               );
             },
