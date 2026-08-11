@@ -163,7 +163,7 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
           // Product List or Minimal Empty State
           if (widget.products.isNotEmpty)
             SizedBox(
-              height: 235,
+              height: 200,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
