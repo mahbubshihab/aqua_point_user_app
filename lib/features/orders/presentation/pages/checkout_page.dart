@@ -461,30 +461,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         _buildSectionHeader('Payment Method', Icons.payments_outlined, textColorPrimary, accentColor),
                         const Gap(10),
                         AppCard(
-                          child: Column(
-                            children: [
-                              _buildPaymentOption(
-                                title: 'Cash on Delivery',
-                                icon: Icons.local_shipping_outlined,
-                                value: 'Cash on Delivery',
-                                isDark: isDark,
-                                textColorPrimary: textColorPrimary,
-                                textColorSecondary: textColorSecondary,
-                                accentColor: accentColor,
-                                borderColor: borderColor,
-                              ),
-                              const Gap(8),
-                              _buildPaymentOption(
-                                title: 'Mobile Banking (bKash / Nagad)',
-                                icon: Icons.account_balance_wallet_outlined,
-                                value: 'Mobile Banking (bKash / Nagad)',
-                                isDark: isDark,
-                                textColorPrimary: textColorPrimary,
-                                textColorSecondary: textColorSecondary,
-                                accentColor: accentColor,
-                                borderColor: borderColor,
-                              ),
-                            ],
+                          child: _buildPaymentOption(
+                            title: 'Cash on Delivery',
+                            icon: Icons.local_shipping_outlined,
+                            value: 'Cash on Delivery',
+                            isDark: isDark,
+                            textColorPrimary: textColorPrimary,
+                            textColorSecondary: textColorSecondary,
+                            accentColor: accentColor,
+                            borderColor: borderColor,
                           ),
                         ),
                         const Gap(20),
@@ -521,7 +506,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                         ? 'Free'
                                         : '৳${NumberFormat('#,##0').format(cartState.shippingFee)}',
                                     style: GoogleFonts.inter(
-                                      color: cartState.shippingFee == 0 ? Colors.green : textColorPrimary,
+                                      color: cartState.shippingFee == 0 ? AppColors.accentGreen : textColorPrimary,
                                       fontSize: 13.5,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -758,13 +743,36 @@ class _CheckoutPageState extends State<CheckoutPage> {
             ),
             const Gap(10),
             Expanded(
-              child: Text(
-                title,
-                style: GoogleFonts.inter(
-                  color: isSelected ? textColorPrimary : textColorSecondary,
-                  fontSize: 13.5,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                ),
+              child: Row(
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.inter(
+                      color: isSelected ? textColorPrimary : textColorSecondary,
+                      fontSize: 13.5,
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                    ),
+                  ),
+                  if (isSelected) ...[
+                    const Gap(8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: accentColor.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: accentColor.withValues(alpha: 0.3)),
+                      ),
+                      child: Text(
+                        'Selected',
+                        style: GoogleFonts.inter(
+                          color: accentColor,
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
             Icon(

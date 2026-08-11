@@ -7,7 +7,7 @@ class CartState extends Equatable {
 
   const CartState({
     this.items = const [],
-    this.shippingFee = 60.0,
+    this.shippingFee = 0.0,
   });
 
   double get subtotal => items.fold(0.0, (sum, item) => sum + item.totalPrice);

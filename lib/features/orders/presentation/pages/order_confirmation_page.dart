@@ -358,8 +358,12 @@ class OrderConfirmationPage extends StatelessWidget {
                           style: GoogleFonts.inter(color: AppColors.textSecondary, fontSize: 12.5),
                         ),
                         Text(
-                          '৳${shippingFee.toStringAsFixed(0)}',
-                          style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 12.5),
+                          shippingFee == 0 ? 'Free' : '৳${shippingFee.toStringAsFixed(0)}',
+                          style: GoogleFonts.inter(
+                            color: shippingFee == 0 ? AppColors.accentGreen : AppColors.textPrimary,
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ],
                     ),

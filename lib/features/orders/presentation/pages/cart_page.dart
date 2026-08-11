@@ -21,7 +21,6 @@ class CartPage extends StatelessWidget {
         ? Colors.white.withValues(alpha: 0.65)
         : const Color(0xFF64748B);
     final cardBgColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final itemBoxBg = isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9);
     final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
     final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
     final bottomBarBg = isDark ? const Color(0xFF0F172A) : Colors.white;
@@ -254,9 +253,13 @@ class CartPage extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  '৳${cartState.shippingFee.toStringAsFixed(0)}',
+                                  cartState.shippingFee == 0
+                                      ? 'Free'
+                                      : '৳${cartState.shippingFee.toStringAsFixed(0)}',
                                   style: GoogleFonts.inter(
-                                    color: textColorPrimary,
+                                    color: cartState.shippingFee == 0
+                                        ? AppColors.accentGreen
+                                        : textColorPrimary,
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
                                   ),
