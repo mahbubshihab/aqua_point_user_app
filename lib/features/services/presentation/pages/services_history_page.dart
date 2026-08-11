@@ -5,6 +5,10 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_shadows.dart';
 import '../../../../core/widgets/stat_badge.dart';
+import '../../../products/domain/entities/product_entity.dart';
+import '../../../products/presentation/bloc/products_bloc.dart';
+import '../../../products/presentation/bloc/products_state.dart';
+import '../../../products/presentation/pages/product_detail_page.dart';
 import '../../domain/entities/invoice_entity.dart';
 import '../../domain/entities/order_entity.dart';
 import '../../domain/entities/service_request_entity.dart';
@@ -539,6 +543,88 @@ class _OrdersTabContent extends StatelessWidget {
 
   const _OrdersTabContent({required this.ordersList});
 
+  void _navigateToProductDetail(BuildContext context, OrderEntity item) {
+    ProductEntity? matchingProduct;
+
+    try {
+      final productsState = context.read<ProductsBloc>().state;
+      if (productsState is ProductsLoaded) {
+        final allProducts = [
+          ...productsState.products,
+          ...productsState.myProducts,
+        ];
+
+        for (final product in allProducts) {
+          final isIdMatch = (item.productId != null && product.id == item.productId) ||
+              (product.id == item.id);
+          final isNameMatch = product.name.trim().toLowerCase() == item.title.trim().toLowerCase();
+
+          if (isIdMatch || isNameMatch) {
+            matchingProduct = product;
+            break;
+          }
+        }
+      }
+    } catch (_) {
+      // If ProductsBloc is not found in context, fallback will be used
+    }
+
+    final targetProduct = matchingProduct ??
+        ProductEntity(
+          id: item.productId ?? item.id,
+          name: item.title,
+          photoUrl: item.imageUrl,
+          price: item.amount,
+        );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ProductDetailPage(product: targetProduct),
+      ),
+    );
+  }
+
+  Widget _buildProductThumbnail(String? imageUrl, bool isDark) {
+    final accentContainer = isDark
+        ? const Color(0xFF00BCE1).withValues(alpha: 0.15)
+        : AppColors.primaryLight;
+    final accentIconColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+
+    Widget placeholder = Container(
+      width: 64,
+      height: 64,
+      decoration: BoxDecoration(
+        color: accentContainer,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Center(
+        child: Icon(
+          Icons.water_drop_rounded,
+          color: accentIconColor,
+          size: 28,
+        ),
+      ),
+    );
+
+    if (imageUrl != null && imageUrl.isNotEmpty) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: SizedBox(
+          width: 64,
+          height: 64,
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => placeholder,
+          ),
+        ),
+      );
+    }
+
+    return placeholder;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -591,46 +677,88 @@ class _OrdersTabContent extends StatelessWidget {
                             : AppShadows.soft,
                         border: Border.all(color: cardBorderColor),
                       ),
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                item.id,
-                                style: GoogleFonts.inter(
-                                  color: isDark ? const Color(0xFF00BCE1) : AppColors.secondary,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
+                      child: Material(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(16),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () => _navigateToProductDetail(context, item),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      item.id,
+                                      style: GoogleFonts.inter(
+                                        color: isDark ? const Color(0xFF00BCE1) : AppColors.secondary,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    StatBadge(
+                                      text: item.status,
+                                      backgroundColor: AppColors.success.withValues(alpha: 0.15),
+                                      textColor: AppColors.success,
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              StatBadge(
-                                text: item.status,
-                                backgroundColor: AppColors.success.withValues(alpha: 0.15),
-                                textColor: AppColors.success,
-                              ),
-                            ],
-                          ),
-                          const Gap(12),
-                          Text(
-                            item.title,
-                            style: GoogleFonts.outfit(
-                              color: textColorPrimary,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                                const Gap(12),
+                                Row(
+                                  children: [
+                                    _buildProductThumbnail(item.imageUrl, isDark),
+                                    const Gap(14),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            item.title,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.outfit(
+                                              color: textColorPrimary,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const Gap(4),
+                                          if (item.date.isNotEmpty) ...[
+                                            Text(
+                                              item.date,
+                                              style: GoogleFonts.inter(
+                                                color: textColorSecondary,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                            const Gap(4),
+                                          ],
+                                          Text(
+                                            '৳${item.amount.toStringAsFixed(0)}',
+                                            style: GoogleFonts.inter(
+                                              color: isDark ? const Color(0xFF00BCE1) : AppColors.primary,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const Gap(8),
+                                    Icon(
+                                      Icons.chevron_right_rounded,
+                                      color: textColorSecondary,
+                                      size: 24,
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                          const Gap(6),
-                          Text(
-                            '${item.date} • ৳${item.amount.toStringAsFixed(0)}',
-                            style: GoogleFonts.inter(
-                              color: textColorSecondary,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),

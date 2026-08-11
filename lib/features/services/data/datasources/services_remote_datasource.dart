@@ -206,12 +206,66 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
 
       final status = (data['status'] ?? 'Pending').toString().toUpperCase();
 
+      String? imageUrl;
+      String? productId;
+
+      if (items != null && items.isNotEmpty && items[0] is Map) {
+        final firstItem = items[0] as Map;
+        imageUrl = (firstItem['imageUrl'] ?? firstItem['photoUrl'] ?? firstItem['image'])?.toString();
+        productId = (firstItem['productId'] ?? firstItem['id'])?.toString();
+      }
+      imageUrl ??= (data['imageUrl'] ?? data['photoUrl'] ?? data['image'])?.toString();
+      productId ??= data['productId']?.toString();
+
+      List<Map<String, dynamic>>? parsedItems;
+      if (items != null) {
+        parsedItems = items
+            .whereType<Map>()
+            .map((itemMap) => Map<String, dynamic>.from(itemMap))
+            .toList();
+      }
+
+      final customerName = (data['customerName'] ?? data['name'] ?? data['userName'])?.toString();
+      final phone = (data['phone'] ?? data['customerPhone'] ?? data['userPhone'])?.toString();
+
+      String? address;
+      if (data['address'] != null) {
+        if (data['address'] is Map) {
+          final addrMap = data['address'] as Map;
+          address = addrMap['addressLine']?.toString() ?? addrMap['address']?.toString() ?? addrMap.values.join(', ');
+        } else {
+          address = data['address'].toString();
+        }
+      } else if (data['shippingAddress'] != null) {
+        if (data['shippingAddress'] is Map) {
+          final addrMap = data['shippingAddress'] as Map;
+          address = addrMap['addressLine']?.toString() ?? addrMap['address']?.toString() ?? addrMap.values.join(', ');
+        } else {
+          address = data['shippingAddress'].toString();
+        }
+      }
+
+      final paymentMethod = (data['paymentMethod'] ?? data['paymentType'])?.toString();
+      final deliveryInstructions = (data['deliveryInstructions'] ?? data['instructions'] ?? data['notes'])?.toString();
+      final subtotal = ((data['subtotal'] ?? data['subTotal']) as num?)?.toDouble();
+      final shippingFee = ((data['shippingFee'] ?? data['deliveryFee'] ?? data['shippingCost']) as num?)?.toDouble();
+
       return OrderEntity(
         id: id,
         title: title,
         date: dateStr,
         amount: amount,
         status: status,
+        imageUrl: imageUrl,
+        productId: productId,
+        items: parsedItems,
+        customerName: customerName,
+        phone: phone,
+        address: address,
+        paymentMethod: paymentMethod,
+        deliveryInstructions: deliveryInstructions,
+        subtotal: subtotal,
+        shippingFee: shippingFee,
       );
     }).toList();
   }
