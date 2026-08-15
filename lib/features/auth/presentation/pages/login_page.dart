@@ -3,11 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/services/bulk_sms_service.dart';
-import '../../../../core/widgets/animated_theme_toggle_button.dart';
-import '../../../../core/widgets/rain_and_waves_background.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
+import '../widgets/auth_wave_background.dart';
 import 'otp_verification_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -17,25 +16,28 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController _phoneController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+  final FocusNode _phoneFocusNode = FocusNode();
   String? _phoneError;
-  late AnimationController _pulseController;
+  bool _isFocused = false;
 
   @override
   void initState() {
     super.initState();
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2000),
-    )..repeat(reverse: true);
+    _phoneFocusNode.addListener(() {
+      if (mounted) {
+        setState(() {
+          _isFocused = _phoneFocusNode.hasFocus;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
     _phoneController.dispose();
-    _pulseController.dispose();
+    _phoneFocusNode.dispose();
     super.dispose();
   }
 
@@ -43,7 +45,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     final rawPhone = _phoneController.text.trim();
     if (rawPhone.isEmpty) {
       setState(() {
-        _phoneError = 'Please enter phone number';
+        _phoneError = 'Please enter your mobile number';
       });
       return;
     }
@@ -52,7 +54,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
     if (clean.length != 11 || !clean.startsWith('01')) {
       setState(() {
-        _phoneError = 'Enter valid 11-digit number (e.g. 01780885841)';
+        _phoneError = 'Please enter a valid 10-digit number (e.g. 1XXXXXXXXX)';
       });
       return;
     }
@@ -66,20 +68,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorAccent = isDark ? const Color(0xFF00BCE1) : const Color(0xFF0088FF);
-
-    final inputBg = isDark
-        ? const Color(0xFF0A1628).withValues(alpha: 0.7)
-        : Colors.white.withValues(alpha: 0.85);
-
-    final inputBorder = isDark
-        ? const Color(0xFF00BCE1).withValues(alpha: 0.35)
-        : const Color(0xFF0088FF).withValues(alpha: 0.35);
-
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is OtpSentState) {
@@ -95,298 +83,280 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         } else if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message),
-              backgroundColor: const Color(0xFFEF4444),
+              content: Text(
+                state.message,
+                style: GoogleFonts.poppins(color: Colors.white, fontSize: 13),
+              ),
+              backgroundColor: const Color(0xFFFF4D4F),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
           );
         }
       },
-      child: Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        body: RainAndWavesBackground(
-          child: Stack(
-            children: [
-              // Ultra-Smooth Animated Theme Toggle Button in Top Right
-              const Positioned(
-                top: 16,
-                right: 16,
-                child: AnimatedThemeToggleButton(),
-              ),
+      child: AuthWaveBackground(
+        child: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Header Section
+                      Padding(
+                        padding: const EdgeInsets.only(top: 28, bottom: 20),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.water_drop_rounded,
+                              size: 48,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Aqua Point BD',
+                              style: GoogleFonts.poppins(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Pure Water, Pure Life',
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w300,
+                                color: Colors.white.withValues(alpha: 0.9),
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
 
-              // Main Form Content
-              Center(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Logo Icon with Pulsing Cyan Ring
-                        AnimatedBuilder(
-                          animation: _pulseController,
-                          builder: (context, child) {
-                            return Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Transform.scale(
-                                  scale: 1.0 + (_pulseController.value * 0.08),
-                                  child: Container(
-                                    width: 90,
-                                    height: 90,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(26),
-                                      border: Border.all(
-                                        color: textColorAccent.withValues(alpha: 0.35),
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                  ),
+                      // Form Card Section
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 36),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color(0x0D000000),
+                                blurRadius: 30,
+                                offset: Offset(0, 10),
+                              ),
+                            ],
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 30,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Title
+                              Text(
+                                'Welcome!',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFF2B2B2B),
                                 ),
-                                Container(
-                                  width: 76,
-                                  height: 76,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(22),
-                                    gradient: isDark
-                                        ? const LinearGradient(
-                                            colors: [Color(0xFF0A1628), Color(0xFF0D2035)],
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                          )
-                                        : const LinearGradient(
-                                            colors: [Color(0xFFE0F2FE), Color(0xFFBAE6FD)],
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                          ),
-                                    border: Border.all(
-                                      color: textColorAccent.withValues(alpha: 0.45),
-                                      width: 1.5,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: textColorAccent.withValues(alpha: 0.3),
-                                        blurRadius: 24,
-                                      ),
-                                    ],
+                              ),
+                              const SizedBox(height: 8),
+
+                              // Subtitle
+                              Text(
+                                'Enter your mobile number to continue',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  color: const Color(0xFF7A7A7A),
+                                  height: 1.5,
+                                ),
+                              ),
+                              const SizedBox(height: 28),
+
+                              // Input Group
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 250),
+                                decoration: BoxDecoration(
+                                  color: _isFocused ? Colors.white : const Color(0xFFF0F8FF),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: _phoneError != null
+                                        ? const Color(0xFFFF4D4F)
+                                        : (_isFocused
+                                            ? const Color(0xFF00B4D8)
+                                            : Colors.transparent),
+                                    width: 2,
                                   ),
-                                  child: Center(
-                                    child: Image.asset(
-                                      'assets/images/app_logo.png',
-                                      width: 44,
-                                      height: 44,
-                                      fit: BoxFit.contain,
-                                      errorBuilder: (context, error, stackTrace) => Icon(
-                                        Icons.water_drop_rounded,
-                                        size: 38,
-                                        color: textColorAccent,
+                                  boxShadow: _isFocused
+                                      ? [
+                                          BoxShadow(
+                                            color: const Color(0xFF00B4D8).withValues(alpha: 0.2),
+                                            blurRadius: 10,
+                                          ),
+                                        ]
+                                      : null,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                  vertical: 4,
+                                ),
+                                child: Row(
+                                  children: [
+                                    // Country Code
+                                    Text(
+                                      '+880',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: const Color(0xFF0077B6),
                                       ),
+                                    ),
+                                    Container(
+                                      width: 2,
+                                      height: 24,
+                                      color: const Color(0xFFDDDDDD),
+                                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                                    ),
+
+                                    // Phone Input Field
+                                    Expanded(
+                                      child: TextField(
+                                        controller: _phoneController,
+                                        focusNode: _phoneFocusNode,
+                                        keyboardType: TextInputType.phone,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.digitsOnly,
+                                          LengthLimitingTextInputFormatter(10),
+                                        ],
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: const Color(0xFF2B2B2B),
+                                        ),
+                                        decoration: InputDecoration(
+                                          hintText: '1XXXXXXXXX',
+                                          hintStyle: GoogleFonts.poppins(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: const Color(0xFF7A7A7A).withValues(alpha: 0.6),
+                                          ),
+                                          border: InputBorder.none,
+                                          isDense: true,
+                                          contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                                        ),
+                                        onChanged: (_) {
+                                          if (_phoneError != null) {
+                                            setState(() {
+                                              _phoneError = null;
+                                            });
+                                          }
+                                        },
+                                        onSubmitted: (_) => _onSendOtpPressed(),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              // Validation Error Text
+                              if (_phoneError != null) ...[
+                                const SizedBox(height: 8),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 4),
+                                  child: Text(
+                                    _phoneError!,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      color: const Color(0xFFFF4D4F),
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ),
                               ],
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 24),
 
-                        // Brand Title: AQUA POINT
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'AQUA ',
-                                style: GoogleFonts.outfit(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 3.5,
-                                  color: textColorPrimary,
-                                ),
-                              ),
-                              TextSpan(
-                                text: 'POINT',
-                                style: GoogleFonts.outfit(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 3.5,
-                                  color: textColorAccent,
-                                  shadows: [
-                                    Shadow(
-                                      color: textColorAccent.withValues(alpha: 0.6),
-                                      blurRadius: 18,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
+                              const SizedBox(height: 20),
 
-                        Text(
-                          'Pure Water, Better Life',
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 0.5,
-                            color: textColorPrimary.withValues(alpha: 0.75),
-                          ),
-                        ),
-                        const SizedBox(height: 36),
+                              // Login Button with Gradient & Ripple Effect
+                              BlocBuilder<AuthBloc, AuthState>(
+                                builder: (context, state) {
+                                  final isLoading = state is AuthLoading;
 
-                        // Phone Input Container
-                        Container(
-                          decoration: BoxDecoration(
-                            color: inputBg,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: _phoneError != null
-                                  ? const Color(0xFFEF4444)
-                                  : inputBorder,
-                              width: 1.5,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.2),
-                                blurRadius: 20,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              // Country Code Prefix
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    right: BorderSide(
-                                      color: inputBorder,
-                                      width: 1,
-                                    ),
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Text('🇧🇩', style: TextStyle(fontSize: 18)),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      '+880',
-                                      style: GoogleFonts.inter(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600,
-                                        color: textColorPrimary,
+                                  return Container(
+                                    height: 52,
+                                    decoration: BoxDecoration(
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xFF0077B6),
+                                          Color(0xFF00B4D8),
+                                        ],
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              // Number Input
-                              Expanded(
-                                child: TextField(
-                                  controller: _phoneController,
-                                  keyboardType: TextInputType.phone,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly,
-                                    LengthLimitingTextInputFormatter(11),
-                                  ],
-                                  style: GoogleFonts.inter(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: textColorPrimary,
-                                    letterSpacing: 1.0,
-                                  ),
-                                  decoration: InputDecoration(
-                                    hintText: '1XXXXXXXXX',
-                                    hintStyle: GoogleFonts.inter(
-                                      color: isDark
-                                          ? Colors.white.withValues(alpha: 0.35)
-                                          : const Color(0xFF94A3B8),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    border: InputBorder.none,
-                                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                                  ),
-                                  onChanged: (_) {
-                                    if (_phoneError != null) {
-                                      setState(() {
-                                        _phoneError = null;
-                                      });
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        if (_phoneError != null) ...[
-                          const SizedBox(height: 8),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              _phoneError!,
-                              style: GoogleFonts.inter(
-                                fontSize: 12,
-                                color: const Color(0xFFEF4444),
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-
-                        const SizedBox(height: 24),
-
-                        // Send OTP Button
-                        BlocBuilder<AuthBloc, AuthState>(
-                          builder: (context, state) {
-                            final isLoading = state is AuthLoading;
-                            return SizedBox(
-                              width: double.infinity,
-                              height: 52,
-                              child: ElevatedButton(
-                                onPressed: isLoading ? null : _onSendOtpPressed,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: textColorAccent,
-                                  foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
-                                  elevation: 10,
-                                  shadowColor: textColorAccent.withValues(alpha: 0.45),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                ),
-                                child: isLoading
-                                    ? SizedBox(
-                                        width: 22,
-                                        height: 22,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2.5,
-                                          color: isDark ? const Color(0xFF020810) : Colors.white,
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: const Color(0xFF0077B6).withValues(alpha: 0.3),
+                                          blurRadius: 20,
+                                          offset: const Offset(0, 10),
                                         ),
-                                      )
-                                    : Text(
-                                        'Send OTP',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.5,
+                                      ],
+                                    ),
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(12),
+                                        onTap: isLoading ? null : _onSendOtpPressed,
+                                        child: Center(
+                                          child: isLoading
+                                              ? const SizedBox(
+                                                  width: 22,
+                                                  height: 22,
+                                                  child: CircularProgressIndicator(
+                                                    strokeWidth: 2.5,
+                                                    color: Colors.white,
+                                                  ),
+                                                )
+                                              : Text(
+                                                  'Login',
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
                                         ),
                                       ),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ],
+              );
+            },
           ),
         ),
       ),
