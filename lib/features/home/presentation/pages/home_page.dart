@@ -103,7 +103,6 @@ class _HomePageState extends State<HomePage> {
                         MaterialPageRoute(builder: (_) => const ProfilePage()),
                       );
                     },
-                    onNotificationTap: () {},
                   ),
 
                   // 2. Main Content Sections Overlapping Header by -40px

@@ -22,7 +22,7 @@ class HomeBlogSwiperSection extends StatefulWidget {
 
 class _HomeBlogSwiperSectionState extends State<HomeBlogSwiperSection> {
   late final PageController _pageController;
-  late final List<BlogEntity> _blogList;
+  late List<BlogEntity> _blogList;
   int _currentIndex = 0;
   Timer? _autoPlayTimer;
 
@@ -94,6 +94,24 @@ class _HomeBlogSwiperSectionState extends State<HomeBlogSwiperSection> {
 
     _pageController = PageController();
     _startAutoPlay();
+  }
+
+  @override
+  void didUpdateWidget(covariant HomeBlogSwiperSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.blogs != oldWidget.blogs) {
+      setState(() {
+        if (widget.blogs != null && widget.blogs!.isNotEmpty) {
+          _blogList = widget.blogs!;
+        } else {
+          _blogList = _defaultBlogs;
+        }
+        if (_currentIndex >= _blogList.length) {
+          _currentIndex = 0;
+        }
+      });
+      _startAutoPlay();
+    }
   }
 
   void _startAutoPlay() {

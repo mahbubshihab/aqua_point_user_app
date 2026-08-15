@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AiHydrationTankCard extends StatefulWidget {
   final double initialLiters;
@@ -20,11 +21,16 @@ class AiHydrationTankCard extends StatefulWidget {
 class _AiHydrationTankCardState extends State<AiHydrationTankCard>
     with TickerProviderStateMixin {
   late double _currentLiters;
-  late final double _goalLiters;
+  late double _goalLiters;
 
   late final AnimationController _waveController;
   late final AnimationController _auraController;
   late final AnimationController _pingController;
+
+  String _getTodayStorageKey() {
+    final now = DateTime.now();
+    return 'aqua_hydration_liters_${now.year}_${now.month}_${now.day}';
+  }
 
   @override
   void initState() {
@@ -46,6 +52,34 @@ class _AiHydrationTankCardState extends State<AiHydrationTankCard>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     )..repeat();
+
+    _loadSavedHydration();
+  }
+
+  Future<void> _loadSavedHydration() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final key = _getTodayStorageKey();
+      final savedLiters = prefs.getDouble(key);
+      if (savedLiters != null && mounted) {
+        setState(() {
+          _currentLiters = savedLiters.clamp(0.0, _goalLiters);
+        });
+      }
+    } catch (_) {
+      // Fallback to initialLiters already set in initState
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant AiHydrationTankCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.goalLiters != widget.goalLiters) {
+      setState(() {
+        _goalLiters = widget.goalLiters;
+        _currentLiters = _currentLiters.clamp(0.0, _goalLiters);
+      });
+    }
   }
 
   @override
@@ -56,10 +90,18 @@ class _AiHydrationTankCardState extends State<AiHydrationTankCard>
     super.dispose();
   }
 
-  void _addWater(double amount) {
+  Future<void> _addWater(double amount) async {
     setState(() {
       _currentLiters = (_currentLiters + amount).clamp(0.0, _goalLiters);
     });
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final key = _getTodayStorageKey();
+      await prefs.setDouble(key, _currentLiters);
+    } catch (_) {
+      // Ignore write errors gracefully
+    }
   }
 
   int get _percent {
