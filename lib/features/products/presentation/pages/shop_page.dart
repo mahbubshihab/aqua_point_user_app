@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../home/presentation/widgets/product_type_section.dart';
+import '../widgets/product_type_section.dart';
 import '../../../orders/presentation/bloc/cart_bloc.dart';
 import '../../../orders/presentation/pages/cart_page.dart';
 import '../../domain/entities/product_entity.dart';

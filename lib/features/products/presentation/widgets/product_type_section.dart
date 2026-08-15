@@ -3,10 +3,10 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_shadows.dart';
-import '../../../products/domain/entities/product_entity.dart';
-import '../../../products/presentation/pages/category_shop_page.dart';
-import '../../../products/presentation/pages/shop_page.dart';
-import '../../../products/presentation/widgets/shop_product_card.dart';
+import '../../domain/entities/product_entity.dart';
+import '../pages/category_shop_page.dart';
+import '../pages/shop_page.dart';
+import 'shop_product_card.dart';
 
 class ProductTypeSection extends StatefulWidget {
   final String title;
@@ -129,7 +129,7 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
                   } else {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => ShopPage()),
+                      MaterialPageRoute(builder: (_) => const ShopPage()),
                     );
                   }
                 },
