@@ -66,9 +66,10 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "ic_launcher"
   ios: true
-  image_path: "assets/images/app_logo.png"
-  adaptive_icon_background: "#0066FF"
-  adaptive_icon_foreground: "assets/images/app_logo.png"
+  image_path: "assets/images/app_logo_launcher.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/images/app_logo_foreground.png"
+  remove_alpha_ios: true
 
 
 # For information on the generic Dart part of this file, see the
@@ -86,6 +87,8 @@ flutter:
     - assets/images/
     - assets/images/app_logo.png
     - assets/images/app_logo.jpg
+    - assets/images/app_logo_foreground.png
+    - assets/images/app_logo_launcher.png
     - assets/images/header_banner.jpg
 
   # To add assets to your application, add an assets section, like this:
