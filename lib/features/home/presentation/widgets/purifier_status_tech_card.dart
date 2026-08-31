@@ -1,21 +1,26 @@
+import 'dart:async';
 import 'dart:math' as math;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import '../../../auth/data/datasources/auth_local_datasource.dart';
 import '../../../services/presentation/pages/create_service_request_page.dart';
 
 class PurifierStatusTechCard extends StatefulWidget {
-  final String lastServiceDate;
-  final String nextServiceDate;
-  final String filtrationStatus;
-  final String deviceStatus;
+  final String? lastServiceDate;
+  final String? nextServiceDate;
+  final String? filtrationStatus;
+  final String? deviceStatus;
   final VoidCallback? onTap;
 
   const PurifierStatusTechCard({
     super.key,
-    this.lastServiceDate = '15 May, 2026',
-    this.nextServiceDate = '15 Aug, 2026',
-    this.filtrationStatus = 'Optimal',
-    this.deviceStatus = 'Active',
+    this.lastServiceDate,
+    this.nextServiceDate,
+    this.filtrationStatus,
+    this.deviceStatus,
     this.onTap,
   });
 
@@ -30,9 +35,23 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
   late final AnimationController _waveController;
   late final AnimationController _particleController;
 
+  StreamSubscription<DocumentSnapshot>? _customerSubscription;
+  StreamSubscription<QuerySnapshot>? _customProductsSubscription;
+
+  String _resolvedModelName = 'Optimal';
+  String _resolvedLastServiceDate = '15 May, 2026';
+  String _resolvedNextServiceDate = '15 Aug, 2026';
+  bool _isOverdue = false;
+
   @override
   void initState() {
     super.initState();
+    _resolvedLastServiceDate = widget.lastServiceDate ?? '15 May, 2026';
+    _resolvedNextServiceDate = widget.nextServiceDate ?? '15 Aug, 2026';
+    if (widget.filtrationStatus != null && widget.filtrationStatus!.isNotEmpty) {
+      _resolvedModelName = widget.filtrationStatus!;
+    }
+
     _spinController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 6),
@@ -52,15 +71,181 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
       vsync: this,
       duration: const Duration(seconds: 6),
     )..repeat();
+
+    _initCustomerData();
   }
 
   @override
   void dispose() {
+    _customerSubscription?.cancel();
+    _customProductsSubscription?.cancel();
     _spinController.dispose();
     _pingController.dispose();
     _waveController.dispose();
     _particleController.dispose();
     super.dispose();
+  }
+
+  Future<void> _initCustomerData() async {
+    try {
+      final authUser = FirebaseAuth.instance.currentUser;
+      final localPhone = await AuthLocalDatasource().getUserPhone();
+      final localUserId = await AuthLocalDatasource().getUserId();
+
+      final candidateIds = <String>[
+        if (authUser?.uid != null && authUser!.uid.isNotEmpty) authUser.uid,
+        if (authUser?.phoneNumber != null && authUser!.phoneNumber!.isNotEmpty) authUser.phoneNumber!,
+        if (localUserId != null && localUserId.isNotEmpty) localUserId,
+        if (localPhone != null && localPhone.isNotEmpty) localPhone,
+      ];
+
+      if (candidateIds.isEmpty) return;
+
+      String? targetDocId;
+      for (final cid in candidateIds) {
+        final doc = await FirebaseFirestore.instance.collection('customers').doc(cid).get();
+        if (doc.exists) {
+          targetDocId = cid;
+          break;
+        }
+      }
+
+      targetDocId ??= candidateIds.first;
+
+      _customerSubscription = FirebaseFirestore.instance
+          .collection('customers')
+          .doc(targetDocId)
+          .snapshots()
+          .listen((docSnap) {
+        if (docSnap.exists) {
+          final data = docSnap.data() as Map<String, dynamic>? ?? {};
+          _handleCustomerDocUpdate(data, targetDocId!);
+        } else {
+          _checkFallbackPurchasedProducts(targetDocId!);
+        }
+      }, onError: (_) {});
+
+      _customProductsSubscription = FirebaseFirestore.instance
+          .collection('customers')
+          .doc(targetDocId)
+          .collection('custom_products')
+          .limit(1)
+          .snapshots()
+          .listen((querySnap) {
+        if (querySnap.docs.isNotEmpty) {
+          final customData = querySnap.docs.first.data() as Map<String, dynamic>? ?? {};
+          final customName = (customData['name'] ?? customData['model'] ?? customData['title'] ?? '').toString().trim();
+          if (customName.isNotEmpty && mounted) {
+            setState(() {
+              _resolvedModelName = customName;
+            });
+          }
+        }
+      }, onError: (_) {});
+    } catch (_) {}
+  }
+
+  void _handleCustomerDocUpdate(Map<String, dynamic> data, String customerId) {
+    final installedModel = (data['installedModel'] ?? '').toString().trim();
+    final lastDate = data['lastServiceDate'];
+    final nextDate = data['nextServiceDate'];
+
+    String formattedLast = _formatDate(lastDate, fallback: widget.lastServiceDate ?? '15 May, 2026');
+    String formattedNext = _formatDate(nextDate, fallback: widget.nextServiceDate ?? '15 Aug, 2026');
+    bool overdue = _checkIsOverdue(nextDate);
+
+    if (mounted) {
+      setState(() {
+        _resolvedLastServiceDate = formattedLast;
+        _resolvedNextServiceDate = formattedNext;
+        _isOverdue = overdue;
+
+        if (installedModel.isNotEmpty) {
+          _resolvedModelName = installedModel;
+        }
+      });
+    }
+
+    if (installedModel.isEmpty) {
+      _checkFallbackPurchasedProducts(customerId);
+    }
+  }
+
+  Future<void> _checkFallbackPurchasedProducts(String customerId) async {
+    try {
+      final querySnap = await FirebaseFirestore.instance
+          .collection('orders')
+          .where('userId', isEqualTo: customerId)
+          .limit(5)
+          .get();
+
+      if (querySnap.docs.isNotEmpty) {
+        for (final doc in querySnap.docs) {
+          final orderData = doc.data();
+          final items = orderData['items'] as List<dynamic>?;
+          if (items != null && items.isNotEmpty) {
+            for (final item in items) {
+              if (item is Map) {
+                final name = (item['name'] ?? item['title'] ?? '').toString().trim();
+                if (name.isNotEmpty && _resolvedModelName == 'Optimal' && mounted) {
+                  setState(() {
+                    _resolvedModelName = name;
+                  });
+                  return;
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (_) {}
+  }
+
+  String _formatDate(dynamic val, {required String fallback}) {
+    if (val == null) return fallback;
+    if (val is Timestamp) {
+      return DateFormat('dd MMM, yyyy').format(val.toDate());
+    }
+    if (val is String) {
+      final str = val.trim();
+      if (str.isEmpty) return fallback;
+      final dt = DateTime.tryParse(str);
+      if (dt != null) {
+        return DateFormat('dd MMM, yyyy').format(dt);
+      }
+      return str;
+    }
+    return fallback;
+  }
+
+  bool _checkIsOverdue(dynamic val) {
+    if (val == null) return false;
+    DateTime? target;
+    if (val is Timestamp) {
+      target = val.toDate();
+    } else if (val is String) {
+      final str = val.trim();
+      if (str.isEmpty) return false;
+      target = DateTime.tryParse(str);
+      if (target == null) {
+        try {
+          target = DateFormat('dd MMM, yyyy').parse(str);
+        } catch (_) {
+          try {
+            target = DateFormat('d MMM, yyyy').parse(str);
+          } catch (_) {
+            try {
+              target = DateFormat('d MMM yyyy').parse(str);
+            } catch (_) {}
+          }
+        }
+      }
+    }
+    if (target == null) return false;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final targetDate = DateTime(target.year, target.month, target.day);
+    return targetDate.isBefore(today);
   }
 
   void _showPurifierStatusSheet(BuildContext context) {
@@ -92,7 +277,6 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Drag Handle
               Center(
                 child: Container(
                   width: 44,
@@ -105,7 +289,6 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
               ),
               const SizedBox(height: 18),
 
-              // Sheet Header
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -165,9 +348,11 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                       vertical: 5,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE6FCF0),
+                      color: _isOverdue ? const Color(0xFFFEF2F2) : const Color(0xFFE6FCF0),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0x6600D26A)),
+                      border: Border.all(
+                        color: _isOverdue ? const Color(0x66EF4444) : const Color(0x6600D26A),
+                      ),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -175,18 +360,18 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                         Container(
                           width: 6,
                           height: 6,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Color(0xFF00D26A),
+                            color: _isOverdue ? const Color(0xFFEF4444) : const Color(0xFF00D26A),
                           ),
                         ),
                         const SizedBox(width: 5),
                         Text(
-                          'Active & Optimal',
+                          _isOverdue ? 'SERVICE OVERDUE' : 'Active & Optimal',
                           style: GoogleFonts.poppins(
                             fontSize: 9.5,
                             fontWeight: FontWeight.w700,
-                            color: const Color(0xFF00A859),
+                            color: _isOverdue ? const Color(0xFFDC2626) : const Color(0xFF00A859),
                           ),
                         ),
                       ],
@@ -195,21 +380,120 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                 ],
               ),
 
-              const SizedBox(height: 18),
+              const SizedBox(height: 16),
 
-              // 2x2 Diagnostics Grid
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF0F9FF),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0x3300B4DB)),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(7),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF0083B0), Color(0xFF00B4DB)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(Icons.water_drop_rounded, color: Colors.white, size: 16),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'INSTALLED MODEL',
+                            style: GoogleFonts.poppins(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF0083B0),
+                              letterSpacing: 1.0,
+                            ),
+                          ),
+                          const SizedBox(height: 1),
+                          Text(
+                            _resolvedModelName == 'Optimal' ? 'Kent Grand Plus RO' : _resolvedModelName,
+                            style: GoogleFonts.poppins(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF0F172A),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (_isOverdue)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3.5),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFEF2F2),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: const Color(0x66EF4444)),
+                        ),
+                        child: Text(
+                          'SERVICE DUE',
+                          style: GoogleFonts.poppins(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w800,
+                            color: const Color(0xFFDC2626),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+
+              if (_isOverdue) ...[
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFEF2F2),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: const Color(0x66EF4444)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.warning_amber_rounded, color: Color(0xFFDC2626), size: 20),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          'Your purifier servicing & filter check is overdue. Schedule maintenance for crystal clear purity.',
+                          style: GoogleFonts.poppins(
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF991B1B),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+
+              const SizedBox(height: 16),
+
               Row(
                 children: [
                   Expanded(
                     child: _buildMetricTile(
                       label: 'Membrane Health',
-                      value: '98%',
-                      subtext: 'Optimal Filtration',
-                      color: const Color(0xFF00A859),
-                      bgColor: const Color(0xFFE6FCF0),
+                      value: _isOverdue ? '82%' : '98%',
+                      subtext: _isOverdue ? 'Service Due' : 'Optimal Filtration',
+                      color: _isOverdue ? const Color(0xFFEA580C) : const Color(0xFF00A859),
+                      bgColor: _isOverdue ? const Color(0xFFFFF7ED) : const Color(0xFFE6FCF0),
                       icon: Icons.health_and_safety_rounded,
                       showProgress: true,
-                      progressValue: 0.98,
+                      progressValue: _isOverdue ? 0.82 : 0.98,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -244,10 +528,10 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                   Expanded(
                     child: _buildMetricTile(
                       label: 'System Status',
-                      value: 'Active',
-                      subtext: 'All 5 Stages OK',
-                      color: const Color(0xFF0284C7),
-                      bgColor: const Color(0xFFE0F2FE),
+                      value: _isOverdue ? 'Service Due' : 'Active',
+                      subtext: _isOverdue ? 'Action Recommended' : 'All 5 Stages OK',
+                      color: _isOverdue ? const Color(0xFFDC2626) : const Color(0xFF0284C7),
+                      bgColor: _isOverdue ? const Color(0xFFFEF2F2) : const Color(0xFFE0F2FE),
                       icon: Icons.tune_rounded,
                     ),
                   ),
@@ -256,7 +540,6 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
 
               const SizedBox(height: 16),
 
-              // Schedule Info Card
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 decoration: BoxDecoration(
@@ -281,7 +564,7 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          widget.lastServiceDate,
+                          _resolvedLastServiceDate,
                           style: GoogleFonts.poppins(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
@@ -299,21 +582,21 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          'NEXT SCHEDULED',
+                          _isOverdue ? 'SERVICE OVERDUE' : 'NEXT SCHEDULED',
                           style: GoogleFonts.poppins(
                             fontSize: 9,
                             fontWeight: FontWeight.w700,
-                            color: const Color(0xFF0083B0),
+                            color: _isOverdue ? const Color(0xFFDC2626) : const Color(0xFF0083B0),
                             letterSpacing: 1.0,
                           ),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          widget.nextServiceDate,
+                          _resolvedNextServiceDate,
                           style: GoogleFonts.poppins(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
-                            color: const Color(0xFF005C97),
+                            color: _isOverdue ? const Color(0xFFDC2626) : const Color(0xFF005C97),
                           ),
                         ),
                       ],
@@ -324,18 +607,18 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
 
               const SizedBox(height: 20),
 
-              // Request Maintenance Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0083B0),
+                    backgroundColor: _isOverdue ? const Color(0xFFDC2626) : const Color(0xFF0083B0),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    elevation: 0,
+                    elevation: _isOverdue ? 4 : 0,
+                    shadowColor: _isOverdue ? const Color(0x66DC2626) : null,
                   ),
                   onPressed: () {
                     Navigator.pop(modalContext);
@@ -352,7 +635,7 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                       const Icon(Icons.build_rounded, size: 16),
                       const SizedBox(width: 8),
                       Text(
-                        'Request Maintenance',
+                        _isOverdue ? 'Request Maintenance (Urgent)' : 'Request Maintenance',
                         style: GoogleFonts.poppins(
                           fontSize: 13.5,
                           fontWeight: FontWeight.w700,
@@ -440,6 +723,8 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
 
   @override
   Widget build(BuildContext context) {
+    final effectiveDeviceStatus = widget.deviceStatus ?? 'Active';
+
     return GestureDetector(
       onTap: widget.onTap ?? () => _showPurifierStatusSheet(context),
       child: Container(
@@ -451,14 +736,17 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
             colors: [Color(0xFFFFFFFF), Color(0xFFE6F7FC)],
           ),
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white, width: 1.5),
-          boxShadow: const [
+          border: Border.all(
+            color: _isOverdue ? const Color(0x66EF4444) : Colors.white,
+            width: 1.5,
+          ),
+          boxShadow: [
             BoxShadow(
-              color: Color(0x1F0083B0),
+              color: _isOverdue ? const Color(0x26DC2626) : const Color(0x1F0083B0),
               blurRadius: 30,
-              offset: Offset(0, 10),
+              offset: const Offset(0, 10),
             ),
-            BoxShadow(
+            const BoxShadow(
               color: Color(0x1400B4DB),
               blurRadius: 10,
               offset: Offset(0, 2),
@@ -469,20 +757,19 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
           borderRadius: BorderRadius.circular(24),
           child: Stack(
             children: [
-              // Top sheen gradient
               Positioned(
                 top: 0,
                 left: 0,
                 right: 0,
                 height: 80,
                 child: Container(
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Color(0x260083B0),
-                        Color(0x0D00B4DB),
+                        _isOverdue ? const Color(0x26EF4444) : const Color(0x260083B0),
+                        _isOverdue ? const Color(0x0DEF4444) : const Color(0x0D00B4DB),
                         Colors.transparent,
                       ],
                     ),
@@ -490,7 +777,6 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                 ),
               ),
 
-              // Tech Particles Animation
               Positioned.fill(
                 child: AnimatedBuilder(
                   animation: _particleController,
@@ -498,13 +784,13 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                     return CustomPaint(
                       painter: _TechParticlesPainter(
                         progress: _particleController.value,
+                        isOverdue: _isOverdue,
                       ),
                     );
                   },
                 ),
               ),
 
-              // Bottom Water Wave Animation
               Positioned(
                 bottom: 0,
                 left: 0,
@@ -516,198 +802,256 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                     return CustomPaint(
                       painter: _BottomWaterWavePainter(
                         progress: _waveController.value,
+                        isOverdue: _isOverdue,
                       ),
                     );
                   },
                 ),
               ),
 
-              // Main Card Content
               Padding(
                 padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Header Row: Icon + Status + Active Badge
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Left: Droplet with Dashed Ring and Title
-                        Row(
-                          children: [
-                            // Animated Droplet Icon
-                            SizedBox(
-                              width: 48,
-                              height: 48,
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  // Rotating Dashed Ring
-                                  AnimatedBuilder(
-                                    animation: _spinController,
-                                    builder: (context, child) {
-                                      return Transform.rotate(
-                                        angle: _spinController.value * 2 * math.pi,
-                                        child: CustomPaint(
-                                          size: const Size(48, 48),
-                                          painter: _DashedCirclePainter(
-                                            color: const Color(0x9900B4DB),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 48,
+                                height: 48,
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    AnimatedBuilder(
+                                      animation: _spinController,
+                                      builder: (context, child) {
+                                        return Transform.rotate(
+                                          angle: _spinController.value * 2 * math.pi,
+                                          child: CustomPaint(
+                                            size: const Size(48, 48),
+                                            painter: _DashedCirclePainter(
+                                              color: _isOverdue
+                                                  ? const Color(0x99EF4444)
+                                                  : const Color(0x9900B4DB),
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  // Pulsing Ping Ring
-                                  AnimatedBuilder(
-                                    animation: _pingController,
-                                    builder: (context, child) {
-                                      final pingVal = _pingController.value;
-                                      return Opacity(
-                                        opacity: (1.0 - pingVal).clamp(0.0, 1.0),
-                                        child: Transform.scale(
-                                          scale: 0.8 + 0.5 * pingVal,
-                                          child: Container(
-                                            width: 44,
-                                            height: 44,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                color: const Color(0x660083B0),
-                                                width: 1.5,
+                                        );
+                                      },
+                                    ),
+                                    AnimatedBuilder(
+                                      animation: _pingController,
+                                      builder: (context, child) {
+                                        final pingVal = _pingController.value;
+                                        return Opacity(
+                                          opacity: (1.0 - pingVal).clamp(0.0, 1.0),
+                                          child: Transform.scale(
+                                            scale: 0.8 + 0.5 * pingVal,
+                                            child: Container(
+                                              width: 44,
+                                              height: 44,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  color: _isOverdue
+                                                      ? const Color(0x66EF4444)
+                                                      : const Color(0x660083B0),
+                                                  width: 1.5,
+                                                ),
                                               ),
                                             ),
                                           ),
+                                        );
+                                      },
+                                    ),
+                                    Container(
+                                      width: 34,
+                                      height: 34,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        gradient: LinearGradient(
+                                          colors: _isOverdue
+                                              ? const [Color(0xFFDC2626), Color(0xFFEF4444)]
+                                              : const [Color(0xFF0083B0), Color(0xFF00B4DB)],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
                                         ),
-                                      );
-                                    },
-                                  ),
-                                  // Center Gradient Circle with Droplet
-                                  Container(
-                                    width: 34,
-                                    height: 34,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      gradient: LinearGradient(
-                                        colors: [Color(0xFF0083B0), Color(0xFF00B4DB)],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: _isOverdue
+                                                ? const Color(0x40DC2626)
+                                                : const Color(0x400083B0),
+                                            blurRadius: 6,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
                                       ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Color(0x400083B0),
-                                          blurRadius: 6,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    child: const Icon(
-                                      Icons.water_drop_rounded,
-                                      color: Colors.white,
-                                      size: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-
-                            // Titles
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Purifier Status',
-                                  style: GoogleFonts.poppins(
-                                    color: const Color(0xFF005C97),
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: 0.2,
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                                Row(
-                                  children: [
-                                    _PulsingDot(
-                                      color: const Color(0xFF00B4DB),
-                                      size: 6,
-                                    ),
-                                    const SizedBox(width: 5),
-                                    Text(
-                                      'Filtration: ',
-                                      style: GoogleFonts.poppins(
-                                        color: const Color(0xFF6B7280),
-                                        fontSize: 10.5,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    Text(
-                                      widget.filtrationStatus,
-                                      style: GoogleFonts.poppins(
-                                        color: const Color(0xFF0083B0),
-                                        fontSize: 10.5,
-                                        fontWeight: FontWeight.w700,
+                                      child: const Icon(
+                                        Icons.water_drop_rounded,
+                                        color: Colors.white,
+                                        size: 16,
                                       ),
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
+                              ),
+                              const SizedBox(width: 12),
 
-                        // Right: Active Badge
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 11,
-                            vertical: 5,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFE6FCF0),
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(
-                              color: const Color(0x4D00D26A),
-                              width: 1,
-                            ),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color(0x1000A859),
-                                blurRadius: 4,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              _PulsingDot(
-                                color: const Color(0xFF00D26A),
-                                size: 6,
-                              ),
-                              const SizedBox(width: 5),
-                              const Icon(
-                                Icons.water_drop_rounded,
-                                color: Color(0xFF00A859),
-                                size: 11,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                widget.deviceStatus.toUpperCase(),
-                                style: GoogleFonts.poppins(
-                                  color: const Color(0xFF00A859),
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 1.2,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Purifier Status',
+                                      style: GoogleFonts.poppins(
+                                        color: const Color(0xFF005C97),
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: 0.2,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Row(
+                                      children: [
+                                        _PulsingDot(
+                                          color: _isOverdue
+                                              ? const Color(0xFFEF4444)
+                                              : const Color(0xFF00B4DB),
+                                          size: 6,
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          _resolvedModelName == 'Optimal' ? 'Filtration: ' : 'Model: ',
+                                          style: GoogleFonts.poppins(
+                                            color: const Color(0xFF6B7280),
+                                            fontSize: 10.5,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            _resolvedModelName,
+                                            style: GoogleFonts.poppins(
+                                              color: const Color(0xFF0083B0),
+                                              fontSize: 10.5,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
                         ),
+
+                        const SizedBox(width: 8),
+
+                        _isOverdue
+                            ? Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 9,
+                                  vertical: 5,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFEF2F2),
+                                  borderRadius: BorderRadius.circular(30),
+                                  border: Border.all(
+                                    color: const Color(0x66EF4444),
+                                    width: 1,
+                                  ),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color(0x1AEF4444),
+                                      blurRadius: 4,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const _PulsingDot(
+                                      color: Color(0xFFEF4444),
+                                      size: 5,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    const Icon(
+                                      Icons.warning_amber_rounded,
+                                      color: Color(0xFFDC2626),
+                                      size: 11,
+                                    ),
+                                    const SizedBox(width: 3),
+                                    Text(
+                                      'SERVICE DUE',
+                                      style: GoogleFonts.poppins(
+                                        color: const Color(0xFFDC2626),
+                                        fontSize: 9.5,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 1.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 11,
+                                  vertical: 5,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFE6FCF0),
+                                  borderRadius: BorderRadius.circular(30),
+                                  border: Border.all(
+                                    color: const Color(0x4D00D26A),
+                                    width: 1,
+                                  ),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color(0x1000A859),
+                                      blurRadius: 4,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const _PulsingDot(
+                                      color: Color(0xFF00D26A),
+                                      size: 6,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    const Icon(
+                                      Icons.water_drop_rounded,
+                                      color: Color(0xFF00A859),
+                                      size: 11,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      effectiveDeviceStatus.toUpperCase(),
+                                      style: GoogleFonts.poppins(
+                                        color: const Color(0xFF00A859),
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: 1.2,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                       ],
                     ),
 
                     const SizedBox(height: 16),
 
-                    // Compact Date Panel
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 14,
@@ -721,7 +1065,7 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                         ),
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                          color: const Color(0x4000B4DB),
+                          color: _isOverdue ? const Color(0x66EF4444) : const Color(0x4000B4DB),
                           width: 1.0,
                         ),
                         boxShadow: const [
@@ -734,7 +1078,6 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                       ),
                       child: Row(
                         children: [
-                          // Last Service
                           Expanded(
                             child: Row(
                               children: [
@@ -777,7 +1120,7 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                                       ),
                                       const SizedBox(height: 1),
                                       Text(
-                                        widget.lastServiceDate,
+                                        _resolvedLastServiceDate,
                                         style: GoogleFonts.poppins(
                                           color: const Color(0xFF1F2937),
                                           fontSize: 11,
@@ -793,15 +1136,13 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                             ),
                           ),
 
-                          // Vertical Divider
                           Container(
                             width: 1,
                             height: 32,
-                            color: const Color(0x4D00B4DB),
+                            color: _isOverdue ? const Color(0x4DEF4444) : const Color(0x4D00B4DB),
                           ),
                           const SizedBox(width: 8),
 
-                          // Next Service
                           Expanded(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -814,14 +1155,18 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                                         mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
                                           _PulsingDot(
-                                            color: const Color(0xFF00B4DB),
+                                            color: _isOverdue
+                                                ? const Color(0xFFEF4444)
+                                                : const Color(0xFF00B4DB),
                                             size: 5,
                                           ),
                                           const SizedBox(width: 4),
                                           Text(
-                                            'NEXT SERVICE',
+                                            _isOverdue ? 'SERVICE OVERDUE' : 'NEXT SERVICE',
                                             style: GoogleFonts.poppins(
-                                              color: const Color(0xFF0083B0),
+                                              color: _isOverdue
+                                                  ? const Color(0xFFDC2626)
+                                                  : const Color(0xFF0083B0),
                                               fontSize: 8.5,
                                               fontWeight: FontWeight.w700,
                                               letterSpacing: 1.1,
@@ -831,9 +1176,11 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                                       ),
                                       const SizedBox(height: 1),
                                       Text(
-                                        widget.nextServiceDate,
+                                        _resolvedNextServiceDate,
                                         style: GoogleFonts.poppins(
-                                          color: const Color(0xFF005C97),
+                                          color: _isOverdue
+                                              ? const Color(0xFFDC2626)
+                                              : const Color(0xFF005C97),
                                           fontSize: 11,
                                           fontWeight: FontWeight.w700,
                                         ),
@@ -848,22 +1195,28 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                                   width: 32,
                                   height: 32,
                                   decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [Color(0xFF0083B0), Color(0xFF00B4DB)],
+                                    gradient: LinearGradient(
+                                      colors: _isOverdue
+                                          ? const [Color(0xFFDC2626), Color(0xFFEF4444)]
+                                          : const [Color(0xFF0083B0), Color(0xFF00B4DB)],
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                     ),
                                     borderRadius: BorderRadius.circular(8),
-                                    boxShadow: const [
+                                    boxShadow: [
                                       BoxShadow(
-                                        color: Color(0x330083B0),
+                                        color: _isOverdue
+                                            ? const Color(0x33DC2626)
+                                            : const Color(0x330083B0),
                                         blurRadius: 4,
-                                        offset: Offset(0, 2),
+                                        offset: const Offset(0, 2),
                                       ),
                                     ],
                                   ),
-                                  child: const Icon(
-                                    Icons.event_available_rounded,
+                                  child: Icon(
+                                    _isOverdue
+                                        ? Icons.alarm_on_rounded
+                                        : Icons.event_available_rounded,
                                     color: Colors.white,
                                     size: 16,
                                   ),
