@@ -14,11 +14,11 @@ class CompanyInfoEntity extends Equatable {
   final String linkedinUrl;
 
   const CompanyInfoEntity({
-    this.phone1 = '01780-885841',
-    this.phone2 = '09613 700 750',
-    this.whatsapp = '+8801780885841',
-    this.email = 'aquabd112@gmail.com',
-    this.address = 'House 72, Janata Housing Road, 3 Ring Road, Dhaka 1219',
+    this.phone1 = '',
+    this.phone2 = '',
+    this.whatsapp = '',
+    this.email = '',
+    this.address = '',
     this.googleMapsUrl = '',
     this.facebookUrl = '',
     this.whatsappLink = '',

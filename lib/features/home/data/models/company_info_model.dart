@@ -22,11 +22,11 @@ class CompanyInfoModel extends CompanyInfoEntity {
     }
     final data = doc.data() as Map<String, dynamic>? ?? {};
     return CompanyInfoModel(
-      phone1: data['phone1'] as String? ?? '01780-885841',
-      phone2: data['phone2'] as String? ?? '09613 700 750',
-      whatsapp: data['whatsapp'] as String? ?? '+8801780885841',
-      email: data['email'] as String? ?? 'aquabd112@gmail.com',
-      address: data['address'] as String? ?? 'House 72, Janata Housing Road, 3 Ring Road, Dhaka 1219',
+      phone1: data['phone1'] as String? ?? '',
+      phone2: data['phone2'] as String? ?? '',
+      whatsapp: data['whatsappNumber'] as String? ?? data['whatsapp'] as String? ?? '',
+      email: data['email'] as String? ?? '',
+      address: data['address'] as String? ?? '',
       googleMapsUrl: data['googleMapsUrl'] as String? ?? '',
       facebookUrl: data['facebookUrl'] as String? ?? '',
       whatsappLink: data['whatsappLink'] as String? ?? '',

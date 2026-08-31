@@ -62,7 +62,7 @@ class HomeRemoteDatasource {
 
   Future<CompanyInfoModel> fetchCompanyInfo() async {
     try {
-      final doc = await _firestore.collection('company_info').doc('main').get();
+      final doc = await _firestore.collection('settings').doc('company_info').get();
       if (doc.exists) {
         return CompanyInfoModel.fromFirestore(doc);
       }

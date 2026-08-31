@@ -1,7 +1,9 @@
 import 'dart:math' as math;
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../inbox_support/presentation/pages/chat_conversation_page.dart';
@@ -14,6 +16,16 @@ import 'home_page.dart';
 
 class MainShellPage extends StatelessWidget {
   const MainShellPage({super.key});
+
+  void _showContactModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withValues(alpha: 0.45),
+      builder: (modalContext) => const _ContactSupportModalSheet(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,22 +50,7 @@ class MainShellPage extends StatelessWidget {
             onTabSelected: (index) {
               context.read<HomeBloc>().add(SelectTab(index));
             },
-            onCallTap: () async {
-              final uri = Uri.parse('tel:01780885841');
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri);
-              } else {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Hotline: 01780885841'),
-                      duration: Duration(seconds: 3),
-                      backgroundColor: Color(0xFF0083B0),
-                    ),
-                  );
-                }
-              }
-            },
+            onCallTap: () => _showContactModal(context),
           ),
         );
       },
@@ -394,3 +391,472 @@ class _CentralFloatingWaterButtonState
     );
   }
 }
+
+class _ContactSupportModalSheet extends StatelessWidget {
+  const _ContactSupportModalSheet();
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.96),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            border: const Border(
+              top: BorderSide(
+                color: Color(0x3300B4DB),
+                width: 1.5,
+              ),
+              left: BorderSide(
+                color: Color(0x1A00B4DB),
+                width: 1,
+              ),
+              right: BorderSide(
+                color: Color(0x1A00B4DB),
+                width: 1,
+              ),
+            ),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x1F0083B0),
+                blurRadius: 40,
+                offset: Offset(0, -10),
+              ),
+            ],
+          ),
+          padding: EdgeInsets.fromLTRB(
+            20,
+            12,
+            20,
+            math.max(bottomPadding + 16, 28),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Top Drag Handle Capsule
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4.5,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFCBD5E1),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Header Row with Title & Close button
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF00B4DB).withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color(0xFF00B4DB).withValues(alpha: 0.25),
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.headset_mic_rounded,
+                      color: Color(0xFF0083B0),
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Customer Support',
+                          style: GoogleFonts.poppins(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF0F172A),
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        Text(
+                          'We are here to assist you anytime',
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFF64748B),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () => Navigator.of(context).pop(),
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF1F5F9),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                      ),
+                      child: const Icon(
+                        Icons.close_rounded,
+                        size: 18,
+                        color: Color(0xFF64748B),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+
+              // Dynamic Firestore Query Body
+              FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                future: FirebaseFirestore.instance
+                    .collection('settings')
+                    .doc('company_info')
+                    .get(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 36),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(
+                            width: 32,
+                            height: 32,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 3,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Color(0xFF00B4DB),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 14),
+                          Text(
+                            'Connecting to support channels...',
+                            style: GoogleFonts.poppins(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF64748B),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  if (!snapshot.hasData ||
+                      !snapshot.data!.exists ||
+                      snapshot.data!.data() == null) {
+                    return _buildUnconfiguredState();
+                  }
+
+                  final data = snapshot.data!.data()!;
+                  final phone1 = (data['phone1'] as String?)?.trim() ?? '';
+                  final whatsappNumber =
+                      (data['whatsappNumber'] as String?)?.trim() ??
+                          (data['whatsapp'] as String?)?.trim() ??
+                          '';
+
+                  if (phone1.isEmpty && whatsappNumber.isEmpty) {
+                    return _buildUnconfiguredState();
+                  }
+
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // 1. Direct Phone Call Option
+                      if (phone1.isNotEmpty)
+                        _ContactOptionCard(
+                          title: 'Direct Phone Call',
+                          subtitle: phone1,
+                          badgeText: 'CALL',
+                          badgeColor: const Color(0xFF0083B0),
+                          gradientColors: const [
+                            Color(0xFF0083B0),
+                            Color(0xFF00B4DB),
+                          ],
+                          iconWidget: const Icon(
+                            Icons.phone_rounded,
+                            color: Colors.white,
+                            size: 22,
+                          ),
+                          onTap: () async {
+                            Navigator.of(context).pop();
+                            final cleanPhone =
+                                phone1.replaceAll(RegExp(r'[^\d+]'), '');
+                            final uri = Uri.parse('tel:$cleanPhone');
+                            if (await canLaunchUrl(uri)) {
+                              await launchUrl(uri);
+                            } else {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Hotline: $phone1'),
+                                    backgroundColor: const Color(0xFF0083B0),
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                        ),
+
+                      if (phone1.isNotEmpty && whatsappNumber.isNotEmpty)
+                        const SizedBox(height: 12),
+
+                      // 2. WhatsApp Support Option
+                      if (whatsappNumber.isNotEmpty)
+                        _ContactOptionCard(
+                          title: 'WhatsApp Chat',
+                          subtitle: whatsappNumber,
+                          badgeText: 'WHATSAPP',
+                          badgeColor: const Color(0xFF25D366),
+                          gradientColors: const [
+                            Color(0xFF25D366),
+                            Color(0xFF128C7E),
+                          ],
+                          iconWidget: SvgPicture.string(
+                            '''<svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                            </svg>''',
+                            width: 20,
+                            height: 20,
+                            colorFilter: const ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                          onTap: () async {
+                            Navigator.of(context).pop();
+                            var clean = whatsappNumber.replaceAll(
+                                RegExp(r'[\s\+\-\(\)]'), '');
+                            if (clean.startsWith('01') && clean.length == 11) {
+                              clean = '88$clean';
+                            }
+                            final waUri = Uri.parse('https://wa.me/$clean');
+                            if (await canLaunchUrl(waUri)) {
+                              await launchUrl(
+                                waUri,
+                                mode: LaunchMode.externalApplication,
+                              );
+                            } else {
+                              final appUri =
+                                  Uri.parse('whatsapp://send?phone=$clean');
+                              if (await canLaunchUrl(appUri)) {
+                                await launchUrl(
+                                  appUri,
+                                  mode: LaunchMode.externalApplication,
+                                );
+                              } else {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          'WhatsApp: $whatsappNumber'),
+                                      backgroundColor: const Color(0xFF25D366),
+                                    ),
+                                  );
+                                }
+                              }
+                            }
+                          },
+                        ),
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUnconfiguredState() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 8),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: const Color(0xFFF1F5F9),
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+            ),
+            child: const Icon(
+              Icons.support_agent_rounded,
+              size: 32,
+              color: Color(0xFF94A3B8),
+            ),
+          ),
+          const SizedBox(height: 14),
+          Text(
+            'Support contact numbers have not been configured yet',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF334155),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Please check back later or reach out via in-app chat.',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              fontSize: 11,
+              fontWeight: FontWeight.w400,
+              color: const Color(0xFF64748B),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ContactOptionCard extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final String badgeText;
+  final Color badgeColor;
+  final List<Color> gradientColors;
+  final Widget iconWidget;
+  final VoidCallback onTap;
+
+  const _ContactOptionCard({
+    required this.title,
+    required this.subtitle,
+    required this.badgeText,
+    required this.badgeColor,
+    required this.gradientColors,
+    required this.iconWidget,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: const Color(0xFFF8FAFC),
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        splashColor: gradientColors.first.withValues(alpha: 0.1),
+        highlightColor: gradientColors.first.withValues(alpha: 0.05),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: const Color(0xFFE2E8F0),
+              width: 1,
+            ),
+          ),
+          child: Row(
+            children: [
+              // Icon Circle with Gradient & Aura
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: gradientColors,
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: gradientColors.last.withValues(alpha: 0.35),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Center(child: iconWidget),
+              ),
+              const SizedBox(width: 14),
+
+              // Title and Subtitle Info
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          title,
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF1E293B),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 1.5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: badgeColor.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            badgeText,
+                            style: GoogleFonts.poppins(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w700,
+                              color: badgeColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF64748B),
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Action Arrow indicator
+              Container(
+                padding: const EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                ),
+                child: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 12,
+                  color: Color(0xFF64748B),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
