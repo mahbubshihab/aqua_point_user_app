@@ -348,6 +348,18 @@ class _ServicesTabContent extends StatelessWidget {
 
   const _ServicesTabContent({required this.servicesList});
 
+  String _formatRequestId(String id, int index) {
+    final clean = id.replaceAll('#', '').trim();
+    final numVal = int.tryParse(clean);
+    if (numVal != null) {
+      return '#${numVal.toString().padLeft(3, '0')}';
+    }
+    if (clean.length < 20 && clean.isNotEmpty) {
+      return '#${clean.padLeft(3, '0')}';
+    }
+    return '#${(index + 1).toString().padLeft(3, '0')}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -411,7 +423,7 @@ class _ServicesTabContent extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                item.id,
+                                _formatRequestId(item.id, index),
                                 style: GoogleFonts.inter(
                                   color: isDark ? const Color(0xFF00BCE1) : AppColors.secondary,
                                   fontSize: 13,
