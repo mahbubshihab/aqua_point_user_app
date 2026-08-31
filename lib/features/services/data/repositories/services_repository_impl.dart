@@ -25,6 +25,8 @@ class ServicesRepositoryImpl implements ServicesRepository {
           timeSlot: m.timeSlot,
           description: m.description,
           status: m.status,
+          technician: m.technician,
+          technicianPhone: m.technicianPhone,
         )).toList();
       }
     } catch (_) {}

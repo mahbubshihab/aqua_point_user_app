@@ -12,6 +12,8 @@ class WaterServiceModel extends WaterServiceEntity {
     required super.timeSlot,
     required super.description,
     required super.status,
+    super.technician,
+    super.technicianPhone,
     this.customerName,
     this.phone,
   });
@@ -31,6 +33,8 @@ class WaterServiceModel extends WaterServiceEntity {
       timeSlot: data['appointmentTime'] ?? data['preferredSlot'] ?? data['timeSlot'] ?? '',
       description: data['problemDetails'] ?? data['problemDescription'] ?? data['description'] ?? '',
       status: data['status'] ?? 'Pending',
+      technician: data['technician'] as String? ?? 'Unassigned',
+      technicianPhone: (data['technicianPhone'] ?? data['technicianMobile'] ?? '') as String,
       customerName: data['customerName'],
       phone: data['phone'],
     );
@@ -44,6 +48,8 @@ class WaterServiceModel extends WaterServiceEntity {
       timeSlot: entity.timeSlot,
       description: entity.description,
       status: entity.status,
+      technician: entity.technician,
+      technicianPhone: entity.technicianPhone,
     );
   }
 
