@@ -118,7 +118,7 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
           .snapshots()
           .listen((docSnap) {
         if (docSnap.exists) {
-          final data = docSnap.data() as Map<String, dynamic>? ?? {};
+          final data = docSnap.data() ?? {};
           _handleCustomerDocUpdate(data, targetDocId!);
         } else {
           _checkFallbackPurchasedProducts(targetDocId!);
@@ -809,6 +809,7 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                 ),
               ),
 
+              // Main Card Content
               Padding(
                 padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
                 child: Column(
@@ -1344,17 +1345,21 @@ class _DashedCirclePainter extends CustomPainter {
 
 class _BottomWaterWavePainter extends CustomPainter {
   final double progress;
+  final bool isOverdue;
 
-  _BottomWaterWavePainter({required this.progress});
+  _BottomWaterWavePainter({required this.progress, this.isOverdue = false});
 
   @override
   void paint(Canvas canvas, Size size) {
+    final Color c1 = isOverdue ? const Color(0xFFF43F5E) : const Color(0xFF00B4DB);
+    final Color c2 = isOverdue ? const Color(0xFFBE123C) : const Color(0xFF0083B0);
+
     final paint1 = Paint()
-      ..color = const Color(0xFF00B4DB).withValues(alpha: 0.35)
+      ..color = c1.withValues(alpha: 0.35)
       ..style = PaintingStyle.fill;
 
     final paint2 = Paint()
-      ..color = const Color(0xFF0083B0).withValues(alpha: 0.45)
+      ..color = c2.withValues(alpha: 0.45)
       ..style = PaintingStyle.fill;
 
     final path1 = Path();
@@ -1390,14 +1395,15 @@ class _BottomWaterWavePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _BottomWaterWavePainter oldDelegate) {
-    return oldDelegate.progress != progress;
+    return oldDelegate.progress != progress || oldDelegate.isOverdue != isOverdue;
   }
 }
 
 class _TechParticlesPainter extends CustomPainter {
   final double progress;
+  final bool isOverdue;
 
-  _TechParticlesPainter({required this.progress});
+  _TechParticlesPainter({required this.progress, this.isOverdue = false});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1406,6 +1412,9 @@ class _TechParticlesPainter extends CustomPainter {
       _ParticleConfig(relX: 0.52, radius: 6, speed: 1.3, phase: 0.35),
       _ParticleConfig(relX: 0.82, radius: 12, speed: 0.8, phase: 0.7),
     ];
+
+    final Color primaryColor = isOverdue ? const Color(0xFFF43F5E) : const Color(0xFF00B4DB);
+    final Color secondaryColor = isOverdue ? const Color(0xFFBE123C) : const Color(0xFF0083B0);
 
     for (final p in particles) {
       final t = (progress * p.speed + p.phase) % 1.0;
@@ -1425,8 +1434,8 @@ class _TechParticlesPainter extends CustomPainter {
       final fillPaint = Paint()
         ..shader = LinearGradient(
           colors: [
-            const Color(0xFF00B4DB).withValues(alpha: opacity),
-            const Color(0xFF0083B0).withValues(alpha: opacity * 1.5),
+            primaryColor.withValues(alpha: opacity),
+            secondaryColor.withValues(alpha: opacity * 1.5),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -1434,7 +1443,7 @@ class _TechParticlesPainter extends CustomPainter {
         ..style = PaintingStyle.fill;
 
       final borderPaint = Paint()
-        ..color = const Color(0xFF00B4DB).withValues(alpha: opacity * 1.2)
+        ..color = primaryColor.withValues(alpha: opacity * 1.2)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.0;
 
@@ -1445,7 +1454,7 @@ class _TechParticlesPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _TechParticlesPainter oldDelegate) {
-    return oldDelegate.progress != progress;
+    return oldDelegate.progress != progress || oldDelegate.isOverdue != isOverdue;
   }
 }
 
