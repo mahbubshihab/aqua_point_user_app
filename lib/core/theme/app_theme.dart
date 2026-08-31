@@ -148,12 +148,11 @@ class AppTheme {
   //  SHARED HELPERS
   // ═══════════════════════════════════════════════
 
-  static TextTheme _buildTextTheme(Brightness brightness) {
-    final isDark = brightness == Brightness.dark;
-    final primary = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
-    final secondary = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
-    final tertiary = isDark ? AppColors.darkTextTertiary : AppColors.textTertiary;
-    final base = isDark ? ThemeData.dark().textTheme : ThemeData.light().textTheme;
+  static TextTheme _buildTextTheme([Brightness? brightness]) {
+    const primary = AppColors.textPrimary;
+    const secondary = AppColors.textSecondary;
+    const tertiary = AppColors.textTertiary;
+    final base = ThemeData.light().textTheme;
 
     return GoogleFonts.interTextTheme(base).copyWith(
       displayLarge: GoogleFonts.outfit(fontSize: 32, fontWeight: FontWeight.w700, color: primary),

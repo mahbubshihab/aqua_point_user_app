@@ -34,6 +34,10 @@ class AddProductModal extends StatefulWidget {
 
 class _AddProductModalState extends State<AddProductModal> {
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _warrantyController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final CloudinaryService _cloudinaryService = CloudinaryService();
   String? _selectedImagePath;
@@ -43,6 +47,10 @@ class _AddProductModalState extends State<AddProductModal> {
   @override
   void dispose() {
     _nameController.dispose();
+    _categoryController.dispose();
+    _priceController.dispose();
+    _warrantyController.dispose();
+    _descController.dispose();
     super.dispose();
   }
 
@@ -108,20 +116,48 @@ class _AddProductModalState extends State<AddProductModal> {
     }
   }
 
+  Widget _buildLabel(String text, Color color) {
+    return Text(
+      text,
+      style: GoogleFonts.inter(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: color,
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hint,
+    required Color textColor,
+    required Color hintColor,
+    required Color surfaceColor,
+    required Color dividerColor,
+    required Color accentColor,
+    TextInputType? keyboardType,
+    int maxLines = 1,
+    String? Function(String?)? validator,
+  }) {
+    return AppTextField(
+      controller: controller,
+      hintText: hint,
+      keyboardType: keyboardType,
+      maxLines: maxLines,
+      validator: validator,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
-    final surfaceColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final uploadBoxBg = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
-    final dividerColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
-    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorSecondary = Color(0xFF64748B);
+    const surfaceColor = Colors.white;
+    const uploadBoxBg = Color(0xFFF8FAFC);
+    const dividerColor = Color(0xFFE2E8F0);
+    const accentColor = AppColors.primary;
 
     return BlocListener<ProductsBloc, ProductsState>(
       listener: (context, state) {
@@ -161,14 +197,11 @@ class _AddProductModalState extends State<AddProductModal> {
             top: 20,
             bottom: bottomPadding + 24,
           ),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: surfaceColor,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-            border: Border.all(
-              color: isDark
-                  ? const Color(0xFF00BCE1).withValues(alpha: 0.3)
-                  : const Color(0x2B00E5FF),
-              width: 1,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            border: Border.fromBorderSide(
+              BorderSide(color: dividerColor, width: 1),
             ),
           ),
           child: SingleChildScrollView(
@@ -179,7 +212,6 @@ class _AddProductModalState extends State<AddProductModal> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Modal Handle Bar
                   Center(
                     child: Container(
                       width: 40,
@@ -191,8 +223,6 @@ class _AddProductModalState extends State<AddProductModal> {
                     ),
                   ),
                   const Gap(16),
-
-                  // Header Row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -206,57 +236,112 @@ class _AddProductModalState extends State<AddProductModal> {
                       ),
                       IconButton(
                         onPressed: () => Navigator.of(context).pop(),
-                        icon: Icon(
-                          Icons.close_rounded,
-                          color: textColorSecondary,
-                        ),
+                        icon: const Icon(Icons.close_rounded),
+                        color: textColorSecondary,
+                        splashRadius: 20,
                       ),
                     ],
                   ),
                   const Gap(16),
-
-                  // Field 1: Product Name
-                  AppTextField(
-                    label: 'Product Name',
-                    hintText: 'Enter your product name',
+                  _buildLabel('Product Name *', textColorSecondary),
+                  const Gap(6),
+                  _buildTextField(
                     controller: _nameController,
-                    prefixIcon: Icon(
-                      Icons.inventory_2_outlined,
-                      color: textColorSecondary,
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Please enter product name';
+                    hint: 'e.g. Aqua Grand Plus 12L',
+                    textColor: textColorPrimary,
+                    hintColor: textColorSecondary,
+                    surfaceColor: uploadBoxBg,
+                    dividerColor: dividerColor,
+                    accentColor: accentColor,
+                    validator: (val) {
+                      if (val == null || val.trim().isEmpty) {
+                        return 'Please enter a product name';
                       }
                       return null;
                     },
                   ),
-                  const Gap(16),
-
-                  // Field 2: Warranty Card / Product Photo
-                  Text(
-                    'Warranty Card / Product Photo',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: textColorSecondary,
-                    ),
+                  const Gap(14),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildLabel('Category', textColorSecondary),
+                            const Gap(6),
+                            _buildTextField(
+                              controller: _categoryController,
+                              hint: 'e.g. RO Filter',
+                              textColor: textColorPrimary,
+                              hintColor: textColorSecondary,
+                              surfaceColor: uploadBoxBg,
+                              dividerColor: dividerColor,
+                              accentColor: accentColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Gap(12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildLabel('Price (৳)', textColorSecondary),
+                            const Gap(6),
+                            _buildTextField(
+                              controller: _priceController,
+                              hint: 'e.g. 15000',
+                              keyboardType: TextInputType.number,
+                              textColor: textColorPrimary,
+                              hintColor: textColorSecondary,
+                              surfaceColor: uploadBoxBg,
+                              dividerColor: dividerColor,
+                              accentColor: accentColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
+                  const Gap(14),
+                  _buildLabel('Warranty Details', textColorSecondary),
                   const Gap(6),
-                  InkWell(
-                    onTap: (_isUploadingImage || _isSubmitting)
-                        ? null
-                        : _pickAndUploadImage,
-                    borderRadius: BorderRadius.circular(12),
+                  _buildTextField(
+                    controller: _warrantyController,
+                    hint: 'e.g. 1 Year Official Brand Warranty',
+                    textColor: textColorPrimary,
+                    hintColor: textColorSecondary,
+                    surfaceColor: uploadBoxBg,
+                    dividerColor: dividerColor,
+                    accentColor: accentColor,
+                  ),
+                  const Gap(14),
+                  _buildLabel('Description (Optional)', textColorSecondary),
+                  const Gap(6),
+                  _buildTextField(
+                    controller: _descController,
+                    hint: 'Add custom notes or specs...',
+                    maxLines: 3,
+                    textColor: textColorPrimary,
+                    hintColor: textColorSecondary,
+                    surfaceColor: uploadBoxBg,
+                    dividerColor: dividerColor,
+                    accentColor: accentColor,
+                  ),
+                  const Gap(16),
+                  _buildLabel('Product Image', textColorSecondary),
+                  const Gap(6),
+                  GestureDetector(
+                    onTap: _isUploadingImage ? null : _pickAndUploadImage,
                     child: CustomPaint(
                       painter: _DashedBorderPainter(
                         color: _selectedImagePath != null
-                            ? accentColor
+                            ? AppColors.accentGreen
                             : dividerColor,
                       ),
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        height: 90,
                         decoration: BoxDecoration(
                           color: uploadBoxBg,
                           borderRadius: BorderRadius.circular(12),
@@ -265,11 +350,11 @@ class _AddProductModalState extends State<AddProductModal> {
                             ? Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 24,
                                     height: 24,
                                     child: CircularProgressIndicator(
-                                      strokeWidth: 2,
+                                      strokeWidth: 2.5,
                                       color: accentColor,
                                     ),
                                   ),
@@ -279,7 +364,6 @@ class _AddProductModalState extends State<AddProductModal> {
                                     style: GoogleFonts.inter(
                                       color: textColorSecondary,
                                       fontSize: 12,
-                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ],
@@ -290,12 +374,11 @@ class _AddProductModalState extends State<AddProductModal> {
                                   if (_selectedImagePath != null &&
                                       _selectedImagePath!.startsWith('http')) ...[
                                     ClipRRect(
-                                      borderRadius:
-                                          BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(8),
                                       child: Image.network(
                                         _selectedImagePath!,
-                                        height: 60,
-                                        width: 60,
+                                        width: 44,
+                                        height: 44,
                                         fit: BoxFit.cover,
                                         cacheWidth: 600,
                                         cacheHeight: 600,
@@ -316,8 +399,8 @@ class _AddProductModalState extends State<AddProductModal> {
                                   ],
                                   Text(
                                     _selectedImagePath != null
-                                        ? 'Cloudinary Image Ready (Tap to change)'
-                                        : 'Tap to select & upload image',
+                                        ? 'Image Ready (Tap to change)'
+                                        : 'Tap to upload image',
                                     style: GoogleFonts.inter(
                                       color: _selectedImagePath != null
                                           ? textColorPrimary
@@ -332,25 +415,17 @@ class _AddProductModalState extends State<AddProductModal> {
                     ),
                   ),
                   const Gap(24),
-
-                  // Save Product Button
                   Container(
                     width: double.infinity,
                     height: 48,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      gradient: isDark
-                          ? const LinearGradient(
-                              colors: [Color(0xFF0088FF), Color(0xFF00BCE1)],
-                            )
-                          : const LinearGradient(
-                              colors: [Color(0xFF60A5FA), Color(0xFF8B5CF6)],
-                            ),
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF60A5FA), Color(0xFF8B5CF6)],
+                      ),
                       boxShadow: [
                         BoxShadow(
-                          color: isDark
-                              ? const Color(0xFF00BCE1).withValues(alpha: 0.35)
-                              : const Color(0xFF8B5CF6).withValues(alpha: 0.3),
+                          color: const Color(0xFF8B5CF6).withValues(alpha: 0.3),
                           blurRadius: 10,
                           offset: const Offset(0, 3),
                         ),
@@ -359,25 +434,24 @@ class _AddProductModalState extends State<AddProductModal> {
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        onTap:
-                            (_isSubmitting || _isUploadingImage)
-                                ? null
-                                : _onSaveProduct,
+                        onTap: (_isSubmitting || _isUploadingImage)
+                            ? null
+                            : _onSaveProduct,
                         borderRadius: BorderRadius.circular(12),
                         child: Center(
                           child: _isSubmitting
-                              ? SizedBox(
+                              ? const SizedBox(
                                   width: 20,
                                   height: 20,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    color: isDark ? const Color(0xFF020810) : Colors.white,
+                                    color: Colors.white,
                                   ),
                                 )
                               : Text(
                                   'SAVE PRODUCT',
                                   style: GoogleFonts.inter(
-                                    color: isDark ? const Color(0xFF020810) : Colors.white,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
                                     letterSpacing: 0.5,

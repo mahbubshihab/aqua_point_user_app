@@ -32,14 +32,9 @@ class AppCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final defaultBg = Colors.white;
-    final defaultBorder = const Color(0xFFE2E8F0);
-    final defaultShadow = isDark
-        ? AppShadows.soft
-        : AppShadows.soft;
+    const defaultBg = Colors.white;
+    const defaultBorder = Color(0xFFE2E8F0);
+    final defaultShadow = AppShadows.soft;
 
     Widget content = Container(
       width: width,
@@ -64,8 +59,7 @@ class AppCard extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(borderRadius),
-          splashColor: (isDark ? const Color(0xFF00BCE1) : AppColors.primary)
-              .withValues(alpha: 0.12),
+          splashColor: AppColors.primary.withValues(alpha: 0.12),
           highlightColor: Colors.transparent,
           child: content,
         ),

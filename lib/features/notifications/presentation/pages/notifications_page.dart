@@ -63,7 +63,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
     }
   }
 
-  _NotificationTypeConfig _getTypeConfig(String? rawType, bool isDark) {
+  _NotificationTypeConfig _getTypeConfig(String? rawType) {
     final type = (rawType ?? '').trim().toLowerCase();
 
     switch (type) {
@@ -72,10 +72,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
       case 'maintenance':
       case 'repair':
       case 'amc':
-        return _NotificationTypeConfig(
+        return const _NotificationTypeConfig(
           icon: Icons.build_rounded,
-          iconColor: const Color(0xFF0284C7),
-          bgColor: isDark ? const Color(0x2E0284C7) : const Color(0xFFE0F2FE),
+          iconColor: Color(0xFF0284C7),
+          bgColor: Color(0xFFE0F2FE),
           label: 'Service',
         );
 
@@ -86,10 +86,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
       case 'promotion':
       case 'deal':
       case 'special':
-        return _NotificationTypeConfig(
+        return const _NotificationTypeConfig(
           icon: Icons.local_offer_rounded,
-          iconColor: const Color(0xFFD97706),
-          bgColor: isDark ? const Color(0x2ED97706) : const Color(0xFFFEF3C7),
+          iconColor: Color(0xFFD97706),
+          bgColor: Color(0xFFFEF3C7),
           label: 'Offer',
         );
 
@@ -99,10 +99,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
       case 'purchase':
       case 'product':
       case 'shop':
-        return _NotificationTypeConfig(
+        return const _NotificationTypeConfig(
           icon: Icons.shopping_bag_rounded,
-          iconColor: const Color(0xFF10B981),
-          bgColor: isDark ? const Color(0x2E10B981) : const Color(0xFFECFDF5),
+          iconColor: Color(0xFF10B981),
+          bgColor: Color(0xFFECFDF5),
           label: 'Order',
         );
 
@@ -111,10 +111,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
       case 'water':
       case 'hydration':
       case 'tds':
-        return _NotificationTypeConfig(
+        return const _NotificationTypeConfig(
           icon: Icons.water_drop_rounded,
-          iconColor: const Color(0xFF00B4DB),
-          bgColor: isDark ? const Color(0x2E00B4DB) : const Color(0xFFDEF3FC),
+          iconColor: Color(0xFF00B4DB),
+          bgColor: Color(0xFFDEF3FC),
           label: 'Reminder',
         );
 
@@ -123,20 +123,20 @@ class _NotificationsPageState extends State<NotificationsPage> {
       case 'chat':
       case 'support':
       case 'help':
-        return _NotificationTypeConfig(
+        return const _NotificationTypeConfig(
           icon: Icons.chat_bubble_rounded,
-          iconColor: const Color(0xFF8B5CF6),
-          bgColor: isDark ? const Color(0x2E8B5CF6) : const Color(0xFFEDE9FE),
+          iconColor: Color(0xFF8B5CF6),
+          bgColor: Color(0xFFEDE9FE),
           label: 'Support',
         );
 
       case 'alert':
       case 'warning':
       case 'urgent':
-        return _NotificationTypeConfig(
+        return const _NotificationTypeConfig(
           icon: Icons.warning_amber_rounded,
-          iconColor: const Color(0xFFEF4444),
-          bgColor: isDark ? const Color(0x2EEF4444) : const Color(0xFFFEE2E2),
+          iconColor: Color(0xFFEF4444),
+          bgColor: Color(0xFFFEE2E2),
           label: 'Alert',
         );
 
@@ -144,10 +144,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
       case 'system':
       case 'announcement':
       default:
-        return _NotificationTypeConfig(
+        return const _NotificationTypeConfig(
           icon: Icons.notifications_rounded,
-          iconColor: const Color(0xFF0083B0),
-          bgColor: isDark ? const Color(0x2E0083B0) : const Color(0xFFE0F7FA),
+          iconColor: Color(0xFF0083B0),
+          bgColor: Color(0xFFE0F7FA),
           label: 'Update',
         );
     }
@@ -213,22 +213,19 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF1E293B);
-    final textColorSecondary = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    const backgroundColor = Color(0xFFF8FAFC);
+    const textColorPrimary = Color(0xFF1E293B);
+    const textColorSecondary = Color(0xFF64748B);
 
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        backgroundColor: Colors.white,
         elevation: 0,
         scrolledUnderElevation: 1.0,
         centerTitle: false,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
             size: 20,
             color: textColorPrimary,
@@ -266,7 +263,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   return Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+                      color: const Color(0xFFF1F5F9),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
@@ -343,14 +340,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
         builder: (context, snapshot) {
           // Loading state
           if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
-            return _buildShimmerLoadingList(isDark);
+            return _buildShimmerLoadingList();
           }
 
           // Error handling or empty collection
           final docs = snapshot.data?.docs ?? [];
 
           if (docs.isEmpty) {
-            return _buildEmptyState(context, isDark);
+            return _buildEmptyState(context);
           }
 
           // Sort documents client-side by createdAt descending to guarantee order
@@ -366,7 +363,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
           return RefreshIndicator(
             color: const Color(0xFF0083B0),
-            backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+            backgroundColor: Colors.white,
             onRefresh: () async {
               await Future.delayed(const Duration(milliseconds: 500));
             },
@@ -394,7 +391,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         '')
                     .toString();
                 final rawType = (data['type'] ?? data['category'])?.toString();
-                final typeConfig = _getTypeConfig(rawType, isDark);
+                final typeConfig = _getTypeConfig(rawType);
                 final tag = data['tag']?.toString() ?? data['badge']?.toString();
 
                 final isRead = data['isRead'] == true || data['read'] == true;
@@ -410,7 +407,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   typeConfig: typeConfig,
                   tag: tag,
                   isRead: isRead,
-                  isDark: isDark,
                   onTap: () => _markAsRead(doc.id, isRead),
                 );
               },
@@ -421,12 +417,12 @@ class _NotificationsPageState extends State<NotificationsPage> {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context, bool isDark) {
+  Widget _buildEmptyState(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return RefreshIndicator(
           color: const Color(0xFF0083B0),
-          backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+          backgroundColor: Colors.white,
           onRefresh: () async {
             await Future.delayed(const Duration(milliseconds: 500));
           },
@@ -453,7 +449,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                               shape: BoxShape.circle,
                               gradient: RadialGradient(
                                 colors: [
-                                  const Color(0xFF0083B0).withValues(alpha: isDark ? 0.15 : 0.08),
+                                  const Color(0xFF0083B0).withValues(alpha: 0.08),
                                   Colors.transparent,
                                 ],
                               ),
@@ -464,9 +460,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
                             height: 96,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF0F9FF),
+                              color: const Color(0xFFF0F9FF),
                               border: Border.all(
-                                color: const Color(0xFFBAE6FD).withValues(alpha: isDark ? 0.2 : 0.6),
+                                color: const Color(0xFFBAE6FD).withValues(alpha: 0.6),
                                 width: 2,
                               ),
                               boxShadow: [
@@ -511,7 +507,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         style: GoogleFonts.poppins(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
-                          color: isDark ? Colors.white : const Color(0xFF1E293B),
+                          color: const Color(0xFF1E293B),
                           letterSpacing: -0.3,
                         ),
                         textAlign: TextAlign.center,
@@ -524,7 +520,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         style: GoogleFonts.poppins(
                           fontSize: 13.5,
                           fontWeight: FontWeight.w400,
-                          color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                          color: const Color(0xFF64748B),
                           height: 1.5,
                         ),
                         textAlign: TextAlign.center,
@@ -532,21 +528,21 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       const SizedBox(height: 32),
 
                       // Pull down hint
-                      Row(
+                      const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
                             Icons.arrow_downward_rounded,
                             size: 15,
-                            color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                            color: Color(0xFF94A3B8),
                           ),
-                          const SizedBox(width: 6),
+                          SizedBox(width: 6),
                           Text(
                             'Pull down to refresh',
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
-                              color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                              color: Color(0xFF94A3B8),
                             ),
                           ),
                         ],
@@ -562,13 +558,13 @@ class _NotificationsPageState extends State<NotificationsPage> {
     );
   }
 
-  Widget _buildShimmerLoadingList(bool isDark) {
+  Widget _buildShimmerLoadingList() {
     return ListView.separated(
       padding: const EdgeInsets.all(16),
       physics: const NeverScrollableScrollPhysics(),
       itemCount: 5,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
-      itemBuilder: (context, index) => _ShimmerCard(isDark: isDark),
+      itemBuilder: (context, index) => const _ShimmerCard(),
     );
   }
 }
@@ -595,7 +591,6 @@ class _NotificationCard extends StatelessWidget {
   final _NotificationTypeConfig typeConfig;
   final String? tag;
   final bool isRead;
-  final bool isDark;
   final VoidCallback onTap;
 
   const _NotificationCard({
@@ -606,23 +601,17 @@ class _NotificationCard extends StatelessWidget {
     required this.typeConfig,
     this.tag,
     required this.isRead,
-    required this.isDark,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final cardBgColor = isRead
-        ? (isDark ? const Color(0xFF1E293B) : Colors.white)
-        : (isDark ? const Color(0xFF243049) : const Color(0xFFF8FAFC));
+    final cardBgColor = isRead ? Colors.white : const Color(0xFFF8FAFC);
+    final borderColor = isRead ? const Color(0xFFE2E8F0) : const Color(0xFFBAE6FD);
 
-    final borderColor = isRead
-        ? (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0))
-        : (isDark ? const Color(0xFF0284C7).withValues(alpha: 0.4) : const Color(0xFFBAE6FD));
-
-    final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
-    final bodyColor = isDark ? const Color(0xFFCBD5E1) : const Color(0xFF475569);
-    final timeColor = isDark ? const Color(0xFF94A3B8) : const Color(0xFF94A3B8);
+    const titleColor = Color(0xFF0F172A);
+    const bodyColor = Color(0xFF475569);
+    const timeColor = Color(0xFF94A3B8);
 
     return Material(
       color: Colors.transparent,
@@ -637,9 +626,7 @@ class _NotificationCard extends StatelessWidget {
               color: borderColor,
               width: isRead ? 1.0 : 1.3,
             ),
-            boxShadow: isDark
-                ? []
-                : (isRead ? AppShadows.soft : AppShadows.medium),
+            boxShadow: isRead ? AppShadows.soft : AppShadows.medium,
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           child: Row(
@@ -732,7 +719,7 @@ class _NotificationCard extends StatelessWidget {
                     // Timestamp & Category
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.schedule_rounded,
                           size: 13,
                           color: timeColor,
@@ -751,7 +738,7 @@ class _NotificationCard extends StatelessWidget {
                           Container(
                             width: 4,
                             height: 4,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: timeColor,
                               shape: BoxShape.circle,
                             ),
@@ -780,8 +767,7 @@ class _NotificationCard extends StatelessWidget {
 }
 
 class _ShimmerCard extends StatefulWidget {
-  final bool isDark;
-  const _ShimmerCard({required this.isDark});
+  const _ShimmerCard();
 
   @override
   State<_ShimmerCard> createState() => _ShimmerCardState();
@@ -808,8 +794,8 @@ class _ShimmerCardState extends State<_ShimmerCard>
 
   @override
   Widget build(BuildContext context) {
-    final baseColor = widget.isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9);
-    final highlightColor = widget.isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
+    const baseColor = Color(0xFFF1F5F9);
+    const highlightColor = Color(0xFFE2E8F0);
 
     return AnimatedBuilder(
       animation: _controller,
@@ -820,10 +806,10 @@ class _ShimmerCardState extends State<_ShimmerCard>
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            color: widget.isDark ? const Color(0xFF1E293B) : Colors.white,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: widget.isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+              color: const Color(0xFFE2E8F0),
             ),
           ),
           child: Row(

@@ -164,30 +164,22 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
   @override
   Widget build(BuildContext context) {
     const helplinePhone = '01780-885841';
-
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
-    final appBarBg = isDark ? const Color(0xFF0F172A) : Colors.white;
-    final infoBannerBg = isDark
-        ? const Color(0xFF1E293B)
-        : const Color(0xFFE0F2FE).withValues(alpha: 0.6);
-    final bottomBarBg = isDark ? const Color(0xFF0F172A) : Colors.white;
-    final inputBg = isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9);
-    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
-    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorSecondary = Color(0xFF64748B);
+    const appBarBg = Colors.white;
+    final infoBannerBg = const Color(0xFFE0F2FE).withValues(alpha: 0.6);
+    const bottomBarBg = Colors.white;
+    const inputBg = Color(0xFFF1F5F9);
+    const borderColor = Color(0xFFE2E8F0);
+    const accentColor = AppColors.primary;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         backgroundColor: appBarBg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
             color: textColorPrimary,
             size: 20,
@@ -214,7 +206,7 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                       width: 1.5,
                     ),
                   ),
-                  child: Center(
+                  child: const Center(
                     child: Icon(
                       Icons.support_agent_rounded,
                       color: accentColor,
@@ -302,7 +294,7 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
               color: infoBannerBg,
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.info_outline_rounded,
                     color: accentColor,
                     size: 16,
@@ -319,7 +311,7 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                   ),
                   TextButton.icon(
                     onPressed: () => _makeCall(helplinePhone),
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.phone_rounded,
                       size: 14,
                       color: accentColor,
@@ -344,7 +336,7 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
             // Chat Messages Stream
             Expanded(
               child: _resolvedUserId == null
-                  ? Center(
+                  ? const Center(
                       child: CircularProgressIndicator(
                         color: accentColor,
                       ),
@@ -387,7 +379,7 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
 
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return Center(
+                          return const Center(
                             child: CircularProgressIndicator(
                               color: accentColor,
                             ),
@@ -409,7 +401,7 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                                       color: accentColor.withValues(alpha: 0.15),
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Icon(
+                                    child: const Icon(
                                       Icons.chat_bubble_outline_rounded,
                                       color: accentColor,
                                       size: 48,
@@ -465,7 +457,6 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                               text: text,
                               isUser: isUser,
                               timeStr: _formatMessageTime(createdAt),
-                              isDark: isDark,
                             );
                           },
                         );
@@ -478,12 +469,12 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 color: bottomBarBg,
-                border: Border(
+                border: const Border(
                   top: BorderSide(color: borderColor, width: 1),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, -3),
                   ),
@@ -553,17 +544,17 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                       ),
                       child: Center(
                         child: _isSending
-                            ? SizedBox(
+                            ? const SizedBox(
                                 width: 20,
                                 height: 20,
                                 child: CircularProgressIndicator(
-                                  color: isDark ? const Color(0xFF020810) : Colors.white,
+                                  color: Colors.white,
                                   strokeWidth: 2,
                                 ),
                               )
-                            : Icon(
+                            : const Icon(
                                 Icons.send_rounded,
-                                color: isDark ? const Color(0xFF020810) : Colors.white,
+                                color: Colors.white,
                                 size: 20,
                               ),
                       ),
@@ -582,22 +573,13 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
     required String text,
     required bool isUser,
     required String timeStr,
-    required bool isDark,
   }) {
-    final userBgColor = isDark
-        ? const Color(0xFF0284C7)
-        : AppColors.primaryLight;
-    final adminBgColor = isDark
-        ? const Color(0xFF1E293B)
-        : Colors.white;
-    final userTextColor = isDark ? Colors.white : const Color(0xFF0F172A);
-    final adminTextColor = isDark ? Colors.white : const Color(0xFF0F172A);
-    final timeColor = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
-    final borderColor = isDark
-        ? const Color(0xFF334155)
-        : const Color(0xFFE2E8F0);
+    const userBgColor = Color(0xFF00B4D8);
+    const adminBgColor = Colors.white;
+    const userTextColor = Colors.white;
+    const adminTextColor = Color(0xFF0F172A);
+    const timeColor = Color(0xFF64748B);
+    const borderColor = Color(0xFFE2E8F0);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -612,16 +594,14 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
               width: 36,
               height: 36,
               margin: const EdgeInsets.only(right: 12),
-              decoration: BoxDecoration(
-                color: isDark
-                    ? const Color(0xFF00BCE1).withValues(alpha: 0.2)
-                    : AppColors.primaryLight,
+              decoration: const BoxDecoration(
+                color: AppColors.primaryLight,
                 shape: BoxShape.circle,
               ),
-              child: Center(
+              child: const Center(
                 child: Icon(
                   Icons.headset_mic_rounded,
-                  color: isDark ? const Color(0xFF00BCE1) : AppColors.primary,
+                  color: AppColors.primary,
                   size: 18,
                 ),
               ),
@@ -639,20 +619,9 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                   bottomRight: Radius.circular(isUser ? 4 : 16),
                 ),
                 border: Border.all(
-                  color: isUser
-                      ? (isDark ? const Color(0xFF38BDF8) : AppColors.primaryLight)
-                      : borderColor,
+                  color: isUser ? userBgColor : borderColor,
                 ),
-                boxShadow: isUser
-                    ? null
-                    : (isDark
-                        ? [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.2),
-                              blurRadius: 8,
-                            ),
-                          ]
-                        : AppShadows.soft),
+                boxShadow: isUser ? null : AppShadows.soft,
               ),
               child: Column(
                 crossAxisAlignment: isUser
@@ -666,7 +635,7 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? const Color(0xFF00BCE1) : AppColors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -688,15 +657,15 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                         timeStr,
                         style: GoogleFonts.inter(
                           fontSize: 11,
-                          color: timeColor,
+                          color: isUser ? Colors.white70 : timeColor,
                         ),
                       ),
                       if (isUser) ...[
                         const SizedBox(width: 6),
-                        Icon(
+                        const Icon(
                           Icons.done_all_rounded,
                           size: 14,
-                          color: isDark ? Colors.white : AppColors.primary,
+                          color: Colors.white,
                         ),
                       ],
                     ],

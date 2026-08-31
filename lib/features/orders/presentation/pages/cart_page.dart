@@ -17,25 +17,20 @@ class CartPage extends StatelessWidget {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
     });
 
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
-    final cardBgColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
-    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
-    final bottomBarBg = isDark ? const Color(0xFF0F172A) : Colors.white;
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorSecondary = Color(0xFF64748B);
+    const cardBgColor = Colors.white;
+    const borderColor = Color(0xFFE2E8F0);
+    const accentColor = AppColors.primary;
+    const bottomBarBg = Colors.white;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: theme.scaffoldBackgroundColor,
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
             color: textColorPrimary,
             size: 20,
@@ -60,7 +55,7 @@ class CartPage extends StatelessWidget {
               if (state.items.isEmpty) return const SizedBox.shrink();
               return TextButton.icon(
                 onPressed: () {
-                  _showClearCartDialog(context, isDark);
+                  _showClearCartDialog(context);
                 },
                 icon: const Icon(
                   Icons.delete_outline_rounded,
@@ -97,7 +92,7 @@ class CartPage extends StatelessWidget {
                         shape: BoxShape.circle,
                         border: Border.all(color: borderColor),
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.shopping_cart_outlined,
                         size: 56,
                         color: textColorSecondary,
@@ -131,7 +126,7 @@ class CartPage extends StatelessWidget {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: accentColor,
-                        foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
+                        foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 24,
                           vertical: 12,
@@ -140,9 +135,9 @@ class CartPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.arrow_back_rounded,
-                        color: isDark ? const Color(0xFF020810) : Colors.white,
+                        color: Colors.white,
                         size: 18,
                       ),
                       label: Text(
@@ -171,7 +166,7 @@ class CartPage extends StatelessWidget {
                       // Cart Item Count Subtitle
                       Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.shopping_bag_outlined,
                             color: accentColor,
                             size: 20,
@@ -197,7 +192,7 @@ class CartPage extends StatelessWidget {
                         separatorBuilder: (context, index) => const Gap(12),
                         itemBuilder: (context, index) {
                           final item = cartState.items[index];
-                          return _buildCartItemCard(context, item, isDark);
+                          return _buildCartItemCard(context, item);
                         },
                       ),
                       const Gap(24),
@@ -205,7 +200,7 @@ class CartPage extends StatelessWidget {
                       // Price Summary Card
                       Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.receipt_long_outlined,
                             color: accentColor,
                             size: 20,
@@ -270,7 +265,7 @@ class CartPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            Divider(color: borderColor, height: 24),
+                            const Divider(color: borderColor, height: 24),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -310,7 +305,7 @@ class CartPage extends StatelessWidget {
                   border: Border.all(color: borderColor, width: 1),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: 10,
                       offset: const Offset(0, -3),
                     ),
@@ -355,7 +350,7 @@ class CartPage extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             backgroundColor: accentColor,
-                            foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
+                            foregroundColor: Colors.white,
                             elevation: 4,
                             shadowColor: accentColor.withValues(alpha: 0.4),
                             shape: RoundedRectangleBorder(
@@ -373,9 +368,9 @@ class CartPage extends StatelessWidget {
                                 ),
                               ),
                               const Gap(6),
-                              Icon(
+                              const Icon(
                                 Icons.arrow_forward_rounded,
-                                color: isDark ? const Color(0xFF020810) : Colors.white,
+                                color: Colors.white,
                                 size: 18,
                               ),
                             ],
@@ -393,11 +388,11 @@ class CartPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCartItemCard(BuildContext context, CartItem item, bool isDark) {
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final itemBoxBg = isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9);
-    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
-    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+  Widget _buildCartItemCard(BuildContext context, CartItem item) {
+    const textColorPrimary = Color(0xFF0F172A);
+    const itemBoxBg = Color(0xFFF1F5F9);
+    const borderColor = Color(0xFFE2E8F0);
+    const accentColor = AppColors.primary;
 
     return AppCard(
       padding: const EdgeInsets.all(12),
@@ -419,13 +414,13 @@ class CartPage extends StatelessWidget {
                   ? Image.network(
                       item.imageUrl!,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Icon(
+                      errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.water_drop_rounded,
                         color: accentColor,
                         size: 32,
                       ),
                     )
-                  : Icon(
+                  : const Icon(
                       Icons.water_drop_rounded,
                       color: accentColor,
                       size: 32,
@@ -515,8 +510,8 @@ class CartPage extends StatelessWidget {
                             borderRadius: const BorderRadius.horizontal(
                               left: Radius.circular(8),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8),
                               child: Icon(
                                 Icons.remove,
                                 size: 14,
@@ -547,8 +542,8 @@ class CartPage extends StatelessWidget {
                             borderRadius: const BorderRadius.horizontal(
                               right: Radius.circular(8),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8),
                               child: Icon(
                                 Icons.add,
                                 size: 14,
@@ -569,11 +564,11 @@ class CartPage extends StatelessWidget {
     );
   }
 
-  void _showClearCartDialog(BuildContext context, bool isDark) {
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark ? Colors.white60 : const Color(0xFF64748B);
-    final surfaceColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
+  void _showClearCartDialog(BuildContext context) {
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorSecondary = Color(0xFF64748B);
+    const surfaceColor = Colors.white;
+    const borderColor = Color(0xFFE2E8F0);
 
     showDialog(
       context: context,
@@ -581,7 +576,7 @@ class CartPage extends StatelessWidget {
         backgroundColor: surfaceColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: borderColor),
+          side: const BorderSide(color: borderColor),
         ),
         title: Text(
           'Clear Cart?',

@@ -107,10 +107,8 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
           _isFormExpanded = false;
         });
 
-        final isDark = Theme.of(context).brightness == Brightness.dark;
-        final snackbarBg = isDark ? AppColors.darkSurface : AppColors.surface;
-        final snackbarText =
-            isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
+        const snackbarBg = Colors.white;
+        const snackbarText = AppColors.textPrimary;
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -166,16 +164,11 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final cardBg = isDark ? AppColors.darkSurface : AppColors.surface;
-    final bgBox = isDark ? AppColors.darkBackground : AppColors.background;
-    final textPrimary =
-        isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
-    final textSecondary =
-        isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
-    final borderColor = isDark ? AppColors.darkBorder : AppColors.divider;
+    const cardBg = Colors.white;
+    const bgBox = AppColors.background;
+    const textPrimary = AppColors.textPrimary;
+    const textSecondary = AppColors.textSecondary;
+    const borderColor = AppColors.divider;
 
     final currentUser = FirebaseAuth.instance.currentUser;
     final authState = context.watch<AuthBloc>().state;
@@ -448,11 +441,11 @@ class _ProductReviewsSectionState extends State<ProductReviewsSection> {
             color: cardBg,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: borderColor),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
-                color: isDark ? Colors.black26 : Colors.black12,
+                color: Colors.black12,
                 blurRadius: 10,
-                offset: const Offset(0, 4),
+                offset: Offset(0, 4),
               ),
             ],
           ),

@@ -78,20 +78,15 @@ class _ServicesHistoryPageState extends State<ServicesHistoryPage>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
-    final tabBgColor = isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9);
-    final tabIndicatorColor = isDark ? const Color(0xFF0F172A) : Colors.white;
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorSecondary = Color(0xFF64748B);
+    const tabBgColor = Color(0xFFF1F5F9);
+    const tabIndicatorColor = Colors.white;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: theme.scaffoldBackgroundColor,
+        backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: false,
         title: Text(
@@ -117,16 +112,9 @@ class _ServicesHistoryPageState extends State<ServicesHistoryPage>
               indicator: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: tabIndicatorColor,
-                boxShadow: isDark
-                    ? [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.3),
-                          blurRadius: 6,
-                        ),
-                      ]
-                    : AppShadows.soft,
+                boxShadow: AppShadows.soft,
               ),
-              labelColor: isDark ? const Color(0xFF00BCE1) : AppColors.primary,
+              labelColor: AppColors.primary,
               unselectedLabelColor: textColorSecondary,
               labelStyle: GoogleFonts.inter(
                 fontWeight: FontWeight.bold,
@@ -152,9 +140,9 @@ class _ServicesHistoryPageState extends State<ServicesHistoryPage>
         },
         builder: (context, state) {
           if (state is ServicesLoading || state is ServicesInitial) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(
-                color: isDark ? const Color(0xFF00BCE1) : AppColors.primary,
+                color: AppColors.primary,
               ),
             );
           }
@@ -183,8 +171,8 @@ class _ServicesHistoryPageState extends State<ServicesHistoryPage>
                       context.read<ServicesBloc>().add(const LoadServicesHistory());
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isDark ? const Color(0xFF00BCE1) : AppColors.primary,
-                      foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -222,23 +210,15 @@ class _ServicesHistoryPageState extends State<ServicesHistoryPage>
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
               decoration: BoxDecoration(
-                gradient: isDark
-                    ? const LinearGradient(
-                        colors: [Color(0xFF0088FF), Color(0xFF00BCE1)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      )
-                    : const LinearGradient(
-                        colors: [Color(0xFF0052CC), Color(0xFF0088FF)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF0052CC), Color(0xFF0088FF)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
                 borderRadius: BorderRadius.circular(30),
                 boxShadow: [
                   BoxShadow(
-                    color: isDark
-                        ? const Color(0xFF00BCE1).withValues(alpha: 0.4)
-                        : const Color(0xFF0052CC).withValues(alpha: 0.35),
+                    color: const Color(0xFF0052CC).withValues(alpha: 0.35),
                     blurRadius: 16,
                     spreadRadius: 1,
                     offset: const Offset(0, 6),
@@ -286,12 +266,8 @@ class _EmptyStateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorSecondary = Color(0xFF64748B);
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
@@ -305,16 +281,14 @@ class _EmptyStateView extends StatelessWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? const Color(0xFF00BCE1).withValues(alpha: 0.15)
-                        : AppColors.primaryLight,
+                  decoration: const BoxDecoration(
+                    color: AppColors.primaryLight,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     icon,
                     size: 48,
-                    color: isDark ? const Color(0xFF00BCE1) : AppColors.primary,
+                    color: AppColors.primary,
                   ),
                 ),
                 const Gap(20),
@@ -363,24 +337,15 @@ class _ServicesTabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final cardBgColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final cardBorderColor = isDark
-        ? const Color(0xFF334155)
-        : const Color(0xFFE2E8F0);
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
-    final descBgColor = isDark
-        ? const Color(0xFF0F172A)
-        : const Color(0xFFF8FAFC);
+    const cardBgColor = Colors.white;
+    const cardBorderColor = Color(0xFFE2E8F0);
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorSecondary = Color(0xFF64748B);
+    const descBgColor = Color(0xFFF8FAFC);
 
     return RefreshIndicator(
-      color: isDark ? const Color(0xFF00BCE1) : AppColors.primary,
-      backgroundColor: theme.cardColor,
+      color: AppColors.primary,
+      backgroundColor: Colors.white,
       onRefresh: () async {
         context.read<ServicesBloc>().add(const LoadServicesHistory());
         await Future.delayed(const Duration(milliseconds: 600));
@@ -405,15 +370,7 @@ class _ServicesTabContent extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: cardBgColor,
                         borderRadius: BorderRadius.circular(16),
-                        boxShadow: isDark
-                            ? [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.25),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ]
-                            : AppShadows.soft,
+                        boxShadow: AppShadows.soft,
                         border: Border.all(color: cardBorderColor),
                       ),
                       padding: const EdgeInsets.all(16),
@@ -426,7 +383,7 @@ class _ServicesTabContent extends StatelessWidget {
                               Text(
                                 _formatRequestId(item.id, index),
                                 style: GoogleFonts.inter(
-                                  color: isDark ? const Color(0xFF00BCE1) : AppColors.secondary,
+                                  color: AppColors.secondary,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -446,7 +403,7 @@ class _ServicesTabContent extends StatelessWidget {
                           const Gap(12),
                           Row(
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.calendar_month_outlined,
                                 size: 16,
                                 color: textColorSecondary,
@@ -460,7 +417,7 @@ class _ServicesTabContent extends StatelessWidget {
                                 ),
                               ),
                               const Gap(16),
-                              Icon(
+                              const Icon(
                                 Icons.access_time_rounded,
                                 size: 16,
                                 color: textColorSecondary,
@@ -479,7 +436,7 @@ class _ServicesTabContent extends StatelessWidget {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.location_on_outlined,
                                 size: 16,
                                 color: textColorSecondary,
@@ -504,14 +461,10 @@ class _ServicesTabContent extends StatelessWidget {
                               width: double.infinity,
                               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                               decoration: BoxDecoration(
-                                color: isDark
-                                    ? const Color(0xFF00BCE1).withValues(alpha: 0.08)
-                                    : const Color(0xFF10B981).withValues(alpha: 0.06),
+                                color: const Color(0xFF10B981).withValues(alpha: 0.06),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: isDark
-                                      ? const Color(0xFF00BCE1).withValues(alpha: 0.25)
-                                      : const Color(0xFF10B981).withValues(alpha: 0.25),
+                                  color: const Color(0xFF10B981).withValues(alpha: 0.25),
                                 ),
                               ),
                               child: Row(
@@ -631,13 +584,11 @@ class _ServicesTabContent extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                               decoration: BoxDecoration(
-                                color: isDark
-                                    ? const Color(0xFF0F172A).withValues(alpha: 0.5)
-                                    : const Color(0xFFF1F5F9),
+                                color: const Color(0xFFF1F5F9),
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(color: cardBorderColor),
                               ),
-                              child: Row(
+                              child: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
@@ -645,10 +596,10 @@ class _ServicesTabContent extends StatelessWidget {
                                     size: 14,
                                     color: textColorSecondary,
                                   ),
-                                  const Gap(6),
+                                  Gap(6),
                                   Text(
                                     'Technician: Assigning soon',
-                                    style: GoogleFonts.inter(
+                                    style: TextStyle(
                                       color: textColorSecondary,
                                       fontSize: 11,
                                       fontWeight: FontWeight.w500,
@@ -756,23 +707,18 @@ class _OrdersTabContent extends StatelessWidget {
     );
   }
 
-  Widget _buildProductThumbnail(String? imageUrl, bool isDark) {
-    final accentContainer = isDark
-        ? const Color(0xFF00BCE1).withValues(alpha: 0.15)
-        : AppColors.primaryLight;
-    final accentIconColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
-
+  Widget _buildProductThumbnail(String? imageUrl) {
     Widget placeholder = Container(
       width: 64,
       height: 64,
       decoration: BoxDecoration(
-        color: accentContainer,
+        color: AppColors.primaryLight,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Center(
+      child: const Center(
         child: Icon(
           Icons.water_drop_rounded,
-          color: accentIconColor,
+          color: AppColors.primary,
           size: 28,
         ),
       ),
@@ -798,21 +744,14 @@ class _OrdersTabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final cardBgColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final cardBorderColor = isDark
-        ? const Color(0xFF334155)
-        : const Color(0xFFE2E8F0);
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
+    const cardBgColor = Colors.white;
+    const cardBorderColor = Color(0xFFE2E8F0);
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorSecondary = Color(0xFF64748B);
 
     return RefreshIndicator(
-      color: isDark ? const Color(0xFF00BCE1) : AppColors.primary,
-      backgroundColor: theme.cardColor,
+      color: AppColors.primary,
+      backgroundColor: Colors.white,
       onRefresh: () async {
         context.read<ServicesBloc>().add(const LoadServicesHistory());
         await Future.delayed(const Duration(milliseconds: 600));
@@ -837,15 +776,7 @@ class _OrdersTabContent extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: cardBgColor,
                         borderRadius: BorderRadius.circular(16),
-                        boxShadow: isDark
-                            ? [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.25),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ]
-                            : AppShadows.soft,
+                        boxShadow: AppShadows.soft,
                         border: Border.all(color: cardBorderColor),
                       ),
                       child: Material(
@@ -865,7 +796,7 @@ class _OrdersTabContent extends StatelessWidget {
                                     Text(
                                       item.id,
                                       style: GoogleFonts.inter(
-                                        color: isDark ? const Color(0xFF00BCE1) : AppColors.secondary,
+                                        color: AppColors.secondary,
                                         fontSize: 13,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -880,7 +811,7 @@ class _OrdersTabContent extends StatelessWidget {
                                 const Gap(12),
                                 Row(
                                   children: [
-                                    _buildProductThumbnail(item.imageUrl, isDark),
+                                    _buildProductThumbnail(item.imageUrl),
                                     const Gap(14),
                                     Expanded(
                                       child: Column(
@@ -910,7 +841,7 @@ class _OrdersTabContent extends StatelessWidget {
                                           Text(
                                             '৳${item.amount.toStringAsFixed(0)}',
                                             style: GoogleFonts.inter(
-                                              color: isDark ? const Color(0xFF00BCE1) : AppColors.primary,
+                                              color: AppColors.primary,
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -919,7 +850,7 @@ class _OrdersTabContent extends StatelessWidget {
                                       ),
                                     ),
                                     const Gap(8),
-                                    Icon(
+                                    const Icon(
                                       Icons.chevron_right_rounded,
                                       color: textColorSecondary,
                                       size: 24,

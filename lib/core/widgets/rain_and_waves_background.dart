@@ -79,35 +79,21 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
-    // Theme Dependent Palette
-    final bgGradient = isDark
-        ? const LinearGradient(
-            colors: [
-              Color(0xFF020810),
-              Color(0xFF041220),
-              Color(0xFF061828),
-              Color(0xFF0A1E30),
-              Color(0xFF0D2A3E),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          )
-        : const LinearGradient(
-            colors: [
-              Color(0xFFE0F7FA),
-              Color(0xFFE1F5FE),
-              Color(0xFFF0F9FF),
-              Color(0xFFE0F2FE),
-              Color(0xFFBAE6FD),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          );
+    // Pure Light Palette
+    const bgGradient = LinearGradient(
+      colors: [
+        Color(0xFFE0F7FA),
+        Color(0xFFE1F5FE),
+        Color(0xFFF0F9FF),
+        Color(0xFFE0F2FE),
+        Color(0xFFBAE6FD),
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+    );
 
-    final rainColor = isDark ? const Color(0xFF00BCE1) : const Color(0xFF0088FF);
+    const rainColor = Color(0xFF0088FF);
 
     return Stack(
       children: [
@@ -115,7 +101,7 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
         Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: BoxDecoration(gradient: bgGradient),
+          decoration: const BoxDecoration(gradient: bgGradient),
         ),
 
         // 2. Ambient Glow Orbs
@@ -127,14 +113,10 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
             height: 320,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isDark
-                  ? const Color(0xFF00BCE1).withValues(alpha: 0.08)
-                  : const Color(0xFF0088FF).withValues(alpha: 0.12),
+              color: const Color(0xFF0088FF).withValues(alpha: 0.12),
               boxShadow: [
                 BoxShadow(
-                  color: isDark
-                      ? const Color(0xFF00BCE1).withValues(alpha: 0.12)
-                      : const Color(0xFF0088FF).withValues(alpha: 0.15),
+                  color: const Color(0xFF0088FF).withValues(alpha: 0.15),
                   blurRadius: 100,
                   spreadRadius: 40,
                 ),
@@ -150,14 +132,10 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
             height: 280,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isDark
-                  ? const Color(0xFF3E4396).withValues(alpha: 0.12)
-                  : const Color(0xFF0284C7).withValues(alpha: 0.1),
+              color: const Color(0xFF0284C7).withValues(alpha: 0.1),
               boxShadow: [
                 BoxShadow(
-                  color: isDark
-                      ? const Color(0xFF3E4396).withValues(alpha: 0.15)
-                      : const Color(0xFF0284C7).withValues(alpha: 0.12),
+                  color: const Color(0xFF0284C7).withValues(alpha: 0.12),
                   blurRadius: 90,
                   spreadRadius: 30,
                 ),
@@ -183,7 +161,7 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
             builder: (context, child) {
               return CustomPaint(
                 size: Size(size.width, 180),
-                painter: _OceanWavesPainter(_waveController.value, isDark),
+                painter: _OceanWavesPainter(_waveController.value),
               );
             },
           ),
@@ -252,26 +230,17 @@ class _RainPainter extends CustomPainter {
 
 class _OceanWavesPainter extends CustomPainter {
   final double progress;
-  final bool isDark;
 
-  _OceanWavesPainter(this.progress, this.isDark);
+  _OceanWavesPainter(this.progress);
 
   @override
   void paint(Canvas canvas, Size size) {
     final width = size.width;
     final height = size.height;
 
-    final color1 = isDark
-        ? const Color(0xFF001E32).withValues(alpha: 0.85)
-        : const Color(0xFFB2EBF2).withValues(alpha: 0.7);
-
-    final color2 = isDark
-        ? const Color(0xFF003250).withValues(alpha: 0.5)
-        : const Color(0xFF80DEEA).withValues(alpha: 0.5);
-
-    final color3 = isDark
-        ? const Color(0xFF00BCE1).withValues(alpha: 0.08)
-        : const Color(0xFF00BCE1).withValues(alpha: 0.2);
+    final color1 = const Color(0xFFB2EBF2).withValues(alpha: 0.7);
+    final color2 = const Color(0xFF80DEEA).withValues(alpha: 0.5);
+    final color3 = const Color(0xFF00BCE1).withValues(alpha: 0.2);
 
     // Wave 1
     final path1 = Path();

@@ -113,15 +113,12 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
   }
 
   void _showAddAddressDialog({bool fromBottomSheet = false}) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark ? Colors.white60 : const Color(0xFF64748B);
-    final surfaceColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final inputBg = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
-    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
-    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorSecondary = Color(0xFF64748B);
+    const surfaceColor = Colors.white;
+    const inputBg = Color(0xFFF8FAFC);
+    const borderColor = Color(0xFFE2E8F0);
+    const accentColor = AppColors.primary;
 
     final controller = TextEditingController();
     showDialog(
@@ -145,15 +142,15 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
             fillColor: inputBg,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: borderColor),
+              borderSide: const BorderSide(color: borderColor),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: borderColor),
+              borderSide: const BorderSide(color: borderColor),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: accentColor),
+              borderSide: const BorderSide(color: accentColor),
             ),
           ),
         ),
@@ -189,13 +186,10 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
   }
 
   void _showAddressBottomSheet() {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark ? Colors.white60 : const Color(0xFF64748B);
-    final surfaceColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorSecondary = Color(0xFF64748B);
+    const surfaceColor = Colors.white;
+    const accentColor = AppColors.primary;
 
     showModalBottomSheet(
       context: context,
@@ -295,9 +289,6 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
   }
 
   Future<void> _selectDate() async {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
@@ -306,21 +297,14 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: isDark
-                ? const ColorScheme.dark(
-                    primary: Color(0xFF00BCE1),
-                    onPrimary: Color(0xFF020810),
-                    surface: Color(0xFF1E293B),
-                    onSurface: Colors.white,
-                  )
-                : const ColorScheme.light(
-                    primary: AppColors.primary,
-                    onPrimary: Colors.white,
-                    surface: Colors.white,
-                    onSurface: Color(0xFF0F172A),
-                  ),
-            dialogTheme: DialogThemeData(
-              backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primary,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Color(0xFF0F172A),
+            ),
+            dialogTheme: const DialogThemeData(
+              backgroundColor: Colors.white,
             ),
           ),
           child: child!,
@@ -335,28 +319,18 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
   }
 
   Future<void> _selectTime() async {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: _selectedTime ?? TimeOfDay.now(),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: isDark
-                ? const ColorScheme.dark(
-                    primary: Color(0xFF00BCE1),
-                    onPrimary: Color(0xFF020810),
-                    surface: Color(0xFF1E293B),
-                    onSurface: Colors.white,
-                  )
-                : const ColorScheme.light(
-                    primary: AppColors.primary,
-                    onPrimary: Colors.white,
-                    surface: Colors.white,
-                    onSurface: Color(0xFF0F172A),
-                  ),
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primary,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Color(0xFF0F172A),
+            ),
           ),
           child: child!,
         );
@@ -415,24 +389,19 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
-    final cardBgColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final cardBorderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
-    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorSecondary = Color(0xFF64748B);
+    const cardBgColor = Colors.white;
+    const cardBorderColor = Color(0xFFE2E8F0);
+    const accentColor = AppColors.primary;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: theme.scaffoldBackgroundColor,
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_rounded,
             color: textColorPrimary,
           ),
@@ -493,19 +462,11 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                     color: cardBgColor,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: cardBorderColor),
-                    boxShadow: isDark
-                        ? [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.25),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
-                            ),
-                          ]
-                        : AppShadows.soft,
+                    boxShadow: AppShadows.soft,
                   ),
                   padding: const EdgeInsets.all(16),
                   child: _isLoadingAddresses
-                      ? Center(
+                      ? const Center(
                           child: CircularProgressIndicator(
                             color: accentColor,
                           ),
@@ -526,7 +487,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                                 color: accentColor.withValues(alpha: 0.15),
                                 shape: BoxShape.circle,
                               ),
-                              child: Icon(
+                              child: const Icon(
                                 Icons.home_outlined,
                                 color: accentColor,
                                 size: 20,
@@ -560,7 +521,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                             TextButton.icon(
                               onPressed: _showAddressBottomSheet,
                               style: TextButton.styleFrom(
-                                foregroundColor: isDark ? const Color(0xFF00BCE1) : AppColors.secondary,
+                                foregroundColor: AppColors.secondary,
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 12,
                                   vertical: 6,
@@ -606,19 +567,11 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                       color: cardBgColor,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: cardBorderColor),
-                      boxShadow: isDark
-                          ? [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.25),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ]
-                          : AppShadows.soft,
+                      boxShadow: AppShadows.soft,
                     ),
                     child: Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.calendar_today_outlined,
                           color: accentColor,
                           size: 20,
@@ -633,7 +586,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                           ),
                         ),
                         const Spacer(),
-                        Icon(
+                        const Icon(
                           Icons.edit_calendar_outlined,
                           color: textColorSecondary,
                           size: 18,
@@ -667,19 +620,11 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                       color: cardBgColor,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: cardBorderColor),
-                      boxShadow: isDark
-                          ? [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.25),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ]
-                          : AppShadows.soft,
+                      boxShadow: AppShadows.soft,
                     ),
                     child: Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.access_time_rounded,
                           color: accentColor,
                           size: 20,
@@ -694,7 +639,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                           ),
                         ),
                         const Spacer(),
-                        Icon(
+                        const Icon(
                           Icons.edit_outlined,
                           color: textColorSecondary,
                           size: 18,
@@ -718,15 +663,7 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                 const Gap(8),
                 Container(
                   decoration: BoxDecoration(
-                    boxShadow: isDark
-                        ? [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.25),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
-                            ),
-                          ]
-                        : AppShadows.soft,
+                    boxShadow: AppShadows.soft,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: TextFormField(
@@ -743,19 +680,19 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                         fontSize: 14,
                       ),
                       filled: true,
-                      fillColor: cardBgColor,
+                      fillColor: const Color(0xFFF8FAFC),
                       contentPadding: const EdgeInsets.all(16),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: cardBorderColor),
+                        borderSide: const BorderSide(color: cardBorderColor),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: cardBorderColor),
+                        borderSide: const BorderSide(color: cardBorderColor),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: accentColor),
+                        borderSide: const BorderSide(color: accentColor),
                       ),
                     ),
                   ),

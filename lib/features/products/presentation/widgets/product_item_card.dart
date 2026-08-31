@@ -22,9 +22,6 @@ class ProductItemCard extends StatelessWidget {
   });
 
   void _onAddToCart(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     final cartItem = CartItem(
       id: product.id,
       name: product.name,
@@ -48,7 +45,7 @@ class ProductItemCard extends StatelessWidget {
               child: Text(
                 '${product.name} added to cart!',
                 style: GoogleFonts.inter(
-                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                  color: const Color(0xFF0F172A),
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -56,12 +53,12 @@ class ProductItemCard extends StatelessWidget {
           ],
         ),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        backgroundColor: Colors.white,
         duration: const Duration(seconds: 2),
         dismissDirection: DismissDirection.down,
         action: SnackBarAction(
           label: 'View Cart',
-          textColor: const Color(0xFF00BCE1),
+          textColor: AppColors.secondary,
           onPressed: () {
             messenger.hideCurrentSnackBar();
             Navigator.push(
@@ -98,16 +95,11 @@ class ProductItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
-    final thumbBg = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
-    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
-    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorSecondary = Color(0xFF64748B);
+    const thumbBg = Color(0xFFF8FAFC);
+    const borderColor = Color(0xFFE2E8F0);
+    const accentColor = AppColors.primary;
 
     return AppCard(
       margin: const EdgeInsets.only(bottom: 12),
@@ -230,7 +222,7 @@ class ProductItemCard extends StatelessWidget {
             ),
           ),
           const Gap(12),
-          Divider(color: borderColor, height: 1),
+          const Divider(color: borderColor, height: 1),
           const Gap(10),
 
           // Functional Action Buttons
@@ -243,12 +235,12 @@ class ProductItemCard extends StatelessWidget {
                     onPressed: () => _onAddToCart(context),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
-                      side: BorderSide(color: accentColor, width: 1),
+                      side: const BorderSide(color: accentColor, width: 1),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.add_shopping_cart_rounded,
                       color: accentColor,
                       size: 15,
@@ -273,20 +265,20 @@ class ProductItemCard extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       backgroundColor: accentColor,
-                      foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
+                      foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.flash_on_rounded,
-                      color: isDark ? const Color(0xFF020810) : Colors.white,
+                      color: Colors.white,
                       size: 15,
                     ),
                     label: Text(
                       'Buy Now',
                       style: GoogleFonts.inter(
-                        color: isDark ? const Color(0xFF020810) : Colors.white,
+                        color: Colors.white,
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                       ),

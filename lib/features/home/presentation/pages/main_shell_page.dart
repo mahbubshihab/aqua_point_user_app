@@ -114,20 +114,20 @@ class _WaterBottomNavBarState extends State<_WaterBottomNavBar>
             filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
             child: Container(
               padding: EdgeInsets.fromLTRB(16, 10, 16, bottomPadding > 0 ? bottomPadding : 12),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.92),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-                border: const Border(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+                border: Border(
                   top: BorderSide(
-                    color: Color(0x3300B4DB),
-                    width: 1.5,
+                    color: Color(0xFFE2E8F0),
+                    width: 1.0,
                   ),
                 ),
-                boxShadow: const [
+                boxShadow: [
                   BoxShadow(
-                    color: Color(0x140083B0),
-                    blurRadius: 40,
-                    offset: Offset(0, -10),
+                    color: Color(0x0F000000),
+                    blurRadius: 20,
+                    offset: Offset(0, -4),
                   ),
                 ],
               ),
@@ -226,7 +226,7 @@ class _NavItem extends StatelessWidget {
               icon,
               color: isActive
                   ? const Color(0xFF00B4DB)
-                  : const Color(0xFF9CA3AF),
+                  : const Color(0xFF64748B),
               size: 22,
             ),
             const SizedBox(height: 2),
@@ -237,7 +237,7 @@ class _NavItem extends StatelessWidget {
                 fontWeight: FontWeight.w700,
                 color: isActive
                     ? const Color(0xFF00B4DB)
-                    : const Color(0xFF9CA3AF),
+                    : const Color(0xFF64748B),
               ),
             ),
             const SizedBox(height: 3),
@@ -404,28 +404,20 @@ class _ContactSupportModalSheet extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.96),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-            border: const Border(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            border: Border(
               top: BorderSide(
-                color: Color(0x3300B4DB),
-                width: 1.5,
-              ),
-              left: BorderSide(
-                color: Color(0x1A00B4DB),
-                width: 1,
-              ),
-              right: BorderSide(
-                color: Color(0x1A00B4DB),
-                width: 1,
+                color: Color(0xFFE2E8F0),
+                width: 1.0,
               ),
             ),
-            boxShadow: const [
+            boxShadow: [
               BoxShadow(
-                color: Color(0x1F0083B0),
-                blurRadius: 40,
-                offset: Offset(0, -10),
+                color: Color(0x1A000000),
+                blurRadius: 30,
+                offset: Offset(0, -8),
               ),
             ],
           ),
@@ -800,7 +792,7 @@ class _ContactOptionCard extends StatelessWidget {
                           style: GoogleFonts.poppins(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
-                            color: const Color(0xFF1E293B),
+                            color: const Color(0xFF0F172A),
                           ),
                         ),
                         const SizedBox(width: 8),

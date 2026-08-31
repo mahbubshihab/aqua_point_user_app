@@ -24,9 +24,6 @@ class ShopProductCard extends StatelessWidget {
   });
 
   void _onAddToCart(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     final cartItem = CartItem(
       id: product.id,
       name: product.name,
@@ -42,7 +39,7 @@ class ShopProductCard extends StatelessWidget {
     messenger.hideCurrentSnackBar();
     messenger.showSnackBar(
       SnackBar(
-        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        backgroundColor: Colors.white,
         content: Row(
           children: [
             const Icon(Icons.check_circle_rounded, color: AppColors.accentGreen, size: 20),
@@ -51,7 +48,7 @@ class ShopProductCard extends StatelessWidget {
               child: Text(
                 '${product.name} added to Cart',
                 style: GoogleFonts.inter(
-                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                  color: const Color(0xFF0F172A),
                   fontSize: 13,
                 ),
                 maxLines: 1,
@@ -127,15 +124,10 @@ class ShopProductCard extends StatelessWidget {
     String? originalPriceStr, {
     required bool isMinimalView,
   }) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
-    final imgBg = isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9);
-    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorSecondary = Color(0xFF64748B);
+    const imgBg = Color(0xFFF1F5F9);
+    const accentColor = AppColors.primary;
 
     return AppCard(
       padding: const EdgeInsets.all(10),
@@ -230,9 +222,7 @@ class ShopProductCard extends StatelessWidget {
               children: [
                 // Add to Cart Icon Button
                 Material(
-                  color: isDark
-                      ? const Color(0xFF00BCE1).withValues(alpha: 0.15)
-                      : const Color(0x2000BCE1),
+                  color: const Color(0x2000BCE1),
                   borderRadius: BorderRadius.circular(9),
                   child: InkWell(
                     onTap: () => _onAddToCart(context),
@@ -242,12 +232,10 @@ class ShopProductCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(9),
                         border: Border.all(
-                          color: isDark
-                              ? const Color(0xFF00BCE1).withValues(alpha: 0.3)
-                              : const Color(0x6000BCE1),
+                          color: const Color(0x6000BCE1),
                         ),
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.add_shopping_cart_rounded,
                         color: accentColor,
                         size: 16,
@@ -262,20 +250,14 @@ class ShopProductCard extends StatelessWidget {
                     height: 32,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(9),
-                      gradient: isDark
-                          ? const LinearGradient(
-                              colors: [Color(0xFF0088FF), Color(0xFF00BCE1)],
-                            )
-                          : const LinearGradient(
-                              colors: [Color(0xFF00BCE1), Color(0xFF0089A8)],
-                            ),
-                      boxShadow: [
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF00BCE1), Color(0xFF0089A8)],
+                      ),
+                      boxShadow: const [
                         BoxShadow(
-                          color: isDark
-                              ? const Color(0xFF00BCE1).withValues(alpha: 0.35)
-                              : const Color(0x4000BCE1),
+                          color: Color(0x4000BCE1),
                           blurRadius: 6,
-                          offset: const Offset(0, 2),
+                          offset: Offset(0, 2),
                         ),
                       ],
                     ),
@@ -288,7 +270,7 @@ class ShopProductCard extends StatelessWidget {
                           child: Text(
                             'Buy Now',
                             style: GoogleFonts.inter(
-                              color: isDark ? const Color(0xFF020810) : Colors.white,
+                              color: Colors.white,
                               fontSize: 11.5,
                               fontWeight: FontWeight.bold,
                             ),

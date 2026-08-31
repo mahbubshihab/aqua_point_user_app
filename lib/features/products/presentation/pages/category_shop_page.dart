@@ -131,14 +131,11 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final textColorPrimary = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
-    final textColorSecondary = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.surface;
-    final borderColor = isDark ? AppColors.darkBorder : AppColors.border;
-    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+    const textColorPrimary = AppColors.textPrimary;
+    const textColorSecondary = AppColors.textSecondary;
+    const surfaceColor = Colors.white;
+    const borderColor = AppColors.border;
+    const accentColor = AppColors.primary;
 
     final nameLower = widget.categoryName.toLowerCase().trim();
     final idLower = (widget.categoryId ?? '').toLowerCase().trim();
@@ -163,12 +160,12 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
     }
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: theme.scaffoldBackgroundColor,
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
             color: textColorPrimary,
             size: 20,
@@ -220,7 +217,7 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                           MaterialPageRoute(builder: (_) => const CartPage()),
                         );
                       },
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.shopping_bag_outlined,
                         color: textColorPrimary,
                         size: 24,
@@ -233,7 +230,7 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                         child: IgnorePointer(
                           child: Container(
                             padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: accentColor,
                               shape: BoxShape.circle,
                             ),
@@ -245,7 +242,7 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                               '$count',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.inter(
-                                color: isDark ? const Color(0xFF020810) : Colors.white,
+                                color: Colors.white,
                                 fontSize: 9.5,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -297,7 +294,7 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                             decoration: InputDecoration(
                               hintText: 'Search in ${widget.categoryName}...',
                               hintStyle: GoogleFonts.inter(color: textColorSecondary, fontSize: 12.5),
-                              prefixIcon: Icon(Icons.search_rounded, color: accentColor, size: 20),
+                              prefixIcon: const Icon(Icons.search_rounded, color: accentColor, size: 20),
                               suffixIcon: _searchQuery.isNotEmpty
                                   ? GestureDetector(
                                       onTap: () {
@@ -306,7 +303,7 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                                           _searchQuery = '';
                                         });
                                       },
-                                      child: Icon(Icons.clear_rounded, color: textColorSecondary, size: 18),
+                                      child: const Icon(Icons.clear_rounded, color: textColorSecondary, size: 18),
                                     )
                                   : null,
                               border: InputBorder.none,
@@ -323,13 +320,13 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                         decoration: BoxDecoration(
                           color: surfaceColor,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: isDark ? AppColors.darkBorder : const Color(0x8000BCE1)),
+                          border: Border.all(color: const Color(0x8000BCE1)),
                         ),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<String>(
                             value: _sortBy,
                             dropdownColor: surfaceColor,
-                            icon: Icon(Icons.tune_rounded, color: accentColor, size: 18),
+                            icon: const Icon(Icons.tune_rounded, color: accentColor, size: 18),
                             style: GoogleFonts.inter(color: textColorPrimary, fontSize: 12, fontWeight: FontWeight.w500),
                             items: ['Featured', 'Price: Low to High', 'Price: High to Low', 'Top Rated']
                                 .map(
@@ -375,7 +372,7 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                 // Main Content (Loading, Error, Grid, or Empty State)
                 Expanded(
                   child: isLoading
-                      ? Center(
+                      ? const Center(
                           child: CircularProgressIndicator(color: accentColor),
                         )
                       : (state is ProductsError && (widget.products == null || widget.products!.isEmpty))
@@ -397,7 +394,7 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: accentColor,
-                                      foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
+                                      foregroundColor: Colors.white,
                                     ),
                                     onPressed: () {
                                       context.read<ProductsBloc>().add(const LoadProducts());
@@ -425,15 +422,13 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                                           color: surfaceColor,
                                           borderRadius: BorderRadius.circular(20),
                                           border: Border.all(color: borderColor),
-                                          boxShadow: isDark
-                                              ? []
-                                              : [
-                                                  BoxShadow(
-                                                    color: Colors.black.withValues(alpha: 0.04),
-                                                    blurRadius: 10,
-                                                    offset: const Offset(0, 4),
-                                                  ),
-                                                ],
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withValues(alpha: 0.04),
+                                              blurRadius: 10,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ],
                                         ),
                                         child: Column(
                                           mainAxisAlignment: MainAxisAlignment.center,
@@ -444,7 +439,7 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                                                 color: accentColor.withValues(alpha: 0.12),
                                                 shape: BoxShape.circle,
                                               ),
-                                              child: Icon(
+                                              child: const Icon(
                                                 Icons.search_off_rounded,
                                                 size: 48,
                                                 color: accentColor,
@@ -490,7 +485,7 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
                                               ),
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: accentColor,
-                                                foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
+                                                foregroundColor: Colors.white,
                                                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.circular(12),

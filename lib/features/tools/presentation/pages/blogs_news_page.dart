@@ -106,18 +106,18 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
     super.dispose();
   }
 
-  void _showContactOptionsModal(BuildContext context, bool isDark) {
+  void _showContactOptionsModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: isDark ? AppColors.darkSurface : AppColors.surface,
+      backgroundColor: AppColors.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) {
-        final textColor = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
-        final secTextColor = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
-        final cardBg = isDark ? AppColors.darkBackground : AppColors.background;
-        final borderCol = isDark ? AppColors.darkBorder : AppColors.border;
+        const textColor = AppColors.textPrimary;
+        const secTextColor = AppColors.textSecondary;
+        const cardBg = AppColors.background;
+        const borderCol = AppColors.border;
 
         return Padding(
           padding: const EdgeInsets.all(24),
@@ -128,7 +128,7 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
                 width: 44,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary,
+                  color: AppColors.textTertiary,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -155,7 +155,7 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
                 tileColor: cardBg,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
-                  side: BorderSide(color: borderCol),
+                  side: const BorderSide(color: borderCol),
                 ),
                 leading: Container(
                   padding: const EdgeInsets.all(10),
@@ -186,7 +186,7 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
                 tileColor: cardBg,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
-                  side: BorderSide(color: borderCol),
+                  side: const BorderSide(color: borderCol),
                 ),
                 leading: Container(
                   padding: const EdgeInsets.all(10),
@@ -200,12 +200,12 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
                   'WhatsApp Support: +8801780885841',
                   style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: textColor),
                 ),
-                subtitle: Text('Instant chat with water specialist', style: GoogleFonts.inter(fontSize: 12, color: secTextColor)),
+                subtitle: Text('Instant chat assistance', style: GoogleFonts.inter(fontSize: 12, color: secTextColor)),
                 onTap: () {
                   Navigator.pop(ctx);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Opening WhatsApp Support (+8801780885841) 💬', style: GoogleFonts.inter()),
+                      content: Text('Opening WhatsApp Chat (+8801780885841) 💬', style: GoogleFonts.inter()),
                       backgroundColor: AppColors.success,
                       behavior: SnackBarBehavior.floating,
                     ),
@@ -245,10 +245,10 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
     }
   }
 
-  Widget _buildArticleSlide(BlogEntity blog, bool isDark) {
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
-    final textSecColor = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
-    final borderCol = isDark ? AppColors.darkBorder : AppColors.border;
+  Widget _buildArticleSlide(BlogEntity blog) {
+    const textColor = AppColors.textPrimary;
+    const textSecColor = AppColors.textSecondary;
+    const borderCol = AppColors.border;
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -257,7 +257,7 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Featured Cover Image
-          _buildFeaturedCoverImage(blog.imageUrl, isDark),
+          _buildFeaturedCoverImage(blog.imageUrl),
           const Gap(20),
 
           // Category Badge & Read Time
@@ -266,9 +266,7 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.primary.withValues(alpha: 0.2)
-                      : AppColors.primaryLight,
+                  color: AppColors.primaryLight,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -343,7 +341,7 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
           const Gap(20),
 
           // Rich Formatted Article Content
-          _buildFormattedBlogContent(blog.content ?? '', isDark),
+          _buildFormattedBlogContent(blog.content ?? ''),
 
           const Gap(32),
           const Divider(height: 1),
@@ -354,9 +352,7 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
             width: double.infinity,
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: isDark
-                  ? AppColors.primary.withValues(alpha: 0.12)
-                  : AppColors.primaryLight,
+              color: AppColors.primaryLight,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: AppColors.primary.withValues(alpha: 0.3),
@@ -387,7 +383,7 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
                   height: 48,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      _showContactOptionsModal(context, isDark);
+                      _showContactOptionsModal(context);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
@@ -399,7 +395,7 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
                     ),
                     icon: const Icon(Icons.headset_mic_rounded, size: 20),
                     label: Text(
-                      'Need Expert Water Advice? Contact Aqua Point',
+                      'Ask a Water Purification Specialist',
                       style: GoogleFonts.inter(
                         fontSize: 13.5,
                         fontWeight: FontWeight.bold,
@@ -458,86 +454,80 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
     );
   }
 
-  Widget _buildFeaturedCoverImage(String imageUrl, bool isDark) {
-    final bgCol = isDark ? AppColors.darkSurfaceVariant : AppColors.surfaceVariant;
-    final secTextColor = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
+  Widget _buildFeaturedCoverImage(String imageUrl) {
+    const bgCol = AppColors.surfaceVariant;
+    const secTextColor = AppColors.textSecondary;
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: imageUrl.startsWith('assets/')
-          ? Image.asset(
-              imageUrl,
-              height: 220,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                height: 220,
+    return Container(
+      width: double.infinity,
+      height: 220,
+      decoration: BoxDecoration(
+        color: bgCol,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.border, width: 1.5),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(18),
+        child: imageUrl.startsWith('assets/')
+            ? Image.asset(
+                imageUrl,
                 width: double.infinity,
-                color: bgCol,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.article_rounded,
-                      size: 48,
-                      color: AppColors.primary,
-                    ),
-                    const Gap(8),
-                    Text(
-                      'Aqua Point Official Article',
-                      style: GoogleFonts.inter(
-                        fontSize: 13,
-                        color: secTextColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          : Image.network(
-              imageUrl,
-              height: 220,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Image.asset(
-                'assets/images/blog_ro_header.png',
                 height: 220,
-                width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder: (c, e, s) => Container(
-                  height: 220,
-                  width: double.infinity,
+                errorBuilder: (context, error, stackTrace) => Container(
                   color: bgCol,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.article_rounded,
-                        size: 48,
-                        color: AppColors.primary,
-                      ),
-                      const Gap(8),
-                      Text(
-                        'Aqua Point Official Article',
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          color: secTextColor,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
+                  alignment: Alignment.center,
+                  child: const Icon(Icons.water_drop_rounded, size: 48, color: AppColors.primary),
                 ),
+              )
+            : Image.network(
+                imageUrl,
+                width: double.infinity,
+                height: 220,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  final fallbackAsset = imageUrl.contains('blog_boiled')
+                      ? 'assets/images/blog_boiled_water.png'
+                      : imageUrl.contains('blog_ceo')
+                          ? 'assets/images/blog_ceo_desk.png'
+                          : imageUrl.contains('blog_plant')
+                              ? 'assets/images/blog_plant_system.jpg'
+                              : 'assets/images/blog_ro_header.png';
+                  return Image.asset(
+                    fallbackAsset,
+                    width: double.infinity,
+                    height: 220,
+                    fit: BoxFit.cover,
+                    errorBuilder: (c, e, s) => Container(
+                      color: bgCol,
+                      alignment: Alignment.center,
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.water_drop_rounded, size: 48, color: AppColors.primary),
+                          Gap(8),
+                          Text('Aqua Point Purification Guide', style: TextStyle(color: secTextColor, fontSize: 13)),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
-            ),
+      ),
     );
   }
 
-  Widget _buildFormattedBlogContent(String content, bool isDark) {
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
-    final secTextColor = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
-    final borderCol = isDark ? AppColors.darkBorder : AppColors.border;
+  Widget _buildFormattedBlogContent(String content) {
+    const textColor = AppColors.textPrimary;
+    const secTextColor = AppColors.textSecondary;
+    const borderCol = AppColors.border;
 
     if (content.isEmpty) {
       return Text(
@@ -590,9 +580,9 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
                             fit: BoxFit.contain,
                             errorBuilder: (context, error, stackTrace) => Container(
                               height: 180,
-                              color: isDark ? AppColors.darkSurfaceVariant : AppColors.surfaceVariant,
+                              color: AppColors.surfaceVariant,
                               alignment: Alignment.center,
-                              child: Icon(Icons.image_not_supported_rounded, color: secTextColor),
+                              child: const Icon(Icons.image_not_supported_rounded, color: secTextColor),
                             ),
                           )
                         : Image.network(
@@ -619,9 +609,9 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
                                 fit: BoxFit.contain,
                                 errorBuilder: (c, e, s) => Container(
                                   height: 180,
-                                  color: isDark ? AppColors.darkSurfaceVariant : AppColors.surfaceVariant,
+                                  color: AppColors.surfaceVariant,
                                   alignment: Alignment.center,
-                                  child: Icon(Icons.image_not_supported_rounded, color: secTextColor),
+                                  child: const Icon(Icons.image_not_supported_rounded, color: secTextColor),
                                 ),
                               );
                             },
@@ -629,7 +619,7 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
                     if (altText.isNotEmpty)
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                        color: isDark ? AppColors.darkSurfaceVariant : AppColors.surfaceVariant,
+                        color: AppColors.surfaceVariant,
                         child: Text(
                           altText,
                           textAlign: TextAlign.center,
@@ -764,28 +754,13 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
         }
       }
 
-      if (trimmed.startsWith('## ')) {
-        // Section Header H2
+      // Headers: # / ## / ###
+      if (trimmed.startsWith('### ')) {
         widgets.add(
           Padding(
-            padding: const EdgeInsets.only(top: 20, bottom: 10),
+            padding: const EdgeInsets.only(top: 18, bottom: 8),
             child: Text(
-              trimmed.substring(3).trim(),
-              style: GoogleFonts.outfit(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: textColor,
-              ),
-            ),
-          ),
-        );
-      } else if (trimmed.startsWith('### ')) {
-        // Section Header H3
-        widgets.add(
-          Padding(
-            padding: const EdgeInsets.only(top: 16, bottom: 8),
-            child: Text(
-              trimmed.substring(4).trim(),
+              trimmed.substring(4),
               style: GoogleFonts.outfit(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -794,198 +769,226 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
             ),
           ),
         );
-      } else if (trimmed.startsWith('> ')) {
-        // Quote Callout
-        final quoteText = trimmed.replaceAll('> ', '').replaceAll('"', '').trim();
+        continue;
+      } else if (trimmed.startsWith('## ')) {
         widgets.add(
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 14),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: isDark
-                  ? AppColors.primary.withValues(alpha: 0.15)
-                  : AppColors.primaryLight,
-              borderRadius: BorderRadius.circular(12),
-              border: const Border(
-                left: BorderSide(color: AppColors.primary, width: 4),
-              ),
-            ),
-            child: Row(
+          Padding(
+            padding: const EdgeInsets.only(top: 24, bottom: 10),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(
-                  Icons.format_quote_rounded,
-                  color: AppColors.primary,
-                  size: 26,
+                Text(
+                  trimmed.substring(3),
+                  style: GoogleFonts.outfit(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
                 ),
-                const Gap(10),
-                Expanded(
-                  child: Text(
-                    '"$quoteText"',
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.w500,
-                      height: 1.5,
-                      color: textColor,
-                    ),
+                const Gap(4),
+                Container(
+                  width: 32,
+                  height: 3,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(1.5),
                   ),
                 ),
               ],
             ),
           ),
         );
-      } else if (trimmed.contains('|') && trimmed.contains('\n')) {
-        // Crisp Comparison Table Block
-        final lines = trimmed.split('\n').where((l) => l.contains('|')).toList();
-        if (lines.length >= 2) {
-          final rows = lines.map((l) => l.split('|').map((c) => c.trim()).toList()).toList();
-          final cleanRows = rows.where((r) => !r.any((c) => c.contains('---'))).map((row) {
-            final filtered = List<String>.from(row);
-            if (filtered.isNotEmpty && filtered.first.isEmpty) filtered.removeAt(0);
-            if (filtered.isNotEmpty && filtered.last.isEmpty) filtered.removeLast();
-            return filtered;
-          }).where((r) => r.isNotEmpty).toList();
-
-          if (cleanRows.isNotEmpty) {
-            widgets.add(
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: borderCol, width: 1.5),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(11),
-                      child: Table(
-                        defaultColumnWidth: const IntrinsicColumnWidth(),
-                        border: TableBorder.all(
-                          color: borderCol,
-                          width: 1,
-                          style: BorderStyle.solid,
-                        ),
-                        children: cleanRows.asMap().entries.map((entry) {
-                          final rowIndex = entry.key;
-                          final row = entry.value;
-                          final isHeader = rowIndex == 0;
-                          return TableRow(
-                            decoration: BoxDecoration(
-                              color: isHeader
-                                  ? (isDark
-                                      ? AppColors.primary.withValues(alpha: 0.25)
-                                      : AppColors.primaryLight)
-                                  : (rowIndex % 2 == 1
-                                      ? (isDark
-                                          ? AppColors.darkSurfaceVariant.withValues(alpha: 0.4)
-                                          : AppColors.surfaceVariant.withValues(alpha: 0.5))
-                                      : Colors.transparent),
-                            ),
-                            children: row.map((cell) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-                                child: Text(
-                                  cell,
-                                  style: GoogleFonts.inter(
-                                    fontSize: isHeader ? 13 : 12.5,
-                                    fontWeight: isHeader ? FontWeight.bold : FontWeight.w500,
-                                    color: isHeader
-                                        ? AppColors.primary
-                                        : textColor,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          }
-        }
-      } else if (trimmed.contains('\n• ') || trimmed.startsWith('• ') || trimmed.contains('\n1. ') || trimmed.startsWith('1. ')) {
-        // Bullet or Numbered List Items
-        final lines = trimmed.split('\n');
+        continue;
+      } else if (trimmed.startsWith('# ')) {
         widgets.add(
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: lines.map((line) {
-                final lineTrim = line.trim();
-                if (lineTrim.isEmpty) return const SizedBox.shrink();
-                final isBullet = lineTrim.startsWith('• ');
-                final isNum = RegExp(r'^\d+\.\s').hasMatch(lineTrim);
-
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (isBullet)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 6, right: 10),
-                          child: Container(
-                            width: 6,
-                            height: 6,
-                            decoration: const BoxDecoration(
-                              color: AppColors.primary,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                        )
-                      else if (isNum)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: Text(
-                            lineTrim.split(' ').first,
-                            style: GoogleFonts.inter(
-                              fontSize: 13.5,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ),
-                      Expanded(
-                        child: Text(
-                          isBullet
-                              ? lineTrim.substring(2).trim()
-                              : (isNum ? lineTrim.substring(lineTrim.indexOf(' ') + 1).trim() : lineTrim),
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            height: 1.5,
-                            color: textColor,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        );
-      } else {
-        // Standard Paragraph
-        widgets.add(
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.only(top: 28, bottom: 12),
             child: Text(
-              trimmed,
-              style: GoogleFonts.inter(
-                fontSize: 14.5,
-                height: 1.6,
+              trimmed.substring(2),
+              style: GoogleFonts.outfit(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
                 color: textColor,
               ),
             ),
           ),
         );
+        continue;
       }
+
+      // Markdown Tables (| Header | Header |)
+      if (trimmed.contains('|') && trimmed.contains('\n')) {
+        final tableLines = trimmed.split('\n').where((l) => l.trim().startsWith('|')).toList();
+        if (tableLines.length >= 2) {
+          final cleanRows = <List<String>>[];
+          for (final line in tableLines) {
+            if (line.contains('---') || line.contains(':-')) continue;
+            final cells = line.split('|').map((c) => c.trim()).where((c) => c.isNotEmpty).toList();
+            if (cells.isNotEmpty) {
+              cleanRows.add(cells);
+            }
+          }
+
+          if (cleanRows.isNotEmpty) {
+            widgets.add(
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: borderCol),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(11),
+                    child: Table(
+                      defaultColumnWidth: const IntrinsicColumnWidth(),
+                      border: TableBorder.all(
+                        color: borderCol,
+                        width: 1,
+                        style: BorderStyle.solid,
+                      ),
+                      children: cleanRows.asMap().entries.map((entry) {
+                        final rowIndex = entry.key;
+                        final row = entry.value;
+                        final isHeader = rowIndex == 0;
+                        return TableRow(
+                          decoration: BoxDecoration(
+                            color: isHeader
+                                ? AppColors.primaryLight
+                                : (rowIndex % 2 == 1
+                                    ? AppColors.surfaceVariant.withValues(alpha: 0.5)
+                                    : Colors.transparent),
+                          ),
+                          children: row.map((cell) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                              child: Text(
+                                cell,
+                                style: GoogleFonts.inter(
+                                  fontSize: isHeader ? 13 : 12.5,
+                                  fontWeight: isHeader ? FontWeight.bold : FontWeight.w500,
+                                  color: isHeader
+                                      ? AppColors.primary
+                                      : textColor,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+              ),
+            );
+            continue;
+          }
+        }
+      }
+
+      // Bullet Lists (- item or * item)
+      if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+        final items = trimmed.split('\n');
+        for (final item in items) {
+          final cleanItem = item.replaceFirst(RegExp(r'^[-*]\s+'), '').trim();
+          if (cleanItem.isEmpty) continue;
+          widgets.add(
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 7, right: 10),
+                    width: 6,
+                    height: 6,
+                    decoration: const BoxDecoration(
+                      color: AppColors.primary,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      cleanItem,
+                      style: GoogleFonts.inter(
+                        fontSize: 14.5,
+                        color: textColor,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        continue;
+      }
+
+      // Numbered List
+      if (RegExp(r'^\d+\.\s').hasMatch(trimmed)) {
+        final items = trimmed.split('\n');
+        for (final item in items) {
+          final match = RegExp(r'^(\d+)\.\s+(.*)').firstMatch(item.trim());
+          if (match == null) continue;
+          final num = match.group(1);
+          final text = match.group(2) ?? '';
+          widgets.add(
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 24,
+                    height: 24,
+                    margin: const EdgeInsets.only(right: 10),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      num ?? '1',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      text,
+                      style: GoogleFonts.inter(
+                        fontSize: 14.5,
+                        color: textColor,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        continue;
+      }
+
+      // Standard Paragraph
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 14),
+          child: Text(
+            trimmed,
+            style: GoogleFonts.inter(
+              fontSize: 14.5,
+              color: textColor,
+              height: 1.6,
+            ),
+          ),
+        ),
+      );
     }
 
     return Column(
@@ -994,10 +997,10 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
     );
   }
 
-  Widget _buildBottomNavigationBar(bool isDark) {
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.surface;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
-    final borderColor = isDark ? AppColors.darkBorder : AppColors.border;
+  Widget _buildBottomNavigationBar() {
+    const surfaceColor = AppColors.surface;
+    const textColor = AppColors.textPrimary;
+    const borderColor = AppColors.border;
     final isFirstSlide = _currentPage == 0;
     final isLastSlide = _currentPage == _blogs.length - 1;
 
@@ -1011,7 +1014,7 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
           border: Border.all(color: borderColor),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 16,
               offset: const Offset(0, 4),
             ),
@@ -1031,18 +1034,14 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
                       );
                     },
               style: IconButton.styleFrom(
-                backgroundColor: isDark
-                    ? AppColors.darkSurfaceVariant
-                    : AppColors.surfaceVariant,
-                disabledBackgroundColor: isDark
-                    ? AppColors.darkSurfaceVariant.withValues(alpha: 0.3)
-                    : AppColors.surfaceVariant.withValues(alpha: 0.4),
+                backgroundColor: AppColors.surfaceVariant,
+                disabledBackgroundColor: AppColors.surfaceVariant.withValues(alpha: 0.4),
               ),
               icon: Icon(
                 Icons.arrow_back_ios_new_rounded,
                 size: 18,
                 color: isFirstSlide
-                    ? (isDark ? AppColors.darkTextTertiary : AppColors.textTertiary)
+                    ? AppColors.textTertiary
                     : textColor,
               ),
             ),
@@ -1060,9 +1059,7 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
                   decoration: BoxDecoration(
                     color: isSelected
                         ? AppColors.primary
-                        : (isDark
-                            ? AppColors.darkTextTertiary.withValues(alpha: 0.5)
-                            : AppColors.textTertiary.withValues(alpha: 0.4)),
+                        : AppColors.textTertiary.withValues(alpha: 0.4),
                     borderRadius: BorderRadius.circular(4),
                   ),
                 );
@@ -1080,18 +1077,14 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
                       );
                     },
               style: IconButton.styleFrom(
-                backgroundColor: isDark
-                    ? AppColors.darkSurfaceVariant
-                    : AppColors.surfaceVariant,
-                disabledBackgroundColor: isDark
-                    ? AppColors.darkSurfaceVariant.withValues(alpha: 0.3)
-                    : AppColors.surfaceVariant.withValues(alpha: 0.4),
+                backgroundColor: AppColors.surfaceVariant,
+                disabledBackgroundColor: AppColors.surfaceVariant.withValues(alpha: 0.4),
               ),
               icon: Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 18,
                 color: isLastSlide
-                    ? (isDark ? AppColors.darkTextTertiary : AppColors.textTertiary)
+                    ? AppColors.textTertiary
                     : textColor,
               ),
             ),
@@ -1103,13 +1096,10 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final backgroundColor = isDark ? AppColors.darkBackground : AppColors.background;
-    final surfaceColor = isDark ? AppColors.darkSurface : AppColors.surface;
-    final textColor = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
-    final secTextColor = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
+    const backgroundColor = AppColors.background;
+    const surfaceColor = AppColors.surface;
+    const textColor = AppColors.textPrimary;
+    const secTextColor = AppColors.textSecondary;
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -1118,7 +1108,7 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_rounded,
             color: textColor,
             size: 22,
@@ -1142,9 +1132,7 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
-                    color: isDark
-                        ? AppColors.primary.withValues(alpha: 0.2)
-                        : AppColors.primaryLight,
+                    color: AppColors.primaryLight,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: AppColors.primary.withValues(alpha: 0.3),
@@ -1181,10 +1169,10 @@ class _BlogsNewsPageState extends State<BlogsNewsPage> {
               },
               itemBuilder: (context, index) {
                 final blog = _blogs[index];
-                return _buildArticleSlide(blog, isDark);
+                return _buildArticleSlide(blog);
               },
             ),
-      bottomNavigationBar: _blogs.isNotEmpty ? _buildBottomNavigationBar(isDark) : null,
+      bottomNavigationBar: _blogs.isNotEmpty ? _buildBottomNavigationBar() : null,
     );
   }
 }

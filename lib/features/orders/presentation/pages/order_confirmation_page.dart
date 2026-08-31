@@ -41,18 +41,12 @@ class OrderConfirmationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final bgColor = theme.scaffoldBackgroundColor;
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary =
-        isDark ? Colors.white.withValues(alpha: 0.65) : const Color(0xFF64748B);
-    final dividerColor =
-        isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
-    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
-    final noteBgColor =
-        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
+    const bgColor = AppColors.background;
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorSecondary = Color(0xFF64748B);
+    const dividerColor = Color(0xFFE2E8F0);
+    const accentColor = AppColors.primary;
+    const noteBgColor = Color(0xFFF8FAFC);
 
     return PopScope(
       canPop: false,
@@ -64,7 +58,7 @@ class OrderConfirmationPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: bgColor,
         appBar: AppBar(
-          backgroundColor: bgColor,
+          backgroundColor: Colors.white,
           elevation: 0,
           automaticallyImplyLeading: false,
           centerTitle: true,
@@ -155,7 +149,7 @@ class OrderConfirmationPage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Divider(color: dividerColor, height: 20),
+                    const Divider(color: dividerColor, height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -176,7 +170,7 @@ class OrderConfirmationPage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Divider(color: dividerColor, height: 20),
+                    const Divider(color: dividerColor, height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -189,17 +183,13 @@ class OrderConfirmationPage extends StatelessWidget {
                         ),
                         StatBadge(
                           text: paymentMethod,
-                          backgroundColor: isDark
-                              ? const Color(0x2010B981)
-                              : AppColors.successLight,
-                          textColor: isDark
-                              ? const Color(0xFF34D399)
-                              : AppColors.success,
+                          backgroundColor: AppColors.successLight,
+                          textColor: AppColors.success,
                           icon: Icons.check_circle_rounded,
                         ),
                       ],
                     ),
-                    Divider(color: dividerColor, height: 20),
+                    const Divider(color: dividerColor, height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -210,14 +200,10 @@ class OrderConfirmationPage extends StatelessWidget {
                             fontSize: 13,
                           ),
                         ),
-                        StatBadge(
+                        const StatBadge(
                           text: 'PENDING',
-                          backgroundColor: isDark
-                              ? const Color(0x20F59E0B)
-                              : AppColors.warningLight,
-                          textColor: isDark
-                              ? const Color(0xFFFBBF24)
-                              : AppColors.warning,
+                          backgroundColor: AppColors.warningLight,
+                          textColor: AppColors.warning,
                         ),
                       ],
                     ),

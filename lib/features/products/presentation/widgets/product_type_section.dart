@@ -51,7 +51,6 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
@@ -184,11 +183,11 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
             Container(
               padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
               decoration: BoxDecoration(
-                color: theme.colorScheme.surface,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(14),
-                boxShadow: isDark ? [] : AppShadows.soft,
+                boxShadow: AppShadows.soft,
                 border: Border.all(
-                  color: isDark ? AppColors.darkBorder : AppColors.border,
+                  color: AppColors.border,
                   width: 1,
                 ),
               ),

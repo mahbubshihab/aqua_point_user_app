@@ -40,25 +40,20 @@ class _ShopPageState extends State<ShopPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
-    final cardBgColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
-    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorSecondary = Color(0xFF64748B);
+    const cardBgColor = Colors.white;
+    const borderColor = Color(0xFFE2E8F0);
+    const accentColor = AppColors.primary;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: theme.scaffoldBackgroundColor,
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: Navigator.canPop(context)
             ? IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.arrow_back_ios_new_rounded,
                   color: textColorPrimary,
                   size: 20,
@@ -96,7 +91,7 @@ class _ShopPageState extends State<ShopPage> {
                           MaterialPageRoute(builder: (_) => const CartPage()),
                         );
                       },
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.shopping_bag_outlined,
                         color: textColorPrimary,
                         size: 24,
@@ -109,7 +104,7 @@ class _ShopPageState extends State<ShopPage> {
                         child: IgnorePointer(
                           child: Container(
                             padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: accentColor,
                               shape: BoxShape.circle,
                             ),
@@ -121,7 +116,7 @@ class _ShopPageState extends State<ShopPage> {
                               '$count',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.inter(
-                                color: isDark ? const Color(0xFF020810) : Colors.white,
+                                color: Colors.white,
                                 fontSize: 9.5,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -141,7 +136,7 @@ class _ShopPageState extends State<ShopPage> {
         child: BlocBuilder<ProductsBloc, ProductsState>(
           builder: (context, state) {
             if (state is ProductsLoading || state is ProductsInitial) {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(color: accentColor),
               );
             }
@@ -165,7 +160,7 @@ class _ShopPageState extends State<ShopPage> {
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: accentColor,
-                        foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
+                        foregroundColor: Colors.white,
                       ),
                       onPressed: () {
                         context.read<ProductsBloc>().add(const LoadProducts());
@@ -209,7 +204,7 @@ class _ShopPageState extends State<ShopPage> {
                             color: textColorSecondary,
                             fontSize: 12.5,
                           ),
-                          prefixIcon: Icon(
+                          prefixIcon: const Icon(
                             Icons.search_rounded,
                             color: accentColor,
                             size: 22,
@@ -222,7 +217,7 @@ class _ShopPageState extends State<ShopPage> {
                                       _searchQuery = '';
                                     });
                                   },
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.clear_rounded,
                                     color: textColorSecondary,
                                     size: 18,
@@ -237,7 +232,7 @@ class _ShopPageState extends State<ShopPage> {
                   ),
                   const Gap(8),
                   // Filter Pills Bar (Type-wise & All)
-                  _buildTypeFilterPills(isDark),
+                  _buildTypeFilterPills(),
                   const Gap(12),
                   // Main Body with Type-wise Product Sections
                   Expanded(
@@ -257,7 +252,6 @@ class _ShopPageState extends State<ShopPage> {
                             children: _buildTypeSections(
                               context,
                               allProducts,
-                              isDark,
                             ),
                           ),
                         ),
@@ -275,19 +269,17 @@ class _ShopPageState extends State<ShopPage> {
     );
   }
 
-  Widget _buildTypeFilterPills(bool isDark) {
+  Widget _buildTypeFilterPills() {
     final filterNames = [
       'All',
       'Filters',
       'Parts',
     ];
 
-    final textColorSecondary = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
-    final cardBgColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
-    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+    const textColorSecondary = Color(0xFF64748B);
+    const cardBgColor = Colors.white;
+    const borderColor = Color(0xFFE2E8F0);
+    const accentColor = AppColors.primary;
 
     return SizedBox(
       height: 38,
@@ -315,7 +307,7 @@ class _ShopPageState extends State<ShopPage> {
               backgroundColor: cardBgColor,
               labelStyle: GoogleFonts.inter(
                 color: isSelected
-                    ? (isDark ? const Color(0xFF020810) : Colors.white)
+                    ? Colors.white
                     : textColorSecondary,
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
@@ -337,11 +329,8 @@ class _ShopPageState extends State<ShopPage> {
   List<Widget> _buildTypeSections(
     BuildContext context,
     List<ProductEntity> allProducts,
-    bool isDark,
   ) {
-    final textColorSecondary = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
+    const textColorSecondary = Color(0xFF64748B);
 
     // Filter products by search query first if provided
     List<ProductEntity> filteredList = allProducts;
@@ -431,7 +420,7 @@ class _ShopPageState extends State<ShopPage> {
         Center(
           child: Column(
             children: [
-              Icon(Icons.search_off_rounded, size: 56, color: textColorSecondary),
+              const Icon(Icons.search_off_rounded, size: 56, color: textColorSecondary),
               const Gap(12),
               Text(
                 _searchQuery.isNotEmpty ? 'No products match "$_searchQuery"' : 'No products found',

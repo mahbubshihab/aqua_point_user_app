@@ -99,11 +99,8 @@ class _CustomSplashPageState extends State<CustomSplashPage>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorAccent = isDark ? const Color(0xFF00BCE1) : const Color(0xFF0088FF);
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorAccent = Color(0xFF0088FF);
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
@@ -118,7 +115,7 @@ class _CustomSplashPageState extends State<CustomSplashPage>
         }
       },
       child: Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
+        backgroundColor: Colors.white,
         body: RainAndWavesBackground(
           child: Center(
             child: SingleChildScrollView(
@@ -163,17 +160,11 @@ class _CustomSplashPageState extends State<CustomSplashPage>
                               height: 76,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(22),
-                                gradient: isDark
-                                    ? const LinearGradient(
-                                        colors: [Color(0xFF0A1628), Color(0xFF0D2035)],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      )
-                                    : const LinearGradient(
-                                        colors: [Color(0xFFE0F2FE), Color(0xFFBAE6FD)],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
+                                gradient: const LinearGradient(
+                                  colors: [Color(0xFFE0F2FE), Color(0xFFBAE6FD)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
                                 border: Border.all(
                                   color: textColorAccent.withValues(alpha: 0.45),
                                   width: 1.5,
@@ -191,7 +182,7 @@ class _CustomSplashPageState extends State<CustomSplashPage>
                                   width: 44,
                                   height: 44,
                                   fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) => Icon(
+                                  errorBuilder: (context, error, stackTrace) => const Icon(
                                     Icons.water_drop_rounded,
                                     size: 38,
                                     color: textColorAccent,

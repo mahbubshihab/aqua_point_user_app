@@ -129,26 +129,21 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
-    final cardBgColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final itemBoxBg = isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9);
-    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
-    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
-    final bottomBarBg = isDark ? const Color(0xFF0F172A) : Colors.white;
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorSecondary = Color(0xFF64748B);
+    const cardBgColor = Colors.white;
+    const itemBoxBg = Color(0xFFF1F5F9);
+    const borderColor = Color(0xFFE2E8F0);
+    const accentColor = AppColors.primary;
+    const bottomBarBg = Colors.white;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: theme.scaffoldBackgroundColor,
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
             color: textColorPrimary,
             size: 20,
@@ -184,7 +179,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         shape: BoxShape.circle,
                         border: Border.all(color: borderColor),
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.shopping_cart_outlined,
                         size: 48,
                         color: textColorSecondary,
@@ -219,15 +214,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: accentColor,
-                        foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
+                        foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.water_drop_outlined,
-                        color: isDark ? const Color(0xFF020810) : Colors.white,
+                        color: Colors.white,
                       ),
                       label: Text(
                         'Explore Products',
@@ -275,7 +270,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 decoration: _buildInputDecoration(
                                   hintText: 'Enter your full name',
                                   prefixIcon: Icons.person_outline_rounded,
-                                  isDark: isDark,
                                   accentColor: accentColor,
                                   borderColor: borderColor,
                                   textColorSecondary: textColorSecondary,
@@ -304,7 +298,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 decoration: _buildInputDecoration(
                                   hintText: '01XXXXXXXXX',
                                   prefixIcon: Icons.phone_outlined,
-                                  isDark: isDark,
                                   accentColor: accentColor,
                                   borderColor: borderColor,
                                   textColorSecondary: textColorSecondary,
@@ -336,7 +329,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 decoration: _buildInputDecoration(
                                   hintText: 'House, Road, Area, City',
                                   prefixIcon: Icons.home_outlined,
-                                  isDark: isDark,
                                   accentColor: accentColor,
                                   borderColor: borderColor,
                                   textColorSecondary: textColorSecondary,
@@ -364,7 +356,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 decoration: _buildInputDecoration(
                                   hintText: 'Special delivery instructions',
                                   prefixIcon: Icons.note_alt_outlined,
-                                  isDark: isDark,
                                   accentColor: accentColor,
                                   borderColor: borderColor,
                                   textColorSecondary: textColorSecondary,
@@ -383,7 +374,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: cartState.items.length,
-                            separatorBuilder: (context, index) => Divider(color: borderColor, height: 20),
+                            separatorBuilder: (context, index) => const Divider(color: borderColor, height: 20),
                             itemBuilder: (context, index) {
                               final item = cartState.items[index];
                               return Row(
@@ -402,13 +393,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                           ? Image.network(
                                               item.imageUrl!,
                                               fit: BoxFit.cover,
-                                              errorBuilder: (context, error, stackTrace) => Icon(
+                                              errorBuilder: (context, error, stackTrace) => const Icon(
                                                 Icons.water_drop_rounded,
                                                 color: accentColor,
                                                 size: 22,
                                               ),
                                             )
-                                          : Icon(
+                                          : const Icon(
                                               Icons.water_drop_rounded,
                                               color: accentColor,
                                               size: 22,
@@ -450,8 +441,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                                 );
                                           },
                                           borderRadius: const BorderRadius.horizontal(left: Radius.circular(8)),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                                          child: const Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: 8),
                                             child: Icon(Icons.remove, size: 14, color: textColorPrimary),
                                           ),
                                         ),
@@ -473,8 +464,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                                 );
                                           },
                                           borderRadius: const BorderRadius.horizontal(right: Radius.circular(8)),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                                          child: const Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: 8),
                                             child: Icon(Icons.add, size: 14, color: accentColor),
                                           ),
                                         ),
@@ -505,7 +496,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             title: 'Cash on Delivery',
                             icon: Icons.local_shipping_outlined,
                             value: 'Cash on Delivery',
-                            isDark: isDark,
                             textColorPrimary: textColorPrimary,
                             textColorSecondary: textColorSecondary,
                             accentColor: accentColor,
@@ -553,7 +543,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                   ),
                                 ],
                               ),
-                              Divider(color: borderColor, height: 20),
+                              const Divider(color: borderColor, height: 20),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -593,7 +583,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     border: Border.all(color: borderColor, width: 1),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 10,
                         offset: const Offset(0, -3),
                       ),
@@ -631,7 +621,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               backgroundColor: accentColor,
-                              foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
+                              foregroundColor: Colors.white,
                               elevation: 2,
                               shadowColor: accentColor.withValues(alpha: 0.3),
                               shape: RoundedRectangleBorder(
@@ -639,12 +629,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               ),
                             ),
                             child: _isSubmitting
-                                ? SizedBox(
+                                ? const SizedBox(
                                     width: 20,
                                     height: 20,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      color: isDark ? const Color(0xFF020810) : Colors.white,
+                                      color: Colors.white,
                                     ),
                                   )
                                 : Row(
@@ -658,9 +648,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                         ),
                                       ),
                                       const Gap(6),
-                                      Icon(
+                                      const Icon(
                                         Icons.arrow_forward_rounded,
-                                        color: isDark ? const Color(0xFF020810) : Colors.white,
+                                        color: Colors.white,
                                         size: 18,
                                       ),
                                     ],
@@ -682,7 +672,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
   InputDecoration _buildInputDecoration({
     required String hintText,
     required IconData prefixIcon,
-    required bool isDark,
     required Color accentColor,
     required Color borderColor,
     required Color textColorSecondary,
@@ -695,7 +684,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       ),
       prefixIcon: Icon(prefixIcon, size: 18, color: accentColor),
       filled: true,
-      fillColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      fillColor: const Color(0xFFF8FAFC),
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
@@ -741,7 +730,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
     required String title,
     required IconData icon,
     required String value,
-    required bool isDark,
     required Color textColorPrimary,
     required Color textColorSecondary,
     required Color accentColor,
@@ -762,7 +750,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         decoration: BoxDecoration(
           color: isSelected
               ? accentColor.withValues(alpha: 0.08)
-              : (isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC)),
+              : const Color(0xFFF8FAFC),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: isSelected ? accentColor : borderColor,

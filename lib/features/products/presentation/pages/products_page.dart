@@ -32,19 +32,14 @@ class _ProductsPageState extends State<ProductsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final textColorPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
-    final textColorSecondary = isDark
-        ? Colors.white.withValues(alpha: 0.65)
-        : const Color(0xFF64748B);
-    final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
+    const textColorPrimary = Color(0xFF0F172A);
+    const textColorSecondary = Color(0xFF64748B);
+    const accentColor = AppColors.primary;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: theme.scaffoldBackgroundColor,
+        backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: false,
         title: Text(
@@ -69,7 +64,7 @@ class _ProductsPageState extends State<ProductsPage> {
                   alignment: Alignment.center,
                   children: [
                     IconButton(
-                      icon: Icon(Icons.shopping_cart_outlined, color: textColorPrimary),
+                      icon: const Icon(Icons.shopping_cart_outlined, color: textColorPrimary),
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -84,7 +79,7 @@ class _ProductsPageState extends State<ProductsPage> {
                         child: IgnorePointer(
                           child: Container(
                             padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: accentColor,
                               shape: BoxShape.circle,
                             ),
@@ -95,7 +90,7 @@ class _ProductsPageState extends State<ProductsPage> {
                             child: Text(
                               '${cartState.totalItemCount}',
                               style: GoogleFonts.inter(
-                                color: isDark ? const Color(0xFF020810) : Colors.white,
+                                color: Colors.white,
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -147,7 +142,7 @@ class _ProductsPageState extends State<ProductsPage> {
       body: BlocBuilder<ProductsBloc, ProductsState>(
         builder: (context, state) {
           if (state is ProductsLoading || state is ProductsInitial) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(
                 color: accentColor,
               ),
@@ -179,7 +174,7 @@ class _ProductsPageState extends State<ProductsPage> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: accentColor,
-                      foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
+                      foregroundColor: Colors.white,
                     ),
                     child: const Text('Retry'),
                   ),
@@ -193,7 +188,7 @@ class _ProductsPageState extends State<ProductsPage> {
 
             return RefreshIndicator(
               color: accentColor,
-              backgroundColor: theme.cardColor,
+              backgroundColor: Colors.white,
               onRefresh: () async {
                 context.read<ProductsBloc>().add(const LoadProducts());
                 await Future.delayed(const Duration(milliseconds: 600));
@@ -212,13 +207,13 @@ class _ProductsPageState extends State<ProductsPage> {
                                 Container(
                                   padding: const EdgeInsets.all(24),
                                   decoration: BoxDecoration(
-                                    color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                                    color: Colors.white,
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                                      color: const Color(0xFFE2E8F0),
                                     ),
                                   ),
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.inventory_2_outlined,
                                     size: 48,
                                     color: textColorSecondary,
@@ -254,15 +249,15 @@ class _ProductsPageState extends State<ProductsPage> {
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: accentColor,
-                                      foregroundColor: isDark ? const Color(0xFF020810) : Colors.white,
+                                      foregroundColor: Colors.white,
                                       padding: const EdgeInsets.symmetric(vertical: 14),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                     ),
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.shopping_bag_outlined,
-                                      color: isDark ? const Color(0xFF020810) : Colors.white,
+                                      color: Colors.white,
                                       size: 18,
                                     ),
                                     label: Text(

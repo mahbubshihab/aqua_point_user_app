@@ -115,15 +115,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     final images = widget.product.allImages;
     final specSections = widget.product.specSections;
     final features = widget.product.features;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: theme.scaffoldBackgroundColor,
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_new_rounded, color: theme.colorScheme.onSurface, size: 20),
@@ -204,7 +203,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Product Swipeable Gallery Container
-                  _buildGallerySection(images, theme, isDark),
+                  _buildGallerySection(images, theme),
                   const Gap(20),
 
                   // Product Title and Price Tag
@@ -251,19 +250,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            if (widget.product.originalPrice != null &&
-                                widget.product.originalPrice! > widget.product.price) ...[
-                              const Gap(6),
-                              Text(
-                                '৳${widget.product.originalPrice!.toStringAsFixed(0)}',
-                                style: GoogleFonts.outfit(
-                                  color: Colors.white.withValues(alpha: 0.7),
-                                  fontSize: 13,
-                                  decoration: TextDecoration.lineThrough,
-                                  decorationColor: Colors.white.withValues(alpha: 0.7),
-                                ),
-                              ),
-                            ],
                           ],
                         ),
                       ),
@@ -271,11 +257,40 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   ),
                   const Gap(12),
 
-                  // Warranty & Custom Badges
+                  // Rating & Status Badges
                   Row(
                     children: [
-                      StatBadge.excellent(
-                        text: widget.product.warrantyDetails,
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFEF3C7),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.star_rounded, color: Color(0xFFD97706), size: 16),
+                            const Gap(4),
+                            Text(
+                              '${widget.product.rating ?? 4.8}',
+                              style: GoogleFonts.inter(
+                                color: const Color(0xFF92400E),
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Gap(8),
+                      StatBadge(
+                        text: widget.product.inStock ? 'IN STOCK' : 'OUT OF STOCK',
+                        backgroundColor: widget.product.inStock
+                            ? const Color(0xFFECFDF5)
+                            : const Color(0xFFFEF2F2),
+                        textColor: widget.product.inStock
+                            ? const Color(0xFF059669)
+                            : const Color(0xFFDC2626),
                       ),
                       if (widget.product.isCustom) ...[
                         const Gap(8),
@@ -289,21 +304,21 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   ),
                   const Gap(20),
 
-                  Divider(color: isDark ? AppColors.darkDivider : AppColors.divider),
+                  const Divider(color: AppColors.divider),
                   const Gap(16),
 
                   // Dynamic Specification Tables (From Firestore)
                   if (specSections.isNotEmpty) ...[
-                    ...specSections.map((sec) => _buildSpecTableSection(sec, theme, isDark)),
+                    ...specSections.map((sec) => _buildSpecTableSection(sec, theme)),
                   ] else ...[
                     // Legacy Fallback Table
-                    _buildLegacyOverviewSection(theme, isDark),
+                    _buildLegacyOverviewSection(theme),
                   ],
 
                   // Product Features / Bullet Points Section
                   if (features.isNotEmpty) ...[
                     const Gap(24),
-                    _buildFeaturesSection(features, theme, isDark),
+                    _buildFeaturesSection(features, theme),
                   ],
 
                   // Overview Description Text
@@ -322,16 +337,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       width: double.infinity,
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.surface,
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                          color: isDark ? AppColors.darkBorder : AppColors.border,
+                          color: AppColors.border,
                         ),
                       ),
                       child: Text(
                         widget.product.description!,
                         style: GoogleFonts.inter(
-                          color: isDark ? AppColors.darkTextSecondary : AppColors.textSecondary,
+                          color: AppColors.textSecondary,
                           fontSize: 13,
                           height: 1.5,
                         ),
@@ -355,10 +370,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.surface,
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: isDark ? AppColors.darkBorder : AppColors.border,
+                            color: AppColors.border,
                           ),
                         ),
                         child: Row(
@@ -392,7 +407,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     ],
                   ),
                   const Gap(24),
-                  Divider(color: isDark ? AppColors.darkDivider : AppColors.divider),
+                  const Divider(color: AppColors.divider),
                   const Gap(20),
 
                   // Customer Reviews & Submission Section
@@ -406,12 +421,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           // Bottom Action Bar
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surface,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               border: Border(
                 top: BorderSide(
-                  color: isDark ? AppColors.darkBorder : AppColors.border,
+                  color: AppColors.border,
                 ),
               ),
             ),
@@ -477,14 +492,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   /// Builds a dynamic specification table matching the website screenshot style!
-  Widget _buildSpecTableSection(SpecSectionEntity sec, ThemeData theme, bool isDark) {
+  Widget _buildSpecTableSection(SpecSectionEntity sec, ThemeData theme) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isDark ? AppColors.darkBorder : const Color(0xFFB0E2FF),
+          color: const Color(0xFFB0E2FF),
           width: 1,
         ),
       ),
@@ -519,17 +534,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 final item = sec.items[index];
                 final isEven = index % 2 == 0;
                 final rowBg = isEven
-                    ? (isDark ? AppColors.darkSurfaceVariant.withValues(alpha: 0.3) : const Color(0xFFF4FBFF))
-                    : theme.colorScheme.surface;
+                    ? const Color(0xFFF4FBFF)
+                    : Colors.white;
 
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
                     color: rowBg,
                     border: index < sec.items.length - 1
-                        ? Border(
+                        ? const Border(
                             bottom: BorderSide(
-                              color: isDark ? AppColors.darkDivider : const Color(0xFFE1F5FE),
+                              color: Color(0xFFE1F5FE),
                             ),
                           )
                         : null,
@@ -572,7 +587,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   /// Builds features bullet points section ("PRODUCT DESCRIPTION")
-  Widget _buildFeaturesSection(List<String> features, ThemeData theme, bool isDark) {
+  Widget _buildFeaturesSection(List<String> features, ThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -604,10 +619,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: isDark ? AppColors.darkBorder : const Color(0xFF00BCE1).withValues(alpha: 0.3),
+              color: const Color(0xFF00BCE1).withValues(alpha: 0.3),
             ),
           ),
           child: Column(
@@ -645,7 +660,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget _buildLegacyOverviewSection(ThemeData theme, bool isDark) {
+  Widget _buildLegacyOverviewSection(ThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -661,18 +676,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.border),
+            border: Border.all(color: AppColors.border),
           ),
           child: Column(
             children: [
               _buildFeatureRow(Icons.verified_user_outlined, 'Warranty', widget.product.warrantyDetails, theme),
-              Divider(color: isDark ? AppColors.darkDivider : AppColors.divider, height: 20),
+              const Divider(color: AppColors.divider, height: 20),
               _buildFeatureRow(Icons.local_shipping_outlined, 'Delivery', 'Standard Express (৳60)', theme),
-              Divider(color: isDark ? AppColors.darkDivider : AppColors.divider, height: 20),
+              const Divider(color: AppColors.divider, height: 20),
               _buildFeatureRow(Icons.build_circle_outlined, 'Installation', 'Free Expert On-site Setup', theme),
-              Divider(color: isDark ? AppColors.darkDivider : AppColors.divider, height: 20),
+              const Divider(color: AppColors.divider, height: 20),
               _buildFeatureRow(Icons.water_drop_outlined, 'Compatibility', 'Universal 10" Water Systems', theme),
             ],
           ),
@@ -681,15 +696,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget _buildGallerySection(List<String> images, ThemeData theme, bool isDark) {
+  Widget _buildGallerySection(List<String> images, ThemeData theme) {
     if (images.isEmpty) {
       return Container(
         width: double.infinity,
         height: 260,
         decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.border),
+          border: Border.all(color: AppColors.border),
         ),
         child: _buildFallback(theme),
       );
@@ -702,9 +717,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           width: double.infinity,
           height: 260,
           decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.border),
+            border: Border.all(color: AppColors.border),
           ),
           child: Stack(
             children: [
@@ -812,7 +827,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: isSelected ? theme.colorScheme.primary : (isDark ? AppColors.darkBorder : AppColors.border),
+                        color: isSelected ? theme.colorScheme.primary : AppColors.border,
                         width: isSelected ? 2.5 : 1.0,
                       ),
                     ),

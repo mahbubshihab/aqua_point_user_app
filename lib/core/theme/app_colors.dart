@@ -22,19 +22,19 @@ abstract class AppColors {
   static const Color textTertiary = Color(0xFF94A3B8);
   static const Color textOnPrimary = Color(0xFFFFFFFF);
 
-  // ─── Dark Mode Backgrounds ───
-  static const Color darkBackground = Color(0xFF0F172A);
-  static const Color darkSurface = Color(0xFF1E293B);
-  static const Color darkSurfaceVariant = Color(0xFF334155);
+  // ─── Dark Mode Color Overrides (Enforced Pure White Theme) ───
+  static const Color darkBackground = Color(0xFFF8FAFC);
+  static const Color darkSurface = Colors.white;
+  static const Color darkSurfaceVariant = Color(0xFFF1F5F9);
 
-  // ─── Dark Mode Text ───
-  static const Color darkTextPrimary = Color(0xFFF1F5F9);
-  static const Color darkTextSecondary = Color(0xFF94A3B8);
-  static const Color darkTextTertiary = Color(0xFF64748B);
+  // ─── Dark Mode Text Overrides ───
+  static const Color darkTextPrimary = Color(0xFF0F172A);
+  static const Color darkTextSecondary = Color(0xFF475569);
+  static const Color darkTextTertiary = Color(0xFF94A3B8);
 
-  // ─── Dark Mode Borders ───
-  static const Color darkBorder = Color(0xFF334155);
-  static const Color darkDivider = Color(0xFF1E293B);
+  // ─── Dark Mode Borders Overrides ───
+  static const Color darkBorder = Color(0xFFE2E8F0);
+  static const Color darkDivider = Color(0xFFF1F5F9);
 
   // ─── Semantic (same in both modes) ───
   static const Color success = Color(0xFF10B981);
