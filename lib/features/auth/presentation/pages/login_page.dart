@@ -202,8 +202,8 @@ class _LoginPageState extends State<LoginPage> {
                                         ? const Color(0xFFFF4D4F)
                                         : (_isFocused
                                             ? const Color(0xFF00B4D8)
-                                            : Colors.transparent),
-                                    width: 2,
+                                            : const Color(0xFFE2E8F0)),
+                                    width: 1.5,
                                   ),
                                   boxShadow: _isFocused
                                       ? [
@@ -232,7 +232,7 @@ class _LoginPageState extends State<LoginPage> {
                                     Container(
                                       width: 2,
                                       height: 24,
-                                      color: const Color(0xFFDDDDDD),
+                                      color: const Color(0xFFCBD5E1),
                                       margin: const EdgeInsets.symmetric(horizontal: 10),
                                     ),
 
@@ -241,6 +241,7 @@ class _LoginPageState extends State<LoginPage> {
                                       child: TextField(
                                         controller: _phoneController,
                                         focusNode: _phoneFocusNode,
+                                        cursorColor: const Color(0xFF0077B6),
                                         keyboardType: TextInputType.phone,
                                         inputFormatters: [
                                           FilteringTextInputFormatter.digitsOnly,
@@ -248,7 +249,7 @@ class _LoginPageState extends State<LoginPage> {
                                         ],
                                         style: GoogleFonts.poppins(
                                           fontSize: 16,
-                                          fontWeight: FontWeight.w500,
+                                          fontWeight: FontWeight.w600,
                                           color: const Color(0xFF2B2B2B),
                                         ),
                                         decoration: InputDecoration(
@@ -256,9 +257,15 @@ class _LoginPageState extends State<LoginPage> {
                                           hintStyle: GoogleFonts.poppins(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400,
-                                            color: const Color(0xFF7A7A7A).withValues(alpha: 0.6),
+                                            color: const Color(0xFF9E9E9E),
                                           ),
+                                          filled: true,
+                                          fillColor: Colors.transparent,
                                           border: InputBorder.none,
+                                          enabledBorder: InputBorder.none,
+                                          focusedBorder: InputBorder.none,
+                                          errorBorder: InputBorder.none,
+                                          disabledBorder: InputBorder.none,
                                           isDense: true,
                                           contentPadding: const EdgeInsets.symmetric(vertical: 12),
                                         ),
