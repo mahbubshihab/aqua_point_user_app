@@ -204,7 +204,7 @@ class _ShopPageState extends State<ShopPage> {
                           });
                         },
                         decoration: InputDecoration(
-                          hintText: 'Search Open, Box, Cabinet purifiers...',
+                          hintText: 'Search filters, parts, purifiers...',
                           hintStyle: GoogleFonts.inter(
                             color: textColorSecondary,
                             fontSize: 12.5,
@@ -278,10 +278,8 @@ class _ShopPageState extends State<ShopPage> {
   Widget _buildTypeFilterPills(bool isDark) {
     final filterNames = [
       'All',
-      'Open Type',
-      'Box Type',
-      'Hot Cold Normal',
-      'Cabinet Type',
+      'Filters',
+      'Parts',
     ];
 
     final textColorSecondary = isDark
@@ -358,28 +356,25 @@ class _ShopPageState extends State<ShopPage> {
       }).toList();
     }
 
-    // Helper functions to filter products by type
-    List<ProductEntity> filterByType(String tag) {
-      return filteredList.where((p) {
-        final t = (p.type ?? '').toLowerCase();
-        final n = p.name.toLowerCase();
-        if (tag == 'open') {
-          return t.contains('open') || n.contains('open');
-        } else if (tag == 'box') {
-          return t.contains('box') || n.contains('box');
-        } else if (tag == 'hot_cold_normal') {
-          return t.contains('hot') || t.contains('cold') || n.contains('hot') || n.contains('dispenser');
-        } else if (tag == 'cabinet') {
-          return t.contains('cabinet') || n.contains('cabinet');
-        }
-        return false;
-      }).toList();
-    }
+    final filtersProducts = filteredList.where((p) {
+      final cat = (p.category ?? '').toLowerCase().trim();
+      return p.category == 'Filters' ||
+          cat.contains('filter') ||
+          cat.contains('purifier') ||
+          cat.contains('ro') ||
+          (cat != 'parts' && !cat.contains('part') && !cat.contains('spare'));
+    }).toList();
 
-    final openProducts = filterByType('open');
-    final boxProducts = filterByType('box');
-    final hotColdProducts = filterByType('hot_cold_normal');
-    final cabinetProducts = filterByType('cabinet');
+    final partsProducts = filteredList.where((p) {
+      final cat = (p.category ?? '').toLowerCase().trim();
+      final name = p.name.toLowerCase().trim();
+      return p.category == 'Parts' ||
+          cat.contains('part') ||
+          cat.contains('spare') ||
+          cat.contains('accessori') ||
+          name.contains('part') ||
+          name.contains('spare');
+    }).toList();
 
     List<Widget> sections = [];
 
@@ -408,48 +403,26 @@ class _ShopPageState extends State<ShopPage> {
       }
     }
 
-    // 1. Open Type Purifiers
+    // 1. Water Filters & Purifiers
     addSectionIfMatches(
-      filterTitle: 'Open Type',
-      sectionTitle: 'Open Type Purifiers',
-      typeTag: 'open',
-      subtitle: 'Traditional open-top water purifiers',
+      filterTitle: 'Filters',
+      sectionTitle: 'Water Filters & Purifiers',
+      typeTag: 'Filters',
+      subtitle: 'Pure filtration cartridges & units',
       icon: Icons.water_drop_rounded,
-      accentColor: AppColors.primary,
-      products: openProducts,
+      accentColor: const Color(0xFF00BCE1),
+      products: filtersProducts,
     );
 
-    // 2. Box Type Purifiers
+    // 2. Spare Parts & Accessories
     addSectionIfMatches(
-      filterTitle: 'Box Type',
-      sectionTitle: 'Box Type Purifiers',
-      typeTag: 'box',
-      subtitle: 'Compact box-style water purifiers',
-      icon: Icons.inventory_2_rounded,
+      filterTitle: 'Parts',
+      sectionTitle: 'Spare Parts & Accessories',
+      typeTag: 'Parts',
+      subtitle: 'Genuine components & fittings',
+      icon: Icons.settings_suggest_rounded,
       accentColor: AppColors.secondary,
-      products: boxProducts,
-    );
-
-    // 3. Hot Cold Normal
-    addSectionIfMatches(
-      filterTitle: 'Hot Cold Normal',
-      sectionTitle: 'Hot Cold Normal',
-      typeTag: 'hot_cold_normal',
-      subtitle: 'Multi-temperature water dispensers',
-      icon: Icons.thermostat_rounded,
-      accentColor: AppColors.actionOrange,
-      products: hotColdProducts,
-    );
-
-    // 4. Cabinet Type
-    addSectionIfMatches(
-      filterTitle: 'Cabinet Type',
-      sectionTitle: 'Cabinet Type Purifiers',
-      typeTag: 'cabinet',
-      subtitle: 'Premium cabinet-style purifiers',
-      icon: Icons.kitchen_rounded,
-      accentColor: AppColors.actionPurple,
-      products: cabinetProducts,
+      products: partsProducts,
     );
 
     if (sections.isEmpty) {

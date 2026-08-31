@@ -96,8 +96,8 @@ class _HomeQuickServicesState extends State<HomeQuickServices>
                         context,
                         MaterialPageRoute(
                           builder: (_) => const CategoryShopPage(
-                            categoryName: 'Water Filters',
-                            categoryId: 'water_filter',
+                            categoryName: 'Filters',
+                            categoryId: 'Filters',
                           ),
                         ),
                       );
@@ -119,8 +119,8 @@ class _HomeQuickServicesState extends State<HomeQuickServices>
                         context,
                         MaterialPageRoute(
                           builder: (_) => const CategoryShopPage(
-                            categoryName: 'Parts & Accessories',
-                            categoryId: 'filter_accessories',
+                            categoryName: 'Parts',
+                            categoryId: 'Parts',
                           ),
                         ),
                       );

@@ -52,102 +52,37 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
     final nameLower = widget.categoryName.toLowerCase().trim();
     final idLower = (widget.categoryId ?? '').toLowerCase().trim();
 
+    if (nameLower == 'filters' || idLower == 'filters' || nameLower.contains('filter') || idLower.contains('filter')) {
+      return allProducts.where((p) {
+        final cat = (p.category ?? '').toLowerCase().trim();
+        return p.category == 'Filters' || cat.contains('filter') || cat.contains('purifier') || cat.contains('ro');
+      }).toList();
+    }
+
+    if (nameLower == 'parts' || idLower == 'parts' || nameLower.contains('part') || idLower.contains('part')) {
+      return allProducts.where((p) {
+        final cat = (p.category ?? '').toLowerCase().trim();
+        return p.category == 'Parts' || cat.contains('part') || cat.contains('spare') || cat.contains('accessori');
+      }).toList();
+    }
+
     return allProducts.where((p) {
       final pCategory = (p.category ?? '').toLowerCase().trim();
       final pType = (p.type ?? '').toLowerCase().trim();
       final pName = p.name.toLowerCase().trim();
-      final pDesc = (p.description ?? '').toLowerCase().trim();
 
-      // 1. Direct or partial match on category or categoryId
-      if (pCategory.isNotEmpty) {
-        if (pCategory == nameLower || (idLower.isNotEmpty && pCategory == idLower)) {
-          return true;
-        }
-        if (pCategory.contains(nameLower) || nameLower.contains(pCategory)) {
-          return true;
-        }
-      }
-
-      // 2. Direct or partial match on type
-      if (pType.isNotEmpty) {
-        if (pType == nameLower || (idLower.isNotEmpty && pType == idLower)) {
-          return true;
-        }
-        if (pType.contains(nameLower) || nameLower.contains(pType)) {
-          return true;
-        }
-      }
-
-      // 3. Keyword / Category matching for common water purifier terms (RO, Filter, Spares, Services, etc.)
-      if (nameLower.contains('ro') || idLower.contains('ro') || nameLower.contains('purifier')) {
-        if (pType.contains('ro') ||
-            pCategory.contains('ro') ||
-            pType.contains('open') ||
-            pType.contains('box') ||
-            pType.contains('cabinet') ||
-            pType.contains('purifier') ||
-            pCategory.contains('purifier') ||
-            pName.contains('ro') ||
-            pName.contains('purifier')) {
-          return true;
-        }
-      }
-
-      if (nameLower.contains('filter') || idLower.contains('filter') || nameLower.contains('cartridge')) {
-        if (pCategory.contains('filter') ||
-            pType.contains('filter') ||
-            pName.contains('filter') ||
-            pName.contains('cartridge') ||
-            pDesc.contains('filter') ||
-            pDesc.contains('cartridge')) {
-          return true;
-        }
-      }
-
-      if (nameLower.contains('spare') || idLower.contains('spare') || nameLower.contains('part') || idLower.contains('part')) {
-        if (pCategory.contains('spare') ||
-            pCategory.contains('part') ||
-            pType.contains('spare') ||
-            pType.contains('part') ||
-            pName.contains('spare') ||
-            pName.contains('part') ||
-            pName.contains('fitting') ||
-            pDesc.contains('spare') ||
-            pDesc.contains('part')) {
-          return true;
-        }
-      }
-
-      if (nameLower.contains('service') || idLower.contains('service') || nameLower.contains('maintenance')) {
-        if (pCategory.contains('service') ||
-            pType.contains('service') ||
-            pName.contains('service') ||
-            pName.contains('maintenance') ||
-            pDesc.contains('service')) {
-          return true;
-        }
-      }
-
-      if (nameLower.contains('dispenser') || idLower.contains('dispenser') || nameLower.contains('hot') || nameLower.contains('cold')) {
-        if (pType.contains('hot') ||
-            pType.contains('cold') ||
-            pType.contains('dispenser') ||
-            pName.contains('dispenser') ||
-            pName.contains('hot')) {
-          return true;
-        }
-      }
-
-      if (nameLower.contains('open') && (pType.contains('open') || pName.contains('open'))) {
+      if (pCategory.isNotEmpty &&
+          (pCategory == nameLower ||
+              (idLower.isNotEmpty && pCategory == idLower) ||
+              pCategory.contains(nameLower))) {
         return true;
       }
-      if (nameLower.contains('box') && (pType.contains('box') || pName.contains('box'))) {
+      if (pType.isNotEmpty &&
+          (pType == nameLower ||
+              (idLower.isNotEmpty && pType == idLower) ||
+              pType.contains(nameLower))) {
         return true;
       }
-      if (nameLower.contains('cabinet') && (pType.contains('cabinet') || pName.contains('cabinet'))) {
-        return true;
-      }
-
       if (pName.contains(nameLower) || (idLower.isNotEmpty && pName.contains(idLower))) {
         return true;
       }
@@ -205,6 +140,28 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
     final borderColor = isDark ? AppColors.darkBorder : AppColors.border;
     final accentColor = isDark ? const Color(0xFF00BCE1) : AppColors.primary;
 
+    final nameLower = widget.categoryName.toLowerCase().trim();
+    final idLower = (widget.categoryId ?? '').toLowerCase().trim();
+    final isFilterCategory = nameLower == 'filters' ||
+        idLower == 'filters' ||
+        nameLower.contains('filter') ||
+        idLower.contains('filter');
+    final isPartCategory = nameLower == 'parts' ||
+        idLower == 'parts' ||
+        nameLower.contains('part') ||
+        idLower.contains('part');
+
+    String appBarTitle = widget.categoryName;
+    String? appBarSubtitle;
+
+    if (isFilterCategory) {
+      appBarTitle = 'Water Filters & Purifiers';
+      appBarSubtitle = 'Pure filtration cartridges & units';
+    } else if (isPartCategory) {
+      appBarTitle = 'Spare Parts & Accessories';
+      appBarSubtitle = 'Genuine components & fittings';
+    }
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
@@ -218,13 +175,28 @@ class _CategoryShopPageState extends State<CategoryShopPage> {
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
-          widget.categoryName,
-          style: GoogleFonts.outfit(
-            color: textColorPrimary,
-            fontSize: 17,
-            fontWeight: FontWeight.bold,
-          ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              appBarTitle,
+              style: GoogleFonts.outfit(
+                color: textColorPrimary,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            if (appBarSubtitle != null)
+              Text(
+                appBarSubtitle,
+                style: GoogleFonts.inter(
+                  color: textColorSecondary,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+          ],
         ),
         actions: [
           // Cart Icon Button with Badge
