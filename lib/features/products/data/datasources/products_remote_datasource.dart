@@ -6,7 +6,7 @@ import '../models/product_model.dart';
 
 abstract class ProductsRemoteDatasource {
   Future<List<ProductEntity>> fetchProducts({String? targetCategory});
-  Future<List<ProductEntity>> fetchProductsByType(String type, {int limit = 10});
+  Future<List<ProductEntity>> fetchProductsByType(String type, {int limit = 50});
   Future<List<ProductEntity>> fetchCustomProducts({String? userId});
   Future<List<ProductEntity>> fetchPurchasedProducts({String? userId});
   Future<List<CategoryEntity>> fetchCategories();
@@ -33,13 +33,13 @@ class ProductsRemoteDatasourceImpl implements ProductsRemoteDatasource {
     if (targetCategory != null && targetCategory.isNotEmpty && targetCategory != 'All') {
       query = query.where('category', isEqualTo: targetCategory);
     }
-    final snapshot = await query.limit(10).get();
+    final snapshot = await query.limit(100).get();
 
     return snapshot.docs.map((docSnap) => ProductModel.fromFirestore(docSnap)).toList();
   }
 
   @override
-  Future<List<ProductEntity>> fetchProductsByType(String type, {int limit = 10}) async {
+  Future<List<ProductEntity>> fetchProductsByType(String type, {int limit = 50}) async {
     Query<Map<String, dynamic>> query = firestore
         .collection('products')
         .where('type', isEqualTo: type)

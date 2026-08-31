@@ -742,6 +742,33 @@ class _OrdersTabContent extends StatelessWidget {
     return placeholder;
   }
 
+  Widget _buildOrderStatusBadge(String status) {
+    Color color;
+    switch (status.toUpperCase()) {
+      case 'DELIVERED':
+      case 'COMPLETED':
+        color = AppColors.success;
+        break;
+      case 'SHIPPED':
+      case 'PROCESSING':
+      case 'IN PROGRESS':
+        color = AppColors.secondary;
+        break;
+      case 'CANCELLED':
+        color = AppColors.error;
+        break;
+      case 'PENDING':
+      default:
+        color = AppColors.warning;
+        break;
+    }
+    return StatBadge(
+      text: status,
+      backgroundColor: color.withValues(alpha: 0.15),
+      textColor: color,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     const cardBgColor = Colors.white;
@@ -801,11 +828,7 @@ class _OrdersTabContent extends StatelessWidget {
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                    StatBadge(
-                                      text: item.status,
-                                      backgroundColor: AppColors.success.withValues(alpha: 0.15),
-                                      textColor: AppColors.success,
-                                    ),
+                                    _buildOrderStatusBadge(item.status),
                                   ],
                                 ),
                                 const Gap(12),

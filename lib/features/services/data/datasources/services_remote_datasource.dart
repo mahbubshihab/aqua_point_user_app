@@ -81,52 +81,68 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
 
   @override
   Future<List<WaterServiceModel>> getServicesHistory() async {
-    final userId = await _getCurrentUserId();
-    QuerySnapshot<Map<String, dynamic>> snapshot;
-    
-    try {
-      snapshot = await firestore
-          .collection('service_requests')
-          .where('userId', isEqualTo: userId)
-          .orderBy('createdAt', descending: true)
-          .limit(10)
-          .get();
-    } catch (_) {
-      try {
-        snapshot = await firestore
-            .collection('service_requests')
-            .where('userId', isEqualTo: userId)
-            .limit(10)
-            .get();
-      } catch (_) {
-        try {
-          snapshot = await firestore
-              .collection('services')
-              .where('userId', isEqualTo: userId)
-              .limit(10)
-              .get();
-        } catch (_) {
-          snapshot = await firestore
-              .collection('service_requests')
-              .limit(10)
-              .get();
+    final userPhone = await localDatasource.getUserPhone();
+    final localUserId = await localDatasource.getUserId();
+    final authUid = auth.currentUser?.uid;
+    final currentUserId = await _getCurrentUserId();
+
+    final List<Future<QuerySnapshot<Map<String, dynamic>>>> queries = [];
+
+    if (userPhone != null && userPhone.isNotEmpty) {
+      queries.add(firestore.collection('service_requests').where('phone', isEqualTo: userPhone).get());
+      queries.add(firestore.collection('service_requests').where('userId', isEqualTo: userPhone).get());
+    }
+    if (localUserId != null && localUserId.isNotEmpty && localUserId != userPhone) {
+      queries.add(firestore.collection('service_requests').where('userId', isEqualTo: localUserId).get());
+    }
+    if (authUid != null && authUid.isNotEmpty && authUid != userPhone && authUid != localUserId) {
+      queries.add(firestore.collection('service_requests').where('userId', isEqualTo: authUid).get());
+    }
+    if (currentUserId.isNotEmpty && currentUserId != 'guest_user' && currentUserId != userPhone && currentUserId != localUserId && currentUserId != authUid) {
+      queries.add(firestore.collection('service_requests').where('userId', isEqualTo: currentUserId).get());
+    }
+
+    final Map<String, QueryDocumentSnapshot<Map<String, dynamic>>> uniqueDocs = {};
+
+    if (queries.isNotEmpty) {
+      final results = await Future.wait(
+        queries.map((q) => q.catchError((_) => firestore.collection('service_requests').limit(0).get())),
+      );
+
+      for (final snapshot in results) {
+        for (final doc in snapshot.docs) {
+          uniqueDocs[doc.id] = doc;
         }
       }
     }
 
-    if (snapshot.docs.isEmpty && userId != 'guest_user') {
+    if (uniqueDocs.isEmpty && currentUserId == 'guest_user') {
       try {
-        final phoneSnapshot = await firestore
-            .collection('service_requests')
-            .where('phone', isEqualTo: userId)
-            .get();
-        if (phoneSnapshot.docs.isNotEmpty) {
-          snapshot = phoneSnapshot;
+        final snap = await firestore.collection('service_requests').orderBy('createdAt', descending: true).limit(10).get();
+        for (final doc in snap.docs) {
+          uniqueDocs[doc.id] = doc;
         }
-      } catch (_) {}
+      } catch (_) {
+        try {
+          final snap = await firestore.collection('service_requests').limit(10).get();
+          for (final doc in snap.docs) {
+            uniqueDocs[doc.id] = doc;
+          }
+        } catch (_) {}
+      }
     }
 
-    return snapshot.docs
+    final docList = uniqueDocs.values.toList();
+
+    docList.sort((a, b) {
+      final aData = a.data();
+      final bData = b.data();
+      final aTime = _getTimestamp(aData['createdAt'], aData['appointmentDate']);
+      final bTime = _getTimestamp(bData['createdAt'], bData['appointmentDate']);
+      return bTime.compareTo(aTime);
+    });
+
+    return docList
         .map((docSnap) => WaterServiceModel.fromFirestore(docSnap))
         .toList();
   }
@@ -360,8 +376,9 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
   @override
   Future<void> submitServiceRequest(WaterServiceEntity request) async {
     final userId = await _getCurrentUserId();
+    final userPhone = await localDatasource.getUserPhone();
     String customerName = 'App User';
-    String phone = userId;
+    String phone = (userPhone != null && userPhone.isNotEmpty) ? userPhone : (userId != 'guest_user' ? userId : 'N/A');
 
     if (userId != 'guest_user') {
       try {
@@ -369,6 +386,17 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
         if (userDoc.exists) {
           final data = userDoc.data();
           if (data != null) {
+            if (data['name'] != null && (data['name'] as String).isNotEmpty) {
+              customerName = data['name'];
+            }
+            if (data['phone'] != null && (data['phone'] as String).isNotEmpty) {
+              phone = data['phone'];
+            }
+          }
+        } else if (userPhone != null && userPhone.isNotEmpty) {
+          final snap = await firestore.collection('customers').where('phone', isEqualTo: userPhone).limit(1).get();
+          if (snap.docs.isNotEmpty) {
+            final data = snap.docs.first.data();
             if (data['name'] != null && (data['name'] as String).isNotEmpty) {
               customerName = data['name'];
             }

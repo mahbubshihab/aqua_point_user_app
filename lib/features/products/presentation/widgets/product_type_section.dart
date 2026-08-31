@@ -121,6 +121,7 @@ class _ProductTypeSectionState extends State<ProductTypeSection> with SingleTick
                       MaterialPageRoute(
                         builder: (_) => CategoryShopPage(
                           categoryName: widget.title,
+                          categoryId: widget.typeTag,
                           products: widget.products,
                         ),
                       ),

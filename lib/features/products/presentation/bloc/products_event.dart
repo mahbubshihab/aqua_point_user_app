@@ -14,9 +14,20 @@ class LoadProducts extends ProductsEvent {
 class AddProduct extends ProductsEvent {
   final String name;
   final String? imagePath;
+  final String? category;
+  final double? price;
+  final String? warranty;
+  final String? description;
 
-  const AddProduct(this.name, [this.imagePath]);
+  const AddProduct(
+    this.name, [
+    this.imagePath,
+    this.category,
+    this.price,
+    this.warranty,
+    this.description,
+  ]);
 
   @override
-  List<Object?> get props => [name, imagePath];
+  List<Object?> get props => [name, imagePath, category, price, warranty, description];
 }

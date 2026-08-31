@@ -1,10 +1,9 @@
-import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../../core/services/cloudinary_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_text_field.dart';
@@ -34,12 +33,12 @@ class AddProductModal extends StatefulWidget {
 
 class _AddProductModalState extends State<AddProductModal> {
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _warrantyController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final CloudinaryService _cloudinaryService = CloudinaryService();
+  String _selectedCategory = 'Filters';
   String? _selectedImagePath;
   bool _isUploadingImage = false;
   bool _isSubmitting = false;
@@ -47,7 +46,6 @@ class _AddProductModalState extends State<AddProductModal> {
   @override
   void dispose() {
     _nameController.dispose();
-    _categoryController.dispose();
     _priceController.dispose();
     _warrantyController.dispose();
     _descController.dispose();
@@ -57,36 +55,43 @@ class _AddProductModalState extends State<AddProductModal> {
   void _onSaveProduct() {
     if (_formKey.currentState?.validate() ?? false) {
       final name = _nameController.text.trim();
-      context.read<ProductsBloc>().add(AddProduct(name, _selectedImagePath));
+      final price = double.tryParse(_priceController.text.trim()) ?? 0.0;
+      final warranty = _warrantyController.text.trim().isNotEmpty
+          ? _warrantyController.text.trim()
+          : '1 Year Warranty';
+      final description = _descController.text.trim();
+
+      context.read<ProductsBloc>().add(AddProduct(
+        name,
+        _selectedImagePath,
+        _selectedCategory,
+        price,
+        warranty,
+        description,
+      ));
     }
   }
 
   Future<void> _pickAndUploadImage() async {
     final messenger = ScaffoldMessenger.of(context);
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1024,
+      maxHeight: 1024,
+      imageQuality: 85,
+    );
+
+    if (pickedFile == null) return;
+
     setState(() {
       _isUploadingImage = true;
     });
 
     try {
-      const demoPath =
-          '/Users/mahbubshihab/Development/AQUA_POINT/demo_files/WhatsApp Image 2026-08-06 at 22.10.24.jpeg';
-      final file = File(demoPath);
-
-      String? url;
-      if (await file.exists()) {
-        url = await _cloudinaryService.uploadImage(file);
-      } else {
-        final bytes = Uint8List.fromList([
-          137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 1,
-          0, 0, 0, 1, 8, 6, 0, 0, 0, 31, 213, 196, 200, 0, 0, 0, 13, 73, 68, 65, 84,
-          120, 156, 99, 96, 248, 15, 0, 1, 5, 1, 2, 210, 221, 143, 203, 0, 0, 0, 0,
-          73, 69, 78, 68, 174, 66, 96, 130
-        ]);
-        url = await _cloudinaryService.uploadImageBytes(
-          bytes,
-          'product_${DateTime.now().millisecondsSinceEpoch}.png',
-        );
-      }
+      final bytes = await pickedFile.readAsBytes();
+      final filename = pickedFile.name;
+      final url = await _cloudinaryService.uploadImageBytes(bytes, filename);
 
       if (mounted) {
         setState(() {
@@ -269,14 +274,48 @@ class _AddProductModalState extends State<AddProductModal> {
                           children: [
                             _buildLabel('Category', textColorSecondary),
                             const Gap(6),
-                            _buildTextField(
-                              controller: _categoryController,
-                              hint: 'e.g. RO Filter',
-                              textColor: textColorPrimary,
-                              hintColor: textColorSecondary,
-                              surfaceColor: uploadBoxBg,
-                              dividerColor: dividerColor,
-                              accentColor: accentColor,
+                            Container(
+                              height: 48,
+                              padding: const EdgeInsets.symmetric(horizontal: 14),
+                              decoration: BoxDecoration(
+                                color: uploadBoxBg,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: dividerColor),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: _selectedCategory,
+                                  isExpanded: true,
+                                  icon: const Icon(
+                                    Icons.keyboard_arrow_down_rounded,
+                                    color: accentColor,
+                                    size: 20,
+                                  ),
+                                  dropdownColor: surfaceColor,
+                                  style: GoogleFonts.inter(
+                                    color: textColorPrimary,
+                                    fontSize: 13.5,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  items: const [
+                                    DropdownMenuItem(
+                                      value: 'Filters',
+                                      child: Text('Filters'),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: 'Parts',
+                                      child: Text('Parts'),
+                                    ),
+                                  ],
+                                  onChanged: (val) {
+                                    if (val != null) {
+                                      setState(() {
+                                        _selectedCategory = val;
+                                      });
+                                    }
+                                  },
+                                ),
+                              ),
                             ),
                           ],
                         ),

@@ -72,7 +72,10 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
         id: 'CUST-${now.millisecondsSinceEpoch}',
         name: event.name,
         photoUrl: event.imagePath,
-        warrantyDetails: '1 Year Warranty',
+        category: event.category ?? 'Filters',
+        price: event.price ?? 0.0,
+        warrantyDetails: event.warranty ?? '1 Year Warranty',
+        description: event.description ?? '',
         purchaseDate: dateFormatted,
         isCustom: true,
       );
