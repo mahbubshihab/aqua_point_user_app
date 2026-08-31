@@ -62,7 +62,39 @@ class InboxSupportRemoteDatasource {
   }
 
   Future<List<ChatMessageEntity>> fetchChatMessages() async {
-    return [];
+    try {
+      final userPhone = await AuthLocalDatasource().getUserPhone() ?? '';
+      final userId = await AuthLocalDatasource().getUserId() ?? userPhone;
+      if (userId.isEmpty) return [];
+
+      final querySnap = await FirebaseFirestore.instance
+          .collection('customers')
+          .doc(userId)
+          .collection('messages')
+          .orderBy('createdAt', descending: false)
+          .limit(50)
+          .get();
+
+      return querySnap.docs.map((doc) {
+        final data = doc.data();
+        final sender = (data['sender'] ?? '').toString().toLowerCase();
+        final isUser = sender == 'user' || sender == 'customer';
+        final createdAt = (data['createdAt'] as Timestamp?)?.toDate();
+        final timeStr = createdAt != null
+            ? '${createdAt.hour.toString().padLeft(2, '0')}:${createdAt.minute.toString().padLeft(2, '0')}'
+            : 'Just now';
+
+        return ChatMessageEntity(
+          id: doc.id,
+          senderName: isUser ? (data['senderName'] ?? 'Customer') : 'Aqua Point Support',
+          message: data['text'] ?? data['message'] ?? '',
+          time: timeStr,
+          isFromUser: isUser,
+        );
+      }).toList();
+    } catch (_) {
+      return [];
+    }
   }
 
   Future<void> submitInquiry({

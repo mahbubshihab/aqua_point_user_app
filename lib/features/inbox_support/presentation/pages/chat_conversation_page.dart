@@ -97,17 +97,34 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
     });
 
     try {
-      await FirebaseFirestore.instance
+      final batch = FirebaseFirestore.instance.batch();
+      final msgDocRef = FirebaseFirestore.instance
           .collection('customers')
           .doc(_resolvedUserId)
           .collection('messages')
-          .add({
-            'text': text,
-            'sender': 'user',
-            'senderName': 'Customer',
-            'createdAt': FieldValue.serverTimestamp(),
-            'isRead': false,
-          });
+          .doc();
+
+      batch.set(msgDocRef, {
+        'text': text,
+        'sender': 'user',
+        'senderName': 'Customer',
+        'createdAt': FieldValue.serverTimestamp(),
+        'isRead': false,
+      });
+
+      final custDocRef = FirebaseFirestore.instance
+          .collection('customers')
+          .doc(_resolvedUserId);
+
+      batch.set(custDocRef, {
+        'lastMessage': text,
+        'lastMessageTime': FieldValue.serverTimestamp(),
+        'unreadCount': FieldValue.increment(1),
+        'phone': _resolvedUserId,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      await batch.commit();
 
       _messageController.clear();
       _scrollToBottom();
