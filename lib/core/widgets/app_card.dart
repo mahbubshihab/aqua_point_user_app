@@ -35,18 +35,10 @@ class AppCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final defaultBg = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final defaultBorder = isDark
-        ? const Color(0xFF334155).withValues(alpha: 0.6)
-        : const Color(0xFFE2E8F0);
+    final defaultBg = Colors.white;
+    final defaultBorder = const Color(0xFFE2E8F0);
     final defaultShadow = isDark
-        ? [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ]
+        ? AppShadows.soft
         : AppShadows.soft;
 
     Widget content = Container(

@@ -52,12 +52,13 @@ void main() async {
 
   // Set system UI — will be updated dynamically by ThemeProvider
   SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
+    SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
       statusBarBrightness: Brightness.light,
       systemNavigationBarColor: Colors.white,
       systemNavigationBarIconBrightness: Brightness.dark,
+      systemNavigationBarDividerColor: Colors.transparent,
     ),
   );
 
@@ -127,14 +128,14 @@ class MyApp extends StatelessWidget {
           ],
           child: Consumer<ThemeProvider>(
             builder: (context, themeProvider, _) {
-              final isDark = themeProvider.isDarkMode;
               SystemChrome.setSystemUIOverlayStyle(
-                SystemUiOverlayStyle(
+                const SystemUiOverlayStyle(
                   statusBarColor: Colors.transparent,
-                  statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-                  statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
-                  systemNavigationBarColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-                  systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+                  statusBarIconBrightness: Brightness.dark,
+                  statusBarBrightness: Brightness.light,
+                  systemNavigationBarColor: Colors.white,
+                  systemNavigationBarIconBrightness: Brightness.dark,
+                  systemNavigationBarDividerColor: Colors.transparent,
                 ),
               );
 
@@ -142,12 +143,12 @@ class MyApp extends StatelessWidget {
                 title: AppConstants.appTitle,
                 debugShowCheckedModeBanner: false,
                 theme: AppTheme.lightTheme,
-                darkTheme: AppTheme.darkTheme,
-                themeMode: themeProvider.themeMode,
+                darkTheme: AppTheme.lightTheme,
+                themeMode: ThemeMode.light,
                 builder: (context, child) {
                   return AnimatedTheme(
-                    data: isDark ? AppTheme.darkTheme : AppTheme.lightTheme,
-                    duration: const Duration(milliseconds: 400),
+                    data: AppTheme.lightTheme,
+                    duration: const Duration(milliseconds: 250),
                     curve: Curves.easeInOut,
                     child: child ?? const SizedBox.shrink(),
                   );

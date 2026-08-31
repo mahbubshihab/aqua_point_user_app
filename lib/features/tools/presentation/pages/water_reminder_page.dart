@@ -359,7 +359,8 @@ class _WaterReminderPageState extends State<WaterReminderPage> {
                       ),
                       Switch.adaptive(
                         value: _remindersEnabled,
-                        activeColor: AppColors.primary,
+                        activeTrackColor: AppColors.primary,
+                        activeThumbColor: Colors.white,
                         onChanged: (val) {
                           setState(() => _remindersEnabled = val);
                         },
