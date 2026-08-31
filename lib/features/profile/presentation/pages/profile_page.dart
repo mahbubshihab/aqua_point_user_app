@@ -790,18 +790,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                   padding: const EdgeInsets.all(16),
                                   child: Row(
                                     children: [
-                                      Radio<bool>(
-                                        value: true,
-                                        groupValue: isPrimary,
-                                        activeColor: accentColor,
-                                        onChanged: (_) {
-                                          if (!isPrimary) {
-                                            _setPrimaryAddress(
-                                              doc.id,
-                                              addressStr,
-                                            );
-                                          }
-                                        },
+                                      Icon(
+                                        isPrimary
+                                            ? Icons.radio_button_checked_rounded
+                                            : Icons.radio_button_unchecked_rounded,
+                                        color: isPrimary
+                                            ? accentColor
+                                            : textColorSecondary,
+                                        size: 22,
                                       ),
                                       const Gap(8),
                                       Expanded(

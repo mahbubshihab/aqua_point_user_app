@@ -236,22 +236,26 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                                 final doc = _addresses[index];
                                 final addressStr = doc['address'] as String;
                                 return ListTile(
+                                  onTap: () {
+                                    setState(() {
+                                      _shippingAddress = addressStr;
+                                    });
+                                    Navigator.pop(context);
+                                  },
                                   title: Text(
                                     addressStr,
                                     style: GoogleFonts.inter(
                                       color: textColorPrimary,
                                     ),
                                   ),
-                                  leading: Radio<String>(
-                                    value: addressStr,
-                                    groupValue: _shippingAddress,
-                                    onChanged: (val) {
-                                      setState(() {
-                                        _shippingAddress = val;
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    activeColor: accentColor,
+                                  leading: Icon(
+                                    _shippingAddress == addressStr
+                                        ? Icons.radio_button_checked_rounded
+                                        : Icons.radio_button_unchecked_rounded,
+                                    color: _shippingAddress == addressStr
+                                        ? accentColor
+                                        : textColorSecondary,
+                                    size: 22,
                                   ),
                                   trailing: IconButton(
                                     icon: const Icon(
