@@ -61,7 +61,7 @@ class _CustomSplashPageState extends State<CustomSplashPage>
 
     _mainController.forward();
 
-    _fallbackTimer = Timer(const Duration(milliseconds: 2200), () {
+    _fallbackTimer = Timer(const Duration(milliseconds: 1800), () {
       if (!mounted || _navigated) return;
       final currentState = context.read<AuthBloc>().state;
       if (currentState is Authenticated) {
@@ -77,13 +77,18 @@ class _CustomSplashPageState extends State<CustomSplashPage>
     _navigated = true;
     _fallbackTimer?.cancel();
 
+    // Immediately stop controllers so they don't consume CPU during route transition
+    _pulseController.stop();
+    _dotsController.stop();
+    _mainController.stop();
+
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => targetPage,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
         },
-        transitionDuration: const Duration(milliseconds: 500),
+        transitionDuration: const Duration(milliseconds: 350),
       ),
     );
   }
@@ -105,11 +110,11 @@ class _CustomSplashPageState extends State<CustomSplashPage>
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is Authenticated) {
-          Future.delayed(const Duration(milliseconds: 800), () {
+          Future.delayed(const Duration(milliseconds: 500), () {
             _navigateToPage(const MainShellPage());
           });
         } else if (state is Unauthenticated) {
-          Future.delayed(const Duration(milliseconds: 800), () {
+          Future.delayed(const Duration(milliseconds: 500), () {
             _navigateToPage(const LoginPage());
           });
         }

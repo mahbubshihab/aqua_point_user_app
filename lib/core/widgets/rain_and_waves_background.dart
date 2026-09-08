@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
-/// Animated Rain Particles + Ocean Waves Background matching Admin Web ocean scene,
-/// with full support for both Dark Mode and Light Mode themes!
+/// Highly optimized Animated Rain Particles + Ocean Waves Background,
+/// pure light/white theme with zero frame drops and hardware-accelerated rendering.
 class RainAndWavesBackground extends StatefulWidget {
   final Widget child;
 
@@ -28,9 +28,16 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
 
     _rainController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 50),
+      duration: const Duration(milliseconds: 1000),
     )..addListener(() {
-        _updateRainDrops();
+        for (final drop in _drops) {
+          drop.y += drop.speed;
+          drop.x += 0.0003;
+          if (drop.y > 1.1) {
+            drop.y = -0.05;
+            drop.x = _random.nextDouble();
+          }
+        }
       })
       ..repeat();
 
@@ -39,7 +46,8 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
       duration: const Duration(milliseconds: 6000),
     )..repeat(reverse: true);
 
-    for (int i = 0; i < 120; i++) {
+    // 35 subtle drops instead of 120 for silky smooth performance
+    for (int i = 0; i < 35; i++) {
       _drops.add(_createRandomDrop(isInitial: true));
     }
   }
@@ -48,25 +56,11 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
     return _RainDrop(
       x: _random.nextDouble(),
       y: isInitial ? _random.nextDouble() : -0.1,
-      length: _random.nextDouble() * 20 + 12,
-      speed: _random.nextDouble() * 0.015 + 0.008,
-      opacity: _random.nextDouble() * 0.4 + 0.15,
-      width: _random.nextDouble() * 1.2 + 0.8,
+      length: _random.nextDouble() * 16 + 10,
+      speed: _random.nextDouble() * 0.012 + 0.006,
+      opacity: _random.nextDouble() * 0.35 + 0.15,
+      width: _random.nextDouble() * 1.0 + 0.8,
     );
-  }
-
-  void _updateRainDrops() {
-    if (!mounted) return;
-    setState(() {
-      for (var drop in _drops) {
-        drop.y += drop.speed;
-        drop.x += 0.0005;
-        if (drop.y > 1.1) {
-          drop.y = -0.05;
-          drop.x = _random.nextDouble();
-        }
-      }
-    });
   }
 
   @override
@@ -113,12 +107,12 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
             height: 320,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF0088FF).withValues(alpha: 0.12),
+              color: const Color(0xFF0088FF).withValues(alpha: 0.10),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF0088FF).withValues(alpha: 0.15),
-                  blurRadius: 100,
-                  spreadRadius: 40,
+                  color: const Color(0xFF0088FF).withValues(alpha: 0.12),
+                  blurRadius: 80,
+                  spreadRadius: 30,
                 ),
               ],
             ),
@@ -132,38 +126,42 @@ class _RainAndWavesBackgroundState extends State<RainAndWavesBackground>
             height: 280,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF0284C7).withValues(alpha: 0.1),
+              color: const Color(0xFF0284C7).withValues(alpha: 0.08),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF0284C7).withValues(alpha: 0.12),
-                  blurRadius: 90,
-                  spreadRadius: 30,
+                  color: const Color(0xFF0284C7).withValues(alpha: 0.10),
+                  blurRadius: 70,
+                  spreadRadius: 25,
                 ),
               ],
             ),
           ),
         ),
 
-        // 3. Falling Rain Canvas
-        CustomPaint(
-          size: size,
-          painter: _RainPainter(_drops, rainColor),
+        // 3. Falling Rain Canvas (RepaintBoundary + Listenable CustomPainter - ZERO widget rebuilds)
+        RepaintBoundary(
+          child: CustomPaint(
+            size: size,
+            painter: _RainPainter(_drops, rainColor, repaint: _rainController),
+          ),
         ),
 
-        // 4. Animated Ocean Waves at Bottom
+        // 4. Animated Ocean Waves at Bottom (Isolated RepaintBoundary)
         Positioned(
           bottom: 0,
           left: 0,
           right: 0,
           height: 180,
-          child: AnimatedBuilder(
-            animation: _waveController,
-            builder: (context, child) {
-              return CustomPaint(
-                size: Size(size.width, 180),
-                painter: _OceanWavesPainter(_waveController.value),
-              );
-            },
+          child: RepaintBoundary(
+            child: AnimatedBuilder(
+              animation: _waveController,
+              builder: (context, child) {
+                return CustomPaint(
+                  size: Size(size.width, 180),
+                  painter: _OceanWavesPainter(_waveController.value),
+                );
+              },
+            ),
           ),
         ),
 
@@ -197,30 +195,24 @@ class _RainDrop {
 class _RainPainter extends CustomPainter {
   final List<_RainDrop> drops;
   final Color rainColor;
+  final Paint _paint = Paint()..strokeCap = StrokeCap.round;
 
-  _RainPainter(this.drops, this.rainColor);
+  _RainPainter(this.drops, this.rainColor, {required Listenable repaint})
+      : super(repaint: repaint);
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (var drop in drops) {
+    for (final drop in drops) {
       final startX = drop.x * size.width;
       final startY = drop.y * size.height;
-      final endX = startX + 2;
+      final endX = startX + 1.5;
       final endY = startY + drop.length;
 
-      final paint = Paint()
-        ..shader = LinearGradient(
-          colors: [
-            rainColor.withValues(alpha: 0.0),
-            rainColor.withValues(alpha: drop.opacity),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ).createShader(Rect.fromLTRB(startX, startY, endX, endY))
-        ..strokeWidth = drop.width
-        ..strokeCap = StrokeCap.round;
+      _paint
+        ..color = rainColor.withValues(alpha: drop.opacity)
+        ..strokeWidth = drop.width;
 
-      canvas.drawLine(Offset(startX, startY), Offset(endX, endY), paint);
+      canvas.drawLine(Offset(startX, startY), Offset(endX, endY), _paint);
     }
   }
 
@@ -238,14 +230,14 @@ class _OceanWavesPainter extends CustomPainter {
     final width = size.width;
     final height = size.height;
 
-    final color1 = const Color(0xFFB2EBF2).withValues(alpha: 0.7);
-    final color2 = const Color(0xFF80DEEA).withValues(alpha: 0.5);
+    final color1 = const Color(0xFFB2EBF2).withValues(alpha: 0.65);
+    final color2 = const Color(0xFF80DEEA).withValues(alpha: 0.45);
     final color3 = const Color(0xFF00BCE1).withValues(alpha: 0.2);
 
     // Wave 1
     final path1 = Path();
     path1.moveTo(0, height * 0.5);
-    for (double i = 0; i <= width; i++) {
+    for (double i = 0; i <= width; i += 4) {
       final y = math.sin((i / width * 2 * math.pi) + (progress * math.pi)) * 12 + (height * 0.5);
       path1.lineTo(i, y);
     }
@@ -257,7 +249,7 @@ class _OceanWavesPainter extends CustomPainter {
     // Wave 2
     final path2 = Path();
     path2.moveTo(0, height * 0.6);
-    for (double i = 0; i <= width; i++) {
+    for (double i = 0; i <= width; i += 4) {
       final y = math.sin((i / width * 3 * math.pi) - (progress * math.pi * 1.5)) * 16 + (height * 0.6);
       path2.lineTo(i, y);
     }
@@ -269,7 +261,7 @@ class _OceanWavesPainter extends CustomPainter {
     // Wave 3
     final path3 = Path();
     path3.moveTo(0, height * 0.7);
-    for (double i = 0; i <= width; i++) {
+    for (double i = 0; i <= width; i += 4) {
       final y = math.sin((i / width * 2.5 * math.pi) + (progress * math.pi * 2)) * 10 + (height * 0.7);
       path3.lineTo(i, y);
     }
@@ -280,5 +272,6 @@ class _OceanWavesPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _OceanWavesPainter oldDelegate) => true;
+  bool shouldRepaint(covariant _OceanWavesPainter oldDelegate) =>
+      oldDelegate.progress != progress;
 }

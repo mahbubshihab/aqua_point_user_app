@@ -20,17 +20,14 @@ import 'features/inbox_support/data/datasources/inbox_support_remote_datasource.
 import 'features/inbox_support/data/repositories/inbox_support_repository_impl.dart';
 import 'features/inbox_support/domain/repositories/inbox_support_repository.dart';
 import 'features/inbox_support/presentation/bloc/inbox_support_bloc.dart';
-import 'features/inbox_support/presentation/bloc/inbox_support_event.dart';
 import 'features/products/data/datasources/products_remote_datasource.dart';
 import 'features/products/data/repositories/products_repository_impl.dart';
 import 'features/products/domain/repositories/products_repository.dart';
 import 'features/products/presentation/bloc/products_bloc.dart';
-import 'features/products/presentation/bloc/products_event.dart';
 import 'features/services/data/datasources/services_remote_datasource.dart';
 import 'features/services/data/repositories/services_repository_impl.dart';
 import 'features/services/domain/repositories/services_repository.dart';
 import 'features/services/presentation/bloc/services_bloc.dart';
-import 'features/services/presentation/bloc/services_event.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -114,16 +111,13 @@ class MyApp extends StatelessWidget {
                 ..add(const LoadHomeData()),
             ),
             BlocProvider<ServicesBloc>(
-              create: (context) => ServicesBloc(repository: servicesRepository)
-                ..add(const LoadServicesHistory()),
+              create: (context) => ServicesBloc(repository: servicesRepository),
             ),
             BlocProvider<ProductsBloc>(
-              create: (context) => ProductsBloc(repository: productsRepository)
-                ..add(const LoadProducts()),
+              create: (context) => ProductsBloc(repository: productsRepository),
             ),
             BlocProvider<InboxSupportBloc>(
-              create: (context) => InboxSupportBloc(repository: inboxSupportRepository)
-                ..add(const LoadInboxData()),
+              create: (context) => InboxSupportBloc(repository: inboxSupportRepository),
             ),
           ],
           child: Consumer<ThemeProvider>(
@@ -145,14 +139,7 @@ class MyApp extends StatelessWidget {
                 theme: AppTheme.lightTheme,
                 darkTheme: AppTheme.lightTheme,
                 themeMode: ThemeMode.light,
-                builder: (context, child) {
-                  return AnimatedTheme(
-                    data: AppTheme.lightTheme,
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeInOut,
-                    child: child ?? const SizedBox.shrink(),
-                  );
-                },
+                builder: (context, child) => child ?? const SizedBox.shrink(),
                 home: const CustomSplashPage(),
               );
             },

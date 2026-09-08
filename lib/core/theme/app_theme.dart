@@ -11,7 +11,9 @@ class AppTheme {
   //  LIGHT THEME
   // ═══════════════════════════════════════════════
 
-  static ThemeData get lightTheme {
+  static final ThemeData lightTheme = _buildLightTheme();
+
+  static ThemeData _buildLightTheme() {
     final textTheme = _buildTextTheme(Brightness.light);
 
     return ThemeData(
