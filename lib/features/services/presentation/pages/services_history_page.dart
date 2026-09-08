@@ -392,13 +392,31 @@ class _ServicesTabContent extends StatelessWidget {
                             ],
                           ),
                           const Gap(12),
-                          Text(
-                            'Service Request',
-                            style: GoogleFonts.outfit(
-                              color: textColorPrimary,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                'Service Request',
+                                style: GoogleFonts.outfit(
+                                  color: textColorPrimary,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              if (item.customerName != null && item.customerName!.isNotEmpty) ...[
+                                const Gap(8),
+                                Expanded(
+                                  child: Text(
+                                    '• ${item.customerName}',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.inter(
+                                      color: textColorSecondary,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
                           const Gap(12),
                           Row(
@@ -453,6 +471,49 @@ class _ServicesTabContent extends StatelessWidget {
                               ),
                             ],
                           ),
+                          if (item.filterImageUrl != null && item.filterImageUrl!.trim().isNotEmpty) ...[
+                            const Gap(12),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Stack(
+                                children: [
+                                  Image.network(
+                                    item.filterImageUrl!,
+                                    height: 140,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (ctx, err, stack) => const SizedBox.shrink(),
+                                  ),
+                                  Positioned(
+                                    bottom: 6,
+                                    right: 6,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withValues(alpha: 0.65),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(Icons.photo_camera, color: Colors.white, size: 12),
+                                          const Gap(4),
+                                          Text(
+                                            'Attached Filter Photo',
+                                            style: GoogleFonts.inter(
+                                              color: Colors.white,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                           const Gap(12),
                           if (item.technician != null &&
                               item.technician != 'Unassigned' &&

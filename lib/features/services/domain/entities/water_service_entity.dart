@@ -14,6 +14,9 @@ class WaterServiceEntity extends Equatable {
   final String? technician;
   final String? technicianPhone;
   final double? amount;
+  final String? customerName;
+  final String? phone;
+  final String? filterImageUrl;
 
   const WaterServiceEntity({
     required this.id,
@@ -29,6 +32,9 @@ class WaterServiceEntity extends Equatable {
     this.technician,
     this.technicianPhone,
     this.amount,
+    this.customerName,
+    this.phone,
+    this.filterImageUrl,
   });
 
   WaterServiceEntity copyWith({
@@ -45,6 +51,9 @@ class WaterServiceEntity extends Equatable {
     String? technician,
     String? technicianPhone,
     double? amount,
+    String? customerName,
+    String? phone,
+    String? filterImageUrl,
   }) {
     return WaterServiceEntity(
       id: id ?? this.id,
@@ -60,6 +69,9 @@ class WaterServiceEntity extends Equatable {
       technician: technician ?? this.technician,
       technicianPhone: technicianPhone ?? this.technicianPhone,
       amount: amount ?? this.amount,
+      customerName: customerName ?? this.customerName,
+      phone: phone ?? this.phone,
+      filterImageUrl: filterImageUrl ?? this.filterImageUrl,
     );
   }
 
@@ -78,5 +90,8 @@ class WaterServiceEntity extends Equatable {
         technician,
         technicianPhone,
         amount,
+        customerName,
+        phone,
+        filterImageUrl,
       ];
 }

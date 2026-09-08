@@ -1,12 +1,17 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../../../core/services/cloudinary_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_shadows.dart';
 import '../../../../core/widgets/app_button.dart';
+import '../../../auth/data/datasources/auth_local_datasource.dart';
 import '../../domain/entities/service_request_entity.dart';
 import '../bloc/services_bloc.dart';
 import '../bloc/services_event.dart';
@@ -24,7 +29,13 @@ class CreateServiceRequestPage extends StatefulWidget {
 
 class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _descriptionController = TextEditingController();
+
+  File? _selectedFilterImage;
+  bool _isUploadingImage = false;
+  final ImagePicker _imagePicker = ImagePicker();
 
   String? _shippingAddress;
   List<DocumentSnapshot> _addresses = [];
@@ -37,6 +48,62 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
   void initState() {
     super.initState();
     _loadAddresses();
+    _loadCustomerInfo();
+  }
+
+  Future<void> _loadCustomerInfo() async {
+    try {
+      final localPhone = await AuthLocalDatasource().getUserPhone();
+      final localUserId = await AuthLocalDatasource().getUserId();
+      final authUser = FirebaseAuth.instance.currentUser;
+
+      String? foundName = authUser?.displayName;
+      String? foundPhone = localPhone ?? authUser?.phoneNumber;
+
+      final candidateId = _userId ?? localUserId ?? authUser?.uid;
+      if (candidateId != null && candidateId.isNotEmpty) {
+        final doc = await FirebaseFirestore.instance.collection('customers').doc(candidateId).get();
+        if (doc.exists) {
+          final data = doc.data();
+          if (data != null) {
+            final nameVal = data['name']?.toString();
+            if (nameVal != null && nameVal.isNotEmpty && !nameVal.toLowerCase().contains('customer ')) {
+              foundName = nameVal;
+            } else if (foundName == null || foundName.isEmpty) {
+              foundName = nameVal;
+            }
+            if (data['phone'] != null && data['phone'].toString().isNotEmpty) {
+              foundPhone = data['phone'].toString();
+            } else if (data['phoneNumber'] != null && data['phoneNumber'].toString().isNotEmpty) {
+              foundPhone = data['phoneNumber'].toString();
+            }
+          }
+        }
+      }
+
+      if ((foundName == null || foundName.isEmpty) && foundPhone != null && foundPhone.isNotEmpty) {
+        final query = await FirebaseFirestore.instance
+            .collection('customers')
+            .where('phone', isEqualTo: foundPhone)
+            .limit(1)
+            .get();
+        if (query.docs.isNotEmpty) {
+          final data = query.docs.first.data();
+          foundName = data['name']?.toString();
+        }
+      }
+
+      if (mounted) {
+        setState(() {
+          if (foundName != null && foundName.isNotEmpty && _nameController.text.isEmpty) {
+            _nameController.text = foundName;
+          }
+          if (foundPhone != null && foundPhone.isNotEmpty && _phoneController.text.isEmpty) {
+            _phoneController.text = foundPhone;
+          }
+        });
+      }
+    } catch (_) {}
   }
 
   String? get _userId {
@@ -288,8 +355,140 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
 
   @override
   void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
     _descriptionController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final pickedFile = await _imagePicker.pickImage(
+        source: source,
+        imageQuality: 75,
+        maxWidth: 1024,
+        maxHeight: 1024,
+      );
+      if (pickedFile != null) {
+        setState(() {
+          _selectedFilterImage = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to pick image: $e', style: GoogleFonts.inter()),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showImageSourceDialog() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Add Filter / Purifier Photo',
+                style: GoogleFonts.outfit(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF0F172A),
+                ),
+              ),
+              const Gap(6),
+              Text(
+                'Upload a photo of your purifier or filter (Optional)',
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: const Color(0xFF64748B),
+                ),
+              ),
+              const Gap(20),
+              Row(
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                        _pickImage(ImageSource.camera);
+                      },
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF8FAFC),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                        ),
+                        child: Column(
+                          children: [
+                            const Icon(Icons.camera_alt_rounded, color: AppColors.primary, size: 28),
+                            const Gap(8),
+                            Text(
+                              'Take Photo',
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF0F172A),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Gap(16),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                        _pickImage(ImageSource.gallery);
+                      },
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF8FAFC),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                        ),
+                        child: Column(
+                          children: [
+                            const Icon(Icons.photo_library_rounded, color: AppColors.secondary, size: 28),
+                            const Gap(8),
+                            Text(
+                              'Choose Gallery',
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF0F172A),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _selectDate() async {
@@ -356,7 +555,30 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
     return _selectedTime!.format(context);
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
+    final name = _nameController.text.trim();
+    final phone = _phoneController.text.trim();
+
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter your name.', style: GoogleFonts.inter()),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
+    if (phone.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter your contact phone number.', style: GoogleFonts.inter()),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
     if (_shippingAddress == null || _shippingAddress!.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -377,8 +599,32 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
       return;
     }
 
+    setState(() => _isUploadingImage = true);
+
+    String? uploadedImageUrl;
+    if (_selectedFilterImage != null) {
+      try {
+        uploadedImageUrl = await CloudinaryService().uploadImage(_selectedFilterImage!);
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Image upload failed. Submitting request without image...', style: GoogleFonts.inter()),
+              backgroundColor: AppColors.warning,
+            ),
+          );
+        }
+      }
+    }
+
+    if (!mounted) return;
+    setState(() => _isUploadingImage = false);
+
     final newRequest = ServiceRequestEntity(
       id: 'REQ-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}',
+      customerName: name,
+      phone: phone,
+      filterImageUrl: uploadedImageUrl,
       address: _shippingAddress!,
       date: DateFormat('dd MMM, yyyy').format(_selectedDate),
       timeSlot: _formattedTime,
@@ -451,6 +697,123 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Contact Information Section
+                Text(
+                  'Contact Information',
+                  style: GoogleFonts.inter(
+                    color: textColorSecondary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const Gap(8),
+                Container(
+                  decoration: BoxDecoration(
+                    color: cardBgColor,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: cardBorderColor),
+                    boxShadow: AppShadows.soft,
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Full Name',
+                        style: GoogleFonts.inter(
+                          color: textColorSecondary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const Gap(6),
+                      TextFormField(
+                        controller: _nameController,
+                        style: GoogleFonts.inter(
+                          color: textColorPrimary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: 'Enter your full name',
+                          hintStyle: GoogleFonts.inter(
+                            color: textColorSecondary,
+                            fontSize: 14,
+                          ),
+                          filled: true,
+                          fillColor: const Color(0xFFF8FAFC),
+                          prefixIcon: const Icon(
+                            Icons.person_outline_rounded,
+                            color: accentColor,
+                            size: 20,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: cardBorderColor),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: cardBorderColor),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: accentColor),
+                          ),
+                        ),
+                      ),
+                      const Gap(14),
+                      Text(
+                        'Phone Number',
+                        style: GoogleFonts.inter(
+                          color: textColorSecondary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const Gap(6),
+                      TextFormField(
+                        controller: _phoneController,
+                        keyboardType: TextInputType.phone,
+                        style: GoogleFonts.inter(
+                          color: textColorPrimary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: 'Enter your phone number',
+                          hintStyle: GoogleFonts.inter(
+                            color: textColorSecondary,
+                            fontSize: 14,
+                          ),
+                          filled: true,
+                          fillColor: const Color(0xFFF8FAFC),
+                          prefixIcon: const Icon(
+                            Icons.phone_outlined,
+                            color: accentColor,
+                            size: 20,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: cardBorderColor),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: cardBorderColor),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: accentColor),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const Gap(24),
+
                 // Address Shipping section
                 Text(
                   'Address Shipping',
@@ -655,6 +1018,168 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
 
                 const Gap(24),
 
+                // Filter / Purifier Photo (Optional)
+                Row(
+                  children: [
+                    Text(
+                      'Filter / Purifier Photo',
+                      style: GoogleFonts.inter(
+                        color: textColorSecondary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Gap(8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF1F5F9),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        'Optional',
+                        style: GoogleFonts.inter(
+                          color: textColorSecondary,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const Gap(8),
+                if (_selectedFilterImage == null)
+                  InkWell(
+                    onTap: _showImageSourceDialog,
+                    borderRadius: BorderRadius.circular(16),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: cardBgColor,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: cardBorderColor,
+                        ),
+                        boxShadow: AppShadows.soft,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: accentColor.withValues(alpha: 0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.add_a_photo_outlined,
+                              color: accentColor,
+                              size: 26,
+                            ),
+                          ),
+                          const Gap(10),
+                          Text(
+                            'Attach Filter Photo (Optional)',
+                            style: GoogleFonts.inter(
+                              color: textColorPrimary,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Gap(4),
+                          Text(
+                            'Take a picture or choose from gallery to help us diagnose',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.inter(
+                              color: textColorSecondary,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                else
+                  Container(
+                    decoration: BoxDecoration(
+                      color: cardBgColor,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: cardBorderColor),
+                      boxShadow: AppShadows.soft,
+                    ),
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Stack(
+                            children: [
+                              Image.file(
+                                _selectedFilterImage!,
+                                width: double.infinity,
+                                height: 180,
+                                fit: BoxFit.cover,
+                              ),
+                              Positioned(
+                                top: 8,
+                                right: 8,
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedFilterImage = null;
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(6),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.black54,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.close,
+                                      color: Colors.white,
+                                      size: 18,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Gap(10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Photo attached',
+                              style: GoogleFonts.inter(
+                                color: AppColors.success,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            TextButton.icon(
+                              onPressed: _showImageSourceDialog,
+                              icon: const Icon(Icons.edit, size: 14, color: accentColor),
+                              label: Text(
+                                'Change Photo',
+                                style: GoogleFonts.inter(
+                                  color: accentColor,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                const Gap(24),
+
                 // Problem Description (Optional) field
                 Text(
                   'Problem Description (Optional)',
@@ -707,9 +1232,9 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                 // Submit Request Button
                 BlocBuilder<ServicesBloc, ServicesState>(
                   builder: (context, state) {
-                    final isSubmitting = state is ServiceRequestSubmitting;
+                    final isSubmitting = state is ServiceRequestSubmitting || _isUploadingImage;
                     return AppButton(
-                      text: 'Submit Request',
+                      text: _isUploadingImage ? 'Uploading Photo...' : 'Submit Request',
                       isLoading: isSubmitting,
                       onPressed: _submitForm,
                       height: 52,

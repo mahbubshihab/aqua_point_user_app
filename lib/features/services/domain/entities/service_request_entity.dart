@@ -9,6 +9,9 @@ class ServiceRequestEntity extends Equatable {
   final String status;
   final String? technician;
   final String? technicianPhone;
+  final String? customerName;
+  final String? phone;
+  final String? filterImageUrl;
 
   const ServiceRequestEntity({
     required this.id,
@@ -19,6 +22,9 @@ class ServiceRequestEntity extends Equatable {
     required this.status,
     this.technician,
     this.technicianPhone,
+    this.customerName,
+    this.phone,
+    this.filterImageUrl,
   });
 
   ServiceRequestEntity copyWith({
@@ -30,6 +36,9 @@ class ServiceRequestEntity extends Equatable {
     String? status,
     String? technician,
     String? technicianPhone,
+    String? customerName,
+    String? phone,
+    String? filterImageUrl,
   }) {
     return ServiceRequestEntity(
       id: id ?? this.id,
@@ -40,6 +49,9 @@ class ServiceRequestEntity extends Equatable {
       status: status ?? this.status,
       technician: technician ?? this.technician,
       technicianPhone: technicianPhone ?? this.technicianPhone,
+      customerName: customerName ?? this.customerName,
+      phone: phone ?? this.phone,
+      filterImageUrl: filterImageUrl ?? this.filterImageUrl,
     );
   }
 
@@ -53,6 +65,9 @@ class ServiceRequestEntity extends Equatable {
         status,
         technician,
         technicianPhone,
+        customerName,
+        phone,
+        filterImageUrl,
       ];
 }
 

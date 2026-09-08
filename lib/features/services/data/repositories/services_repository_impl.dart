@@ -83,6 +83,9 @@ class ServicesRepositoryImpl implements ServicesRepository {
       timeSlot: request.timeSlot,
       description: request.description,
       status: request.status,
+      customerName: request.customerName,
+      phone: request.phone,
+      filterImageUrl: request.filterImageUrl,
     );
     await remoteDatasource.submitServiceRequest(waterEntity);
   }

@@ -2,9 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/entities/water_service_entity.dart';
 
 class WaterServiceModel extends WaterServiceEntity {
-  final String? customerName;
-  final String? phone;
-
   const WaterServiceModel({
     required super.id,
     required super.address,
@@ -14,8 +11,9 @@ class WaterServiceModel extends WaterServiceEntity {
     required super.status,
     super.technician,
     super.technicianPhone,
-    this.customerName,
-    this.phone,
+    super.customerName,
+    super.phone,
+    super.filterImageUrl,
   });
 
   factory WaterServiceModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
@@ -37,6 +35,7 @@ class WaterServiceModel extends WaterServiceEntity {
       technicianPhone: (data['technicianPhone'] ?? data['technicianMobile'] ?? '') as String,
       customerName: data['customerName'],
       phone: data['phone'],
+      filterImageUrl: data['filterImageUrl'] ?? data['imageUrl'] ?? '',
     );
   }
 
@@ -50,6 +49,9 @@ class WaterServiceModel extends WaterServiceEntity {
       status: entity.status,
       technician: entity.technician,
       technicianPhone: entity.technicianPhone,
+      customerName: entity.customerName,
+      phone: entity.phone,
+      filterImageUrl: entity.filterImageUrl,
     );
   }
 
@@ -64,6 +66,8 @@ class WaterServiceModel extends WaterServiceEntity {
       'appointmentTime': timeSlot,
       'problemDetails': description,
       'status': status.isNotEmpty ? status : 'Pending',
+      'filterImageUrl': filterImageUrl ?? '',
+      'imageUrl': filterImageUrl ?? '',
       'createdAt': FieldValue.serverTimestamp(),
     };
   }

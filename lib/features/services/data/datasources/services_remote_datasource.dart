@@ -413,12 +413,18 @@ class ServicesRemoteDatasourceImpl implements ServicesRemoteDatasource {
     final mapData = {
       'serviceId': serviceId,
       'requestId': serviceId,
-      'customerName': customerName,
-      'phone': phone,
+      'customerName': (request.customerName != null && request.customerName!.trim().isNotEmpty)
+          ? request.customerName!.trim()
+          : customerName,
+      'phone': (request.phone != null && request.phone!.trim().isNotEmpty)
+          ? request.phone!.trim()
+          : phone,
       'address': request.address,
       'appointmentDate': request.date,
       'appointmentTime': request.timeSlot,
       'problemDetails': request.description,
+      'filterImageUrl': request.filterImageUrl ?? '',
+      'imageUrl': request.filterImageUrl ?? '',
       'status': request.status.isNotEmpty ? request.status : 'Pending',
       'userId': userId,
       'createdAt': FieldValue.serverTimestamp(),
