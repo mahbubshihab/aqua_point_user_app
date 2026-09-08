@@ -38,7 +38,7 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
   StreamSubscription<DocumentSnapshot>? _customerSubscription;
   StreamSubscription<QuerySnapshot>? _customProductsSubscription;
 
-  String _resolvedModelName = 'Optimal';
+  String _resolvedModelName = 'Livotec - L1';
   String _resolvedLastServiceDate = '15 May, 2026';
   String _resolvedNextServiceDate = '15 Aug, 2026';
   bool _isOverdue = false;
@@ -92,16 +92,37 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
       final localPhone = await AuthLocalDatasource().getUserPhone();
       final localUserId = await AuthLocalDatasource().getUserId();
 
-      final candidateIds = <String>[
-        if (authUser?.uid != null && authUser!.uid.isNotEmpty) authUser.uid,
-        if (authUser?.phoneNumber != null && authUser!.phoneNumber!.isNotEmpty) authUser.phoneNumber!,
-        if (localUserId != null && localUserId.isNotEmpty) localUserId,
-        if (localPhone != null && localPhone.isNotEmpty) localPhone,
+      final rawCandidates = <String>[
+        if (authUser?.uid != null && authUser!.uid.trim().isNotEmpty) authUser.uid.trim(),
+        if (authUser?.phoneNumber != null && authUser!.phoneNumber!.trim().isNotEmpty) authUser.phoneNumber!.trim(),
+        if (localUserId != null && localUserId.trim().isNotEmpty) localUserId.trim(),
+        if (localPhone != null && localPhone.trim().isNotEmpty) localPhone.trim(),
       ];
 
-      if (candidateIds.isEmpty) return;
+      if (rawCandidates.isEmpty) return;
+
+      // Build normalized candidate IDs and phone variations
+      final candidateIds = <String>{};
+      for (final c in rawCandidates) {
+        candidateIds.add(c);
+        final digits = c.replaceAll(RegExp(r'[^0-9]'), '');
+        if (digits.length >= 10) {
+          candidateIds.add(digits);
+          candidateIds.add('+$digits');
+          if (digits.startsWith('880')) {
+            candidateIds.add('+880${digits.substring(3)}');
+            candidateIds.add(digits.substring(2)); // '01...'
+            candidateIds.add(digits.substring(3)); // '1...'
+          } else if (digits.startsWith('01')) {
+            candidateIds.add('+88$digits');
+            candidateIds.add('88$digits');
+            candidateIds.add(digits.substring(1)); // '1...'
+          }
+        }
+      }
 
       String? targetDocId;
+      // 1. Direct doc lookup by document ID
       for (final cid in candidateIds) {
         final doc = await FirebaseFirestore.instance.collection('customers').doc(cid).get();
         if (doc.exists) {
@@ -110,7 +131,35 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
         }
       }
 
-      targetDocId ??= candidateIds.first;
+      // 2. Query lookup by 'phone' or 'phoneNumber' field
+      if (targetDocId == null) {
+        for (final cid in candidateIds) {
+          final q1 = await FirebaseFirestore.instance
+              .collection('customers')
+              .where('phone', isEqualTo: cid)
+              .limit(1)
+              .get();
+          if (q1.docs.isNotEmpty) {
+            targetDocId = q1.docs.first.id;
+            break;
+          }
+
+          final q2 = await FirebaseFirestore.instance
+              .collection('customers')
+              .where('phoneNumber', isEqualTo: cid)
+              .limit(1)
+              .get();
+          if (q2.docs.isNotEmpty) {
+            targetDocId = q2.docs.first.id;
+            break;
+          }
+        }
+      }
+
+      targetDocId ??= rawCandidates.first;
+
+      await _customerSubscription?.cancel();
+      await _customProductsSubscription?.cancel();
 
       _customerSubscription = FirebaseFirestore.instance
           .collection('customers')
@@ -133,8 +182,14 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
           .snapshots()
           .listen((querySnap) {
         if (querySnap.docs.isNotEmpty) {
-          final customData = querySnap.docs.first.data() as Map<String, dynamic>? ?? {};
-          final customName = (customData['name'] ?? customData['model'] ?? customData['title'] ?? '').toString().trim();
+          final customData = querySnap.docs.first.data();
+          final customName = (customData['name'] ??
+                  customData['model'] ??
+                  customData['purifierModel'] ??
+                  customData['title'] ??
+                  '')
+              .toString()
+              .trim();
           if (customName.isNotEmpty && mounted) {
             setState(() {
               _resolvedModelName = customName;
@@ -146,7 +201,14 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
   }
 
   void _handleCustomerDocUpdate(Map<String, dynamic> data, String customerId) {
-    final installedModel = (data['installedModel'] ?? '').toString().trim();
+    final modelName = (data['installedModel'] ??
+            data['purifierModel'] ??
+            data['model'] ??
+            data['machineModel'] ??
+            data['machineType'] ??
+            '')
+        .toString()
+        .trim();
     final lastDate = data['lastServiceDate'];
     final nextDate = data['nextServiceDate'];
 
@@ -160,13 +222,13 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
         _resolvedNextServiceDate = formattedNext;
         _isOverdue = overdue;
 
-        if (installedModel.isNotEmpty) {
-          _resolvedModelName = installedModel;
+        if (modelName.isNotEmpty) {
+          _resolvedModelName = modelName;
         }
       });
     }
 
-    if (installedModel.isEmpty) {
+    if (modelName.isEmpty) {
       _checkFallbackPurchasedProducts(customerId);
     }
   }
@@ -187,7 +249,7 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
             for (final item in items) {
               if (item is Map) {
                 final name = (item['name'] ?? item['title'] ?? '').toString().trim();
-                if (name.isNotEmpty && _resolvedModelName == 'Optimal' && mounted) {
+                if (name.isNotEmpty && mounted) {
                   setState(() {
                     _resolvedModelName = name;
                   });
@@ -419,7 +481,7 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                           ),
                           const SizedBox(height: 1),
                           Text(
-                            _resolvedModelName == 'Optimal' ? 'Kent Grand Plus RO' : _resolvedModelName,
+                            _resolvedModelName,
                             style: GoogleFonts.poppins(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
@@ -925,7 +987,7 @@ class _PurifierStatusTechCardState extends State<PurifierStatusTechCard>
                                         ),
                                         const SizedBox(width: 5),
                                         Text(
-                                          _resolvedModelName == 'Optimal' ? 'Filtration: ' : 'Model: ',
+                                          'Model: ',
                                           style: GoogleFonts.poppins(
                                             color: const Color(0xFF6B7280),
                                             fontSize: 10.5,
